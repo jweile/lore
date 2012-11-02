@@ -8,9 +8,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
   <groupId>ca.on.mshri</groupId>
-  <artifactId>lore-base</artifactId>
+  <artifactId>lore-genome</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>lore-base</name>
+  <name>lore-genome</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,9 +23,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>2.7.0-incubating</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>lore-base</artifactId>
+      <version>0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

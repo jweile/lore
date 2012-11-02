@@ -14,6 +14,7 @@
         <module>lore-psimi</module>
         <module>lore-hpo</module>
     <module>lore-base</module>
+    <module>lore-genome</module>
   </modules>
 
     <properties>

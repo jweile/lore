@@ -35,7 +35,7 @@ public class XRef extends IndividualImpl {
 
     static final String CLASS_URI = LoreModel.URI+"#XRef";
     
-    private XRef(Node n, EnhGraph g) {
+    protected XRef(Node n, EnhGraph g) {
         super(n, g);
     }
     
@@ -49,7 +49,7 @@ public class XRef extends IndividualImpl {
         }
     }
     
-    public Authority getNamespace() {
+    public Authority getAuthority() {
         
         NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasNamespace"));
         Authority out = null;
@@ -65,7 +65,7 @@ public class XRef extends IndividualImpl {
     
     public String getValue() {
         
-        NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasNamespace"));
+        NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasValue"));
         String out = null;
         while (it.hasNext()) {
             if (out == null) {
@@ -77,7 +77,7 @@ public class XRef extends IndividualImpl {
         return out;
     }
     
-    static XRef create(OntModel model, Authority auth, String value) {
+    public static XRef createOrGet(LoreModel model, Authority auth, String value) {
         
         XRef xref = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:XRef#"+auth.getAuthorityId()+":"+value));

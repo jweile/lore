@@ -37,11 +37,11 @@ public class Authority extends IndividualImpl {
      */
     static final String IND_URI_PRE = "urn:lore:Authority#";
     
-    private Authority(Node n, EnhGraph g) {
+    protected Authority(Node n, EnhGraph g) {
         super(n, g);
     }
     
-    static Authority create(OntModel model, String id) {
+    public static Authority createOrGet(LoreModel model, String id) {
         return Authority.fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual(IND_URI_PRE+id));
     }

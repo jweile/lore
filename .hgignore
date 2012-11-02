@@ -4,7 +4,7 @@
 \.rej$
 \.conflict\~$
 target/
-catalog.xml
+catalog.*xml
 nbactions.xml
 \.log(\.\d)*$
 \.db$

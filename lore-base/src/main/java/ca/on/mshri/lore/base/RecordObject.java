@@ -20,7 +20,6 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class RecordObject extends IndividualImpl {
 
     static final String CLASS_URI = LoreModel.URI+"#RecordObject";
     
-    private RecordObject(Node n, EnhGraph g) {
+    protected RecordObject(Node n, EnhGraph g) {
         super(n, g);
     }
     
@@ -61,16 +60,23 @@ public class RecordObject extends IndividualImpl {
     }
     
     public XRef addXRef(Authority ns, String value) {
-        XRef xref = XRef.create(getOntModel(), ns, value);
+        XRef xref = XRef.createOrGet((LoreModel)getOntModel(), ns, value);
         addXRef(xref);
         return xref;
     }
     
-    static RecordObject create(OntModel model, Authority auth, String id) {
+    /**
+     * Pseudo-constructor. 
+     * @param model
+     * @param auth
+     * @param id
+     * @return 
+     */
+    public static RecordObject createOrGet(LoreModel model, Authority auth, String id) {
         RecordObject out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:RecordObject#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
         return out;
     }
-    
+        
 }

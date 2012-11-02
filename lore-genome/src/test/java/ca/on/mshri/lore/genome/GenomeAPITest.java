@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.base;
+package ca.on.mshri.lore.genome;
 
+import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.XRef;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.TestCase;
@@ -24,9 +26,9 @@ import junit.framework.TestCase;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class BaseApiTest extends TestCase {
+public class GenomeAPITest extends TestCase {
     
-    public BaseApiTest(String testName) {
+    public GenomeAPITest(String testName) {
         super(testName);
     }
     
@@ -41,30 +43,19 @@ public class BaseApiTest extends TestCase {
     }
     
     public void test() throws Exception {
+        GenomeModel model = new GenomeModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
         
-        LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+        Authority entrez = Authority.createOrGet(model,"entrez");
         
-        Authority authA = Authority.createOrGet(model,"A");
-        //test if duplications get ignored
-        Authority.createOrGet(model,"A");
-        Authority authB = Authority.createOrGet(model,"B");
+        Gene g1 = Gene.create(model, entrez, "7001");
+        Gene g2 = Gene.create(model, entrez, "7001");
+        assertEquals(g1,g2);
         
-        RecordObject r1 = RecordObject.createOrGet(model, authA, "1");
-        RecordObject r2 = RecordObject.createOrGet(model, authA, "2");
-        
-        //test if duplicated xrefs get automatically merged
-        XRef foo1 = r1.addXRef(authB, "foo");
-        XRef foo2 = r2.addXRef(authB, "foo");
-        assertEquals(foo1, foo2);
-        
-        assertEquals(2, model.listIndividualsOfClass(RecordObject.class, false).size());
-        assertEquals(2, model.listIndividualsOfClass(Authority.class, false).size());
-        assertEquals(3, model.listIndividualsOfClass(XRef.class, false).size());
-        
-        for (RecordObject o : model.listIndividualsOfClass(RecordObject.class, false)) {
-            System.out.println(o);
+        for (XRef xref : g1.listXRefs()) {
+            System.out.println(xref);
+            System.out.println(" -> "+xref.getAuthority());
+            System.out.println(" -> "+xref.getValue());
+            
         }
-        
     }
-    
 }

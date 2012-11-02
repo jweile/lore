@@ -16,12 +16,15 @@
  */
 package ca.on.mshri.lore.base;
 
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.ontology.impl.OntModelImpl;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,55 +54,77 @@ public class LoreModel extends OntModelImpl {
         read(LoreModel.class.getClassLoader().getResourceAsStream("lore-base.owl"), null);
     }
     
-    /**
-     * creates a new lore model around an existing ontmodel.
-     * @param m the ontmodel to wrap.
-     * @return 
-     */
-    public static LoreModel fromOntModel(OntModel m) {
-        OntModelImpl i = (OntModelImpl) m;
-        return new LoreModel(i.getSpecification(), i);
-    }
+//    /**
+//     * creates a new lore model around an existing ontmodel.
+//     * @param m the ontmodel to wrap.
+//     * @return 
+//     */
+//    public static LoreModel fromOntModel(OntModel m) {
+//        OntModelImpl i = (OntModelImpl) m;
+//        return new LoreModel(i.getSpecification(), i);
+//    }
+//    
+//    /**
+//     * lists all currently existing record objects.
+//     * @return 
+//     */
+//    public List<RecordObject> listRecordObjects() {
+//        ExtendedIterator<? extends OntResource> it = getOntClass(RecordObject.CLASS_URI).listInstances();
+//        List<RecordObject> list = new ArrayList<RecordObject>();
+//        while (it.hasNext()) {
+//            list.add(RecordObject.fromIndividual(it.next().asIndividual()));
+//        }
+//        return list;
+//    }
+//    
+//    public List<XRef> listXRefs() {
+//        ExtendedIterator<? extends OntResource> it = getOntClass(XRef.CLASS_URI).listInstances();
+//        List<XRef> list = new ArrayList<XRef>();
+//        while (it.hasNext()) {
+//            list.add(XRef.fromIndividual(it.next().asIndividual()));
+//        }
+//        return list;
+//    }
+//    
+//    public List<Authority> listAuthorities() {
+//        ExtendedIterator<? extends OntResource> it = getOntClass(Authority.CLASS_URI).listInstances();
+//        List<Authority> list = new ArrayList<Authority>();
+//        while (it.hasNext()) {
+//            list.add(Authority.fromIndividual(it.next().asIndividual()));
+//        }
+//        return list;
+//    }
+//    
+//    
+//    public Authority getOrCreateAuthority(String id) {
+//        return Authority.createOrGet(this,id);
+//    }
+//    
+//    
+//    public RecordObject createRecordObject(Authority auth, String id) {
+//        return RecordObject.createOrGet(this, auth, id);
+//    }
     
-    /**
-     * lists all currently existing record objects.
-     * @return 
-     */
-    public List<RecordObject> listRecordObjects() {
-        ExtendedIterator<? extends OntResource> it = getOntClass(RecordObject.CLASS_URI).listInstances();
-        List<RecordObject> list = new ArrayList<RecordObject>();
-        while (it.hasNext()) {
-            list.add(RecordObject.fromIndividual(it.next().asIndividual()));
-        }
-        return list;
-    }
-    
-    public List<XRef> listXRefs() {
-        ExtendedIterator<? extends OntResource> it = getOntClass(XRef.CLASS_URI).listInstances();
-        List<XRef> list = new ArrayList<XRef>();
-        while (it.hasNext()) {
-            list.add(XRef.fromIndividual(it.next().asIndividual()));
-        }
-        return list;
-    }
-    
-    public List<Authority> listAuthorities() {
-        ExtendedIterator<? extends OntResource> it = getOntClass(Authority.CLASS_URI).listInstances();
-        List<Authority> list = new ArrayList<Authority>();
-        while (it.hasNext()) {
-            list.add(Authority.fromIndividual(it.next().asIndividual()));
-        }
-        return list;
-    }
-    
-    
-    public Authority getOrCreateAuthority(String id) {
-        return Authority.create(this,id);
-    }
-    
-    
-    public RecordObject createRecordObject(Authority auth, String id) {
-        return RecordObject.create(this, auth, id);
+    public <T extends Individual> List<T> listIndividualsOfClass(Class<T> clazz, boolean direct) {
+        
+        try {
+            
+            String classURI = (String) clazz.getDeclaredField("CLASS_URI").get(null);
+            Method fromIndividualMethod = clazz.getMethod("fromIndividual", Individual.class);
+            
+            ExtendedIterator<? extends OntResource> it = getOntClass(classURI).listInstances(direct);
+            List<T> list = new ArrayList<T>();
+            while (it.hasNext()) {
+                T t = (T) fromIndividualMethod.invoke(null, it.next().asIndividual());
+                list.add(t);
+            }
+            return list;
+            
+        } catch (Exception ex) {
+            //FIXME: maybe using an abstract method for this would be better getClassURI() or something?
+            throw new RuntimeException("Class wrapper is missing CLASS_URI field or fromIndividual() method. Report this as a bug!",ex);
+        } 
+        
     }
 
     
