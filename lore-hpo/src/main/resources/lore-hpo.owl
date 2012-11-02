@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY hpo "http://llama.mshri.on.ca/lore/hpo.owl#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://llama.mshri.on.ca/lore/hpo.owl#"
+     xml:base="http://llama.mshri.on.ca/lore/hpo.owl"
+     xmlns:hpo="http://llama.mshri.on.ca/lore/hpo.owl#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://llama.mshri.on.ca/lore/hpo.owl">
+        <rdfs:comment>lore representation of HPO data</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#isAssociatedWith -->
+
+    <owl:ObjectProperty rdf:about="&hpo;isAssociatedWith"/>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#fromSpecies -->
+
+    <owl:ObjectProperty rdf:about="&hpo;fromSpecies">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&hpo;Species"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#hasNamespace -->
+
+    <owl:ObjectProperty rdf:about="&hpo;hasNamespace">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&hpo;Namespace"/>
+        <rdfs:domain rdf:resource="&hpo;XRef"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#hasXRef -->
+
+    <owl:ObjectProperty rdf:about="&hpo;hasXRef">
+        <rdfs:range rdf:resource="&hpo;XRef"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#hasName -->
+
+    <owl:DatatypeProperty rdf:about="&hpo;hasName"/>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#hasValue -->
+
+    <owl:DatatypeProperty rdf:about="&hpo;hasValue"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#Phenotype -->
+
+    <owl:Class rdf:about="&hpo;Phenotype"/>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#Gene -->
+
+    <owl:Class rdf:about="&hpo;Gene">
+        <rdfs:subClassOf rdf:resource="&hpo;Object"/>
+    </owl:Class>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#Namespace -->
+
+    <owl:Class rdf:about="&hpo;Namespace">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#Object -->
+
+    <owl:Class rdf:about="&hpo;Object">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#Species -->
+
+    <owl:Class rdf:about="&hpo;Species"/>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#XRef -->
+
+    <owl:Class rdf:about="&hpo;XRef">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore/hpo.owl#EntrezGeneId -->
+
+    <owl:NamedIndividual rdf:about="&hpo;EntrezGeneId">
+        <rdf:type rdf:resource="&hpo;Namespace"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&hpo;Phenotype"/>
+            <rdf:Description rdf:about="&hpo;Namespace"/>
+            <rdf:Description rdf:about="&hpo;Object"/>
+            <rdf:Description rdf:about="&hpo;Species"/>
+            <rdf:Description rdf:about="&hpo;XRef"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
+

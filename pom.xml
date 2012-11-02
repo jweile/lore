@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ca.on.mshri</groupId>
+    <artifactId>lore</artifactId>
+    <version>0.1-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <name>lore</name>
+    
+    <modules>
+        <module>lore-psimi</module>
+        <module>lore-hpo</module>
+    <module>lore-base</module>
+  </modules>
+
+    <properties>
+      <netbeans.hint.license>lgpl30</netbeans.hint.license>
+    </properties>
+
+    <scm>
+      <connection>scm:hg:${project.basedir}</connection>
+      <developerConnection>scm:hg:${project.basedir}</developerConnection>
+    </scm>
+
+    <developers>
+      <developer>
+          <id>jweile</id>
+          <name>Jochen Weile</name>
+          <email>jochenweile@gmail.com</email>
+          <organization>Department of Molecular Genetics, University of Toronto</organization>
+          <organizationUrl>http://www.utoronto.ca</organizationUrl>
+          <url>http://dalai.mshri.on.ca/~jweile</url>
+      </developer>
+    </developers>
+
+    <organization>
+      <name>Department of Molecular Genetics, University of Toronto</name>
+      <url>http://www.utoronto.ca</url>
+    </organization>
+
+    <licenses>
+        <license>
+          <name>Lesser GNU Public License, Version 3.0</name>
+          <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+  
+</project>

@@ -1,0 +1,14 @@
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
+target/
+catalog.xml
+nbactions.xml
+\.log(\.\d)*$
+\.db$
+\.bak$
+\.sublime.*$
+\.DS_Store$
+
