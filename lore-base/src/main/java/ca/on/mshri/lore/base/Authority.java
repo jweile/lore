@@ -36,7 +36,7 @@ public class Authority extends IndividualImpl {
     /**
      * prefix for individual uris.
      */
-    static final String IND_URI_PRE = "urn:lore:Authority#";
+    public static final String IND_URI_PRE = "urn:lore:Authority#";
     
     protected Authority(Node n, EnhGraph g) {
         super(n, g);

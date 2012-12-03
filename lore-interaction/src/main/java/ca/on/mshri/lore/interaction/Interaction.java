@@ -102,7 +102,7 @@ public class Interaction extends IndividualImpl {
      * @return 
      */
     public static Interaction createOrGet(InteractionModel model, 
-            List<? extends RecordObject> participants, Experiment e, OntClass type) {
+            Experiment e, OntClass type, RecordObject... participants) {
         
         OntClass thisType = model.getOntClass(CLASS_URI);
         

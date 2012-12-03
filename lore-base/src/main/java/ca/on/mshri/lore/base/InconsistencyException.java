@@ -20,20 +20,20 @@ package ca.on.mshri.lore.base;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class InconcistencyException extends RuntimeException {
+public class InconsistencyException extends RuntimeException {
 
-    public InconcistencyException() {
+    public InconsistencyException() {
     }
 
-    public InconcistencyException(String string) {
+    public InconsistencyException(String string) {
         super(string);
     }
 
-    public InconcistencyException(String string, Throwable thrwbl) {
+    public InconsistencyException(String string, Throwable thrwbl) {
         super(string, thrwbl);
     }
 
-    public InconcistencyException(Throwable thrwbl) {
+    public InconsistencyException(Throwable thrwbl) {
         super(thrwbl);
     }
 

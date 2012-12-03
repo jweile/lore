@@ -62,7 +62,7 @@ public class XRef extends IndividualImpl {
             if (out == null) {
                 out = Authority.fromIndividual(it.next().as(Individual.class));
             } else {
-                throw new InconcistencyException("XRef "+getURI()+" should only have one namespace!");
+                throw new InconsistencyException("XRef "+getURI()+" should only have one namespace!");
             }
         }
         it.close();
@@ -77,7 +77,7 @@ public class XRef extends IndividualImpl {
             if (out == null) {
                 out = it.next().asLiteral().getString();
             } else {
-                throw new InconcistencyException("XRef "+getURI()+" should only have one value!");
+                throw new InconsistencyException("XRef "+getURI()+" should only have one value!");
             }
         }
         it.close();

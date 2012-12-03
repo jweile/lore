@@ -17,7 +17,6 @@
 package ca.on.mshri.lore.interaction;
 
 import ca.on.mshri.lore.base.Experiment;
-import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.genome.NucleotideFeature;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
@@ -75,9 +74,8 @@ public class GeneticInteraction extends Interaction {
      * @param id
      * @return 
      */
-    //FIXME: Should be restricted to NucleotideFeatures, but won't let me :(
     public static GeneticInteraction createOrGet(InteractionModel model, 
-             List<? extends RecordObject> participants, Experiment e, OntClass type) {
+            Experiment e, OntClass type, NucleotideFeature... participants) {
         
         OntClass thisType = model.getOntClass(CLASS_URI);
         
@@ -85,6 +83,6 @@ public class GeneticInteraction extends Interaction {
             throw new ConversionException(type+" is not a subclass of "+CLASS_URI);
         }
         
-        return fromIndividual(Interaction.createOrGet(model, participants, e, type));
+        return fromIndividual(Interaction.createOrGet(model, e, type, participants));
     }
 }

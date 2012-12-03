@@ -62,7 +62,7 @@ public class Experiment extends IndividualImpl {
             if (out == null) {
                 out = Publication.fromIndividual(it.next().as(Individual.class));
             } else {
-                throw new InconcistencyException("Experiment "+getURI()+" should only have one publication!");
+                throw new InconsistencyException("Experiment "+getURI()+" should only have one publication!");
             }
         }
         it.close();

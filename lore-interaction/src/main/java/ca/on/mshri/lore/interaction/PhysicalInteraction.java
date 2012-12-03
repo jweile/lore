@@ -76,9 +76,8 @@ public class PhysicalInteraction extends Interaction {
      * @param id
      * @return 
      */
-    //FIXME: Should be restricted to Molecules, but won't let me :(
     public static PhysicalInteraction createOrGet(InteractionModel model, 
-             List<? extends RecordObject> participants, Experiment e, OntClass type) {
+            Experiment e, OntClass type, Molecule... participants) {
         
         OntClass thisType = model.getOntClass(CLASS_URI);
         
@@ -86,6 +85,6 @@ public class PhysicalInteraction extends Interaction {
             throw new ConversionException(type+" is not a subclass of "+CLASS_URI);
         }
         
-        return fromIndividual(Interaction.createOrGet(model, participants, e, type));
+        return fromIndividual(Interaction.createOrGet(model, e, type, participants));
     }
 }

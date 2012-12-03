@@ -17,7 +17,7 @@
 package ca.on.mshri.lore.molecules;
 
 import ca.on.mshri.lore.base.Authority;
-import ca.on.mshri.lore.base.InconcistencyException;
+import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.genome.Gene;
 import com.hp.hpl.jena.enhanced.EnhGraph;
@@ -60,7 +60,7 @@ public class Protein extends Molecule {
                 out = Gene.fromIndividual(it.next().as(Individual.class));
             } else {
                 //TODO: this might cause problems?
-                throw new InconcistencyException("Protein "+getURI()+" should only have one encoding gene!");
+                throw new InconsistencyException("Protein "+getURI()+" should only have one encoding gene!");
             }
         }
         return out;

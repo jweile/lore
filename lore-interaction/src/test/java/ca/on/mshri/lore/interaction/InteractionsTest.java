@@ -49,13 +49,9 @@ public class InteractionsTest extends TestCase {
         Experiment exp = Experiment.createOrGet(model, "testPub01");
         exp.setPublication(Publication.createOrGet(model, pubmed, "01234"));
         
-        OntClass iType = model.getOntClass(InteractionModel.URI+"#GeneticInteraction");
+        OntClass iType = model.getOntClass(InteractionModel.URI+"#SyntheticLethality");
         
-        GeneticInteraction interaction = GeneticInteraction
-        .createOrGet(model, new ArrayList<Gene>() {{
-            add(g1);
-            add(g2);
-        }}, exp, iType);
+        GeneticInteraction interaction = GeneticInteraction.createOrGet(model, exp, iType, g1, g2);
         
         List<NucleotideFeature> interactors = interaction.listParticipants();
         assertEquals(2,interactors.size());
