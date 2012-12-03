@@ -75,6 +75,7 @@ public class AnnotationParserTest extends TestCase {
                     Phenotype pheno = Phenotype.fromIndividual(it.next().as(Individual.class));
                     System.out.println("  -> "+pheno.getName());
                 }
+                it.close();
             }
             
         } finally {

@@ -60,6 +60,7 @@ public class XRef extends IndividualImpl {
                 throw new InconcistencyException("XRef "+getURI()+" should only have one namespace!");
             }
         }
+        it.close();
         return out;
     }
     
@@ -74,6 +75,7 @@ public class XRef extends IndividualImpl {
                 throw new InconcistencyException("XRef "+getURI()+" should only have one value!");
             }
         }
+        it.close();
         return out;
     }
     

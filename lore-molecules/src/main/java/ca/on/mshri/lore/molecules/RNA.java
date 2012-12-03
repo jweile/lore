@@ -14,57 +14,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.base;
+package ca.on.mshri.lore.molecules;
 
+import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.LoreModel;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class RecordObject extends IndividualImpl {
-
-    static final String CLASS_URI = LoreModel.URI+"#RecordObject";
+public class RNA extends Molecule {
     
-    protected RecordObject(Node n, EnhGraph g) {
+    static final String CLASS_URI = MoleculesModel.URI+"#RNA";
+    
+    protected RNA(Node n, EnhGraph g) {
         super(n, g);
     }
     
-    public static RecordObject fromIndividual(Individual i) {
+    public static RNA fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
         if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
-            return new RecordObject(impl.asNode(), impl.getGraph());
+            return new RNA(impl.asNode(), impl.getGraph());
         } else {
-            throw new ConversionException(i.getURI()+" cannot be cast as RecordObject!");
+            throw new ConversionException(i.getURI()+" cannot be cast as RNA!");
         }
     }
     
-    public List<XRef> listXRefs() {
-        List<XRef> list = new ArrayList<XRef>();
-        NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasXRef"));
-        while (it.hasNext()) {
-            list.add(XRef.fromIndividual(it.next().as(Individual.class)));
-        }
-        it.close();
-        return list;
-    }
-    
-    public void addXRef(XRef xref) {
-        addProperty(getModel().getProperty(LoreModel.URI+"#hasXRef"), xref);
-    }
-    
-    public XRef addXRef(Authority ns, String value) {
-        XRef xref = XRef.createOrGet((LoreModel)getOntModel(), ns, value);
-        addXRef(xref);
-        return xref;
-    }
     
     /**
      * Pseudo-constructor. 
@@ -73,11 +53,10 @@ public class RecordObject extends IndividualImpl {
      * @param id
      * @return 
      */
-    public static RecordObject createOrGet(LoreModel model, Authority auth, String id) {
-        RecordObject out = fromIndividual(model.getOntClass(CLASS_URI)
-                .createIndividual("urn:lore:RecordObject#"+auth.getAuthorityId()+":"+id));
+    public static RNA createOrGet(LoreModel model, Authority auth, String id) {
+        RNA out = fromIndividual(model.getOntClass(CLASS_URI)
+                .createIndividual("urn:lore:RNA#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
         return out;
     }
-        
 }

@@ -49,7 +49,7 @@ public class HpoOntModel extends OntModelImpl {
             Gene g = Gene.fromIndividual(geneIt.next().as(Individual.class));
             list.add(g);
         }
-        
+        geneIt.close();
         return list;
     }
     

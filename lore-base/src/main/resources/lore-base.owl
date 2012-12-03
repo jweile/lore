@@ -59,6 +59,18 @@
     
 
 
+    <!-- http://llama.mshri.on.ca/lore-base.owl#observedIn -->
+
+    <owl:ObjectProperty rdf:about="http://llama.mshri.on.ca/lore-base.owl#observedIn"/>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-base.owl#publishedIn -->
+
+    <owl:ObjectProperty rdf:about="http://llama.mshri.on.ca/lore-base.owl#publishedIn"/>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -67,6 +79,22 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-base.owl#hasCitationInfo -->
+
+    <owl:DatatypeProperty rdf:about="http://llama.mshri.on.ca/lore-base.owl#hasCitationInfo">
+        <rdfs:domain rdf:resource="http://llama.mshri.on.ca/lore-base.owl#Publication"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-base.owl#hasExperimentType -->
+
+    <owl:DatatypeProperty rdf:about="http://llama.mshri.on.ca/lore-base.owl#hasExperimentType">
+        <rdfs:domain rdf:resource="http://llama.mshri.on.ca/lore-base.owl#Experiment"/>
+    </owl:DatatypeProperty>
     
 
 
@@ -107,6 +135,20 @@
     
 
 
+    <!-- http://llama.mshri.on.ca/lore-base.owl#Experiment -->
+
+    <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#Experiment"/>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-base.owl#Publication -->
+
+    <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#Publication">
+        <rdfs:subClassOf rdf:resource="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
+    </owl:Class>
+    
+
+
     <!-- http://llama.mshri.on.ca/lore-base.owl#RecordObject -->
 
     <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
@@ -133,6 +175,8 @@
         <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
         <owl:members rdf:parseType="Collection">
             <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#Authority"/>
+            <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#Experiment"/>
+            <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#Publication"/>
             <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
             <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#XRef"/>
         </owl:members>

@@ -42,7 +42,7 @@ public class LoreModel extends OntModelImpl {
     /**
      * The Lore Base URI
      */
-    static final String URI = "http://llama.mshri.on.ca/lore-base.owl";
+    public static final String URI = "http://llama.mshri.on.ca/lore-base.owl";
     
     /**
      * creates a new model
@@ -118,6 +118,7 @@ public class LoreModel extends OntModelImpl {
                 T t = (T) fromIndividualMethod.invoke(null, it.next().asIndividual());
                 list.add(t);
             }
+            it.close();
             return list;
             
         } catch (Exception ex) {

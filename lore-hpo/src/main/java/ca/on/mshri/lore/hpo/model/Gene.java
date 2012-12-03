@@ -75,6 +75,7 @@ public class Gene extends IndividualImpl {
             XRef xref = XRef.fromIndividual(it.next().as(Individual.class));
             list.add(xref);
         }
+        it.close();
         return list;
     }
 }

@@ -14,14 +14,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.base;
+package ca.on.mshri.lore.interaction;
 
+import ca.on.mshri.lore.base.Experiment;
+import ca.on.mshri.lore.base.LoreModel;
+import ca.on.mshri.lore.base.RecordObject;
+import ca.on.mshri.lore.genome.NucleotideFeature;
+import ca.on.mshri.lore.molecules.Molecule;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.Property;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,41 +35,35 @@ import java.util.List;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class RecordObject extends IndividualImpl {
-
-    static final String CLASS_URI = LoreModel.URI+"#RecordObject";
+public class GeneticInteraction extends Interaction {
     
-    protected RecordObject(Node n, EnhGraph g) {
+    static final String CLASS_URI = InteractionModel.URI+"#GeneticInteraction";
+    
+    protected GeneticInteraction(Node n, EnhGraph g) {
         super(n, g);
     }
     
-    public static RecordObject fromIndividual(Individual i) {
+    public static GeneticInteraction fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
         if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
-            return new RecordObject(impl.asNode(), impl.getGraph());
+            return new GeneticInteraction(impl.asNode(), impl.getGraph());
         } else {
-            throw new ConversionException(i.getURI()+" cannot be cast as RecordObject!");
+            throw new ConversionException(i.getURI()+" cannot be cast as GeneticInteraction!");
         }
     }
     
-    public List<XRef> listXRefs() {
-        List<XRef> list = new ArrayList<XRef>();
-        NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasXRef"));
+    @Override
+    public List<NucleotideFeature> listParticipants() {
+        List<NucleotideFeature> out = new ArrayList<NucleotideFeature>();
+        
+        Property hasParticipant = getModel().getProperty(InteractionModel.URI+"#hasParticipant");
+        NodeIterator it = listPropertyValues(hasParticipant);
         while (it.hasNext()) {
-            list.add(XRef.fromIndividual(it.next().as(Individual.class)));
+            NucleotideFeature participant = NucleotideFeature.fromIndividual(it.next().as(Individual.class));
+            out.add(participant);
         }
-        it.close();
-        return list;
-    }
-    
-    public void addXRef(XRef xref) {
-        addProperty(getModel().getProperty(LoreModel.URI+"#hasXRef"), xref);
-    }
-    
-    public XRef addXRef(Authority ns, String value) {
-        XRef xref = XRef.createOrGet((LoreModel)getOntModel(), ns, value);
-        addXRef(xref);
-        return xref;
+                
+        return out;
     }
     
     /**
@@ -73,11 +73,10 @@ public class RecordObject extends IndividualImpl {
      * @param id
      * @return 
      */
-    public static RecordObject createOrGet(LoreModel model, Authority auth, String id) {
-        RecordObject out = fromIndividual(model.getOntClass(CLASS_URI)
-                .createIndividual("urn:lore:RecordObject#"+auth.getAuthorityId()+":"+id));
-        out.addXRef(auth, id);
-        return out;
-    }
+    //FIXME: Should be restricted to NucleotideFeatures, but won't let me :(
+    public static GeneticInteraction createOrGet(LoreModel model, 
+             List<? extends RecordObject> participants, Experiment e) {
         
+        return fromIndividual(Interaction.createOrGet(model, participants, e));
+    }
 }
