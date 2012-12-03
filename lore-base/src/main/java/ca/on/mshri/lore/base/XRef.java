@@ -20,6 +20,7 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
@@ -33,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.NodeIterator;
  */
 public class XRef extends IndividualImpl {
 
-    static final String CLASS_URI = LoreModel.URI+"#XRef";
+    public static final String CLASS_URI = LoreModel.URI+"#XRef";
     
     protected XRef(Node n, EnhGraph g) {
         super(n, g);
@@ -42,7 +43,11 @@ public class XRef extends IndividualImpl {
     public static XRef fromIndividual(Individual i) {
         
         IndividualImpl impl = (IndividualImpl) i;
-        if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+          
             return new XRef(impl.asNode(),impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as XRef object!");

@@ -23,6 +23,7 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class Interaction extends IndividualImpl {
     
-    static final String CLASS_URI = InteractionModel.URI+"#Interaction";
+    public static final String CLASS_URI = InteractionModel.URI+"#Interaction";
     
     protected Interaction(Node n, EnhGraph g) {
         super(n, g);
@@ -43,8 +44,14 @@ public class Interaction extends IndividualImpl {
     
     public static Interaction fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
-        if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
+        
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+            
             return new Interaction(impl.asNode(), impl.getGraph());
+            
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as Interaction!");
         }
@@ -94,20 +101,28 @@ public class Interaction extends IndividualImpl {
      * @param id
      * @return 
      */
-    public static Interaction createOrGet(LoreModel model, 
-            List<? extends RecordObject> participants, Experiment e) {
+    public static Interaction createOrGet(InteractionModel model, 
+            List<? extends RecordObject> participants, Experiment e, OntClass type) {
         
-        StringBuilder b = new StringBuilder("urn:lore:Interaction#");
-        for (RecordObject o : participants) {
-            b.append(o.getURI()).append(":");
+        OntClass thisType = model.getOntClass(CLASS_URI);
+        
+        if (!type.equals(thisType) && !thisType.hasSubClass(type, false)) {
+            throw new ConversionException(type+" is not a subclass of "+CLASS_URI);
         }
-        b.deleteCharAt(b.length()-1);
+        
+        StringBuilder b = new StringBuilder("urn:lore:Interaction#(");
+        for (RecordObject o : participants) {
+            b.append(o.getURI())
+                    .append("--");
+        }
+        b.deleteCharAt(b.length()-2);
+        b.append(")");
         if (e != null) {
         b.append("$");
         b.append(e.getURI());
         }
        
-        Interaction out = fromIndividual(model.getOntClass(CLASS_URI)
+        Interaction out = fromIndividual(type
                             .createIndividual(b.toString()));
         
         Property hasParticipant = model.getProperty(InteractionModel.URI+"#hasParticipant");

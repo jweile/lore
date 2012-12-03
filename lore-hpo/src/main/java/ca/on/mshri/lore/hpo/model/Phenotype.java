@@ -16,9 +16,14 @@
  */
 package ca.on.mshri.lore.hpo.model;
 
+import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.RecordObject;
+import ca.on.mshri.lore.genome.GenomeModel;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
@@ -26,22 +31,37 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class Phenotype extends IndividualImpl {
+public class Phenotype extends RecordObject {
+    
+    public static final String CLASS_URI = HpoOntModel.URI+"#Phenotype";
 
-    Phenotype(Node n, EnhGraph g) {
+    protected Phenotype(Node n, EnhGraph g) {
         super(n, g);
     }
     
     public static Phenotype fromIndividual(Individual i) {
-        if (!i.hasOntClass(HpoOntModel.HPO+"Phenotype")) {
-            throw new ClassCastException("The given individual cannot be cast to Phenotype!");
-        }
         IndividualImpl impl = (IndividualImpl)i;
-        return new Phenotype(impl.asNode(), impl.getGraph());
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+          
+            return new Phenotype(impl.asNode(), impl.getGraph());
+            
+        } else {
+            throw new ConversionException(i.getURI()+" cannot be cast as Phenotype!");
+        }
+    }
+    
+    public static Phenotype createOrGet(GenomeModel model, Authority auth, String id) {
+        Phenotype out = fromIndividual(model.getOntClass(CLASS_URI)
+                .createIndividual("urn:lore:Phenotype#"+auth.getAuthorityId()+":"+id));
+        out.addXRef(auth, id);
+        return out;
     }
 
     public String getName() {
-        RDFNode propertyValue = getPropertyValue(getModel().getProperty(HpoOntModel.HPO+"hasName"));
+        RDFNode propertyValue = getPropertyValue(getModel().getProperty(HpoOntModel.URI+"hasName"));
         if (propertyValue == null) {
             return null;
         } else {
@@ -51,7 +71,7 @@ public class Phenotype extends IndividualImpl {
 
     public void setName(String name) {
         //FIXME: check if one exists before adding a new one
-        addProperty(getModel().getProperty(HpoOntModel.HPO+"hasName"), name);
+        addProperty(getModel().getProperty(HpoOntModel.URI+"hasName"), name);
     }
     
 }

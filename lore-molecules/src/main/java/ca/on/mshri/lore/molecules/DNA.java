@@ -22,6 +22,7 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 
 /**
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.ontology.impl.IndividualImpl;
  */
 public class DNA extends Molecule {
     
-    static final String CLASS_URI = MoleculesModel.URI+"#DNA";
+    public static final String CLASS_URI = MoleculesModel.URI+"#DNA";
     
     protected DNA(Node n, EnhGraph g) {
         super(n, g);
@@ -38,7 +39,10 @@ public class DNA extends Molecule {
     
     public static DNA fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
-        if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
             return new DNA(impl.asNode(), impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as DNA!");

@@ -22,7 +22,7 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 
 /**
@@ -31,22 +31,29 @@ import com.hp.hpl.jena.ontology.impl.IndividualImpl;
  */
 public class NucleotideFeature extends RecordObject {
     
-    private static final String CLASS_URI = GenomeModel.URI+"#NucleotideFeature";
+    public static final String CLASS_URI = GenomeModel.URI+"#NucleotideFeature";
     
     protected NucleotideFeature(Node n, EnhGraph g) {
         super(n,g); 
     }
         
     public static NucleotideFeature fromIndividual(Individual i) {
+        
         IndividualImpl impl = (IndividualImpl)i;
-        if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
+        
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+          
             return new NucleotideFeature(impl.asNode(), impl.getGraph());
+            
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as NucleotideFeature!");
         }
     }
     
-    public static NucleotideFeature create(GenomeModel model, Authority auth, String id) {
+    public static NucleotideFeature createOrGet(GenomeModel model, Authority auth, String id) {
         NucleotideFeature out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:NucleotideFeature#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);

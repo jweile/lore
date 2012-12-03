@@ -16,7 +16,7 @@
  */
 package ca.on.mshri.lore.hpo;
 
-import ca.on.mshri.lore.hpo.model.Gene;
+import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.hpo.model.HpoOntModel;
 import ca.on.mshri.lore.hpo.model.Phenotype;
 import com.hp.hpl.jena.ontology.Individual;
@@ -65,11 +65,11 @@ public class AnnotationParserTest extends TestCase {
             AnnotationParser instance = new AnnotationParser(model);
             instance.parse(annoStream);
             
-            Property asso = model.getProperty(HpoOntModel.HPO+"isAssociatedWith");
+            Property asso = model.getProperty(HpoOntModel.URI+"isAssociatedWith");
             
-            List<Gene> genes = model.listGenes();
+            List<Gene> genes = model.listIndividualsOfClass(Gene.class, false);
             for (Gene gene: genes) {
-                System.out.println(gene.getName());
+                System.out.println(gene.getURI());
                 NodeIterator it = gene.listPropertyValues(asso);
                 while (it.hasNext()) {
                     Phenotype pheno = Phenotype.fromIndividual(it.next().as(Individual.class));

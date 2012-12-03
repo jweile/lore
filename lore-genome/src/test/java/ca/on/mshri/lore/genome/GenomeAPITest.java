@@ -47,8 +47,8 @@ public class GenomeAPITest extends TestCase {
         
         Authority entrez = Authority.createOrGet(model,"entrez");
         
-        Gene g1 = Gene.create(model, entrez, "7001");
-        Gene g2 = Gene.create(model, entrez, "7001");
+        Gene g1 = Gene.createOrGet(model, entrez, "7001");
+        Gene g2 = Gene.createOrGet(model, entrez, "7001");
         assertEquals(g1,g2);
         
         for (XRef xref : g1.listXRefs()) {

@@ -16,10 +16,11 @@
  */
 package ca.on.mshri.lore.hpo;
 
-import ca.on.mshri.lore.hpo.model.Gene;
+import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.XRef;
+import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.hpo.model.HpoOntModel;
 import ca.on.mshri.lore.hpo.model.Phenotype;
-import ca.on.mshri.lore.hpo.model.XRef;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +49,9 @@ final class AnnotationParser {
         
         BufferedReader b = new BufferedReader(new InputStreamReader(annoStream));
         
+        Authority hpo = Authority.createOrGet(model, "HPO");
+        Authority entrez = Authority.createOrGet(model, "Entrez");
+        
         try {
             
             String line; int lnum = 0;
@@ -68,14 +72,10 @@ final class AnnotationParser {
                 String termId = termMatcher.group(2);
                 
                 //get or create the phenotype
-                String phenoURI = HpoOntModel.HPO+termId;
-                Phenotype phenotype = model.getPhenotype(phenoURI);
-                if (phenotype == null) {
-                    phenotype = model.createPhenotype(phenoURI);
-                }
+                Phenotype phenotype = Phenotype.createOrGet(model, hpo, termId);
                 if (phenotype.getName() == null) {
                     Logger.getLogger(AnnotationParser.class.getName())
-                            .log(Level.WARNING, "Phenotype "+termId+"unknown. Initializing...");
+                            .log(Level.WARNING, "Phenotype "+termId+" unknown. Initializing...");
                     phenotype.setName(termName);
                 }
                 
@@ -88,23 +88,11 @@ final class AnnotationParser {
                     String geneName = geneMatcher.group(1);
                     String geneId = geneMatcher.group(2);
                     
-                    String geneURI = HpoOntModel.ENTREZ+geneId;
-                    Gene gene = model.getGene(geneURI);
-                    if (gene == null) {
-                        gene = model.createGene(geneURI);
-                    }
-                    gene.setName(geneName);
-                    String xrefURI = HpoOntModel.HPO+"EntrezGeneId";
-                    XRef xref = model.getXRef(xrefURI,geneId);
-                    if (xref == null) {
-                        xref = model.createXRef(xrefURI, geneId);
-                    }
-                    //FIXME: for now this NS individual is defined in the owl file, 
-                    //but should actually be in some kind of base module.
-                    gene.addXRef(xref);
+                    Gene gene = Gene.createOrGet(model, entrez, geneId);
+//                    gene.setName(geneName);
                     
                     //connect the gene with the phenotype
-                    gene.addProperty(model.getProperty(HpoOntModel.HPO+"isAssociatedWith"), phenotype);
+                    gene.addProperty(model.getProperty(HpoOntModel.URI+"isAssociatedWith"), phenotype);
                     
                 }
                 

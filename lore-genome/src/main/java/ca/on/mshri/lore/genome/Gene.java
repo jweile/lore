@@ -21,6 +21,7 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.ontology.impl.IndividualImpl;
  */
 public class Gene extends NucleotideFeature {
 
-    private static final String CLASS_URI = GenomeModel.URI+"#Gene";
+    public static final String CLASS_URI = GenomeModel.URI+"#Gene";
     
     protected Gene(Node n, EnhGraph g) {
         super(n, g);
@@ -38,14 +39,19 @@ public class Gene extends NucleotideFeature {
     
     public static Gene fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl)i;
-        if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+          
             return new Gene(impl.asNode(), impl.getGraph());
+            
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as Gene!");
         }
     }
     
-    public static Gene create(GenomeModel model, Authority auth, String id) {
+    public static Gene createOrGet(GenomeModel model, Authority auth, String id) {
         Gene out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:Gene#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);

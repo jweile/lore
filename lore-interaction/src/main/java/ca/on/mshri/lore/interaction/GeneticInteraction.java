@@ -17,14 +17,13 @@
 package ca.on.mshri.lore.interaction;
 
 import ca.on.mshri.lore.base.Experiment;
-import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.genome.NucleotideFeature;
-import ca.on.mshri.lore.molecules.Molecule;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -37,7 +36,7 @@ import java.util.List;
  */
 public class GeneticInteraction extends Interaction {
     
-    static final String CLASS_URI = InteractionModel.URI+"#GeneticInteraction";
+    public static final String CLASS_URI = InteractionModel.URI+"#GeneticInteraction";
     
     protected GeneticInteraction(Node n, EnhGraph g) {
         super(n, g);
@@ -45,7 +44,10 @@ public class GeneticInteraction extends Interaction {
     
     public static GeneticInteraction fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
-        if (impl.getOntClass() != null && impl.getOntClass().getURI().equals(CLASS_URI)) {
+        OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
+                
+        if (impl.getOntClass() != null && 
+                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
             return new GeneticInteraction(impl.asNode(), impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as GeneticInteraction!");
@@ -74,9 +76,15 @@ public class GeneticInteraction extends Interaction {
      * @return 
      */
     //FIXME: Should be restricted to NucleotideFeatures, but won't let me :(
-    public static GeneticInteraction createOrGet(LoreModel model, 
-             List<? extends RecordObject> participants, Experiment e) {
+    public static GeneticInteraction createOrGet(InteractionModel model, 
+             List<? extends RecordObject> participants, Experiment e, OntClass type) {
         
-        return fromIndividual(Interaction.createOrGet(model, participants, e));
+        OntClass thisType = model.getOntClass(CLASS_URI);
+        
+        if (!type.equals(thisType) && !thisType.hasSubClass(type, false)) {
+            throw new ConversionException(type+" is not a subclass of "+CLASS_URI);
+        }
+        
+        return fromIndividual(Interaction.createOrGet(model, participants, e, type));
     }
 }
