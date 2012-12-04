@@ -21,6 +21,7 @@ import ca.on.mshri.lore.base.Experiment;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.interaction.Interaction;
 import ca.on.mshri.lore.interaction.InteractionModel;
+import ca.on.mshri.lore.molecules.MoleculesModel;
 import com.hp.hpl.jena.ontology.OntClass;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +38,9 @@ import java.util.logging.Logger;
 public class TabParser {
     
     public void parse(InteractionModel model, InputStream in, Authority interactorNS, 
-            Experiment exp, OntClass interactionType, Class<? extends RecordObject> interactorType) {
+            Experiment exp, OntClass interactionType, Class<? extends RecordObject> interactorType, boolean header) {
+        
+        Class<?> moduleClass = MoleculesModel.class;//TODO: figure out how to infer this from the interactortype.
         
         BufferedReader r = null;
         try {
@@ -48,15 +51,20 @@ public class TabParser {
             while ((line = r.readLine()) != null) {
                 lnum++;
                 
-                String[] cols = line.split(line);
+                if (header && lnum == 1) {
+                    continue;
+                }
+                
+                String[] cols = line.split("\t");
                 
                 if (cols.length < 2) {
                     Logger.getLogger(TabParser.class.getName())
                             .log(Level.WARNING, "Invalid content in line #"+lnum);
+                    continue;
                 }
-                                
-                RecordObject i1 = getOrCreateInteractor(model, interactorType, interactorNS, cols[0]);
-                RecordObject i2 = getOrCreateInteractor(model, interactorType, interactorNS, cols[1]);
+                      
+                RecordObject i1 = getOrCreateInteractor(model, interactorType, moduleClass, interactorNS, cols[0]);
+                RecordObject i2 = getOrCreateInteractor(model, interactorType, moduleClass, interactorNS, cols[1]);
                 
                 Interaction.createOrGet(model, exp, interactionType, i1, i2);
                 
@@ -78,10 +86,10 @@ public class TabParser {
     }
     
     private RecordObject getOrCreateInteractor(InteractionModel model, 
-            Class<? extends RecordObject> interactorType, Authority interactorNS, String id) {
+            Class<? extends RecordObject> interactorType, Class<?> interactorModuleClass, Authority interactorNS, String id) {
         try {
             Method createOrGet = interactorType
-                    .getMethod("createOrGet", InteractionModel.class, Authority.class, String.class);
+                    .getMethod("createOrGet", interactorModuleClass, Authority.class, String.class);
             RecordObject out = (RecordObject) createOrGet.invoke(null, model, interactorNS, id);
             return out;
         } catch (Exception ex) {
