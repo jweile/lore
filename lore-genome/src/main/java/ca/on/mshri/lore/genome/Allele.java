@@ -17,57 +17,45 @@
 package ca.on.mshri.lore.genome;
 
 import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.RecordObject;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class Gene extends NucleotideFeature {
-
-    public static final String CLASS_URI = GenomeModel.URI+"#Gene";
+public class Allele extends RecordObject {
     
-    protected Gene(Node n, EnhGraph g) {
+    public static final String CLASS_URI = GenomeModel.URI+"#Allele";
+    
+    protected Allele(Node n, EnhGraph g) {
         super(n, g);
     }
     
-    public static Gene fromIndividual(Individual i) {
+    public static Allele fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl)i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
                 
         if (impl.getOntClass() != null && 
                 (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
           
-            return new Gene(impl.asNode(), impl.getGraph());
+            return new Allele(impl.asNode(), impl.getGraph());
             
         } else {
-            throw new ConversionException(i.getURI()+" cannot be cast as Gene!");
+            throw new ConversionException(i.getURI()+" cannot be cast as Allele!");
         }
     }
     
-    public static Gene createOrGet(GenomeModel model, Authority auth, String id) {
-        Gene out = fromIndividual(model.getOntClass(CLASS_URI)
-                .createIndividual("urn:lore:Gene#"+auth.getAuthorityId()+":"+id));
+    public static Allele createOrGet(GenomeModel model, Authority auth, String id) {
+        Allele out = fromIndividual(model.getOntClass(CLASS_URI)
+                .createIndividual("urn:lore:Allele#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
         return out;
-    }
-    
-    public List<Allele> listAlleles() {
-        List<Allele> list = new ArrayList<Allele>();
-        NodeIterator it = listPropertyValues(getModel().getProperty(GenomeModel.URI+"#hasAllele"));
-        while (it.hasNext()) {
-            list.add(Allele.fromIndividual(it.next().as(Individual.class)));
-        }
-        it.close();
-        return list;
     }
     
 }

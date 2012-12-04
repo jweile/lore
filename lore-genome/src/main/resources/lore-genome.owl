@@ -28,11 +28,40 @@
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-genome.owl#hasAllele -->
+
+    <owl:ObjectProperty rdf:about="&lore-genome;hasAllele">
+        <rdf:type rdf:resource="&owl;InverseFunctionalProperty"/>
+        <rdfs:range rdf:resource="&lore-genome;Allele"/>
+        <rdfs:domain rdf:resource="&lore-genome;Gene"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
     // Classes
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-genome.owl#Allele -->
+
+    <owl:Class rdf:about="&lore-genome;Allele">
+        <rdfs:subClassOf rdf:resource="&lore-base;RecordObject"/>
+    </owl:Class>
     
 
 
