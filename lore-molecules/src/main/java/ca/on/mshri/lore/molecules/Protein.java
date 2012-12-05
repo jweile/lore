@@ -73,7 +73,7 @@ public class Protein extends Molecule {
      * @param id
      * @return 
      */
-    public static Protein createOrGet(LoreModel model, Authority auth, String id) {
+    public static Protein createOrGet(MoleculesModel model, Authority auth, String id) {
         Protein out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:Protein#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);

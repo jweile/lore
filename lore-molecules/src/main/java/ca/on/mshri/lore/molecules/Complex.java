@@ -58,7 +58,7 @@ public class Complex extends RecordObject {
      * @param id
      * @return 
      */
-    public static Complex createOrGet(LoreModel model, Authority auth, String id) {
+    public static Complex createOrGet(MoleculesModel model, Authority auth, String id) {
         Complex out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:Complex#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);

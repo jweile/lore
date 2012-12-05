@@ -58,7 +58,7 @@ public class Molecule extends RecordObject {
      * @param id
      * @return 
      */
-    public static Molecule createOrGet(LoreModel model, Authority auth, String id) {
+    public static Molecule createOrGet(MoleculesModel model, Authority auth, String id) {
         Molecule out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:Molecule#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);

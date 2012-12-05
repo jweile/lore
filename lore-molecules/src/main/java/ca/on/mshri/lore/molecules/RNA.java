@@ -57,7 +57,7 @@ public class RNA extends Molecule {
      * @param id
      * @return 
      */
-    public static RNA createOrGet(LoreModel model, Authority auth, String id) {
+    public static RNA createOrGet(MoleculesModel model, Authority auth, String id) {
         RNA out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:RNA#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);

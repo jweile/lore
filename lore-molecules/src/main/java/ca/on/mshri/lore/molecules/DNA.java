@@ -57,7 +57,7 @@ public class DNA extends Molecule {
      * @param id
      * @return 
      */
-    public static DNA createOrGet(LoreModel model, Authority auth, String id) {
+    public static DNA createOrGet(MoleculesModel model, Authority auth, String id) {
         DNA out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:DNA#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
