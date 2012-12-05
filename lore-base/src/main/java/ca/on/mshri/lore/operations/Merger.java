@@ -27,11 +27,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Merges sets of redundant individuals.
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class Merger {
     
+    /**
+     * Performs the merging operation.
+     * @param mergeSets a collection of sets of individuals. The members of each
+     * set are considered mutually redundant and will be merged.
+     */
     public void merge(Collection<Set<Individual>> mergeSets) {
         
         //##Do the actual merging##

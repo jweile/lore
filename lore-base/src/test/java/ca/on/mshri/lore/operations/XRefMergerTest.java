@@ -14,12 +14,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.base;
+package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.InconsistencyException;
+import ca.on.mshri.lore.base.LoreModel;
+import ca.on.mshri.lore.base.RecordObject;
+import ca.on.mshri.lore.base.XRef;
 import ca.on.mshri.lore.operations.XRefBasedMerger;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -39,7 +43,7 @@ public class XRefMergerTest extends TestCase {
         o1.addXRef(authA, "b");
         
         RecordObject o2 = RecordObject.createOrGet(model, authA, "b");
-        o1.addXRef(authA, "c");
+        o2.addXRef(authA, "c");
         
         RecordObject.createOrGet(model, authA, "c");
         
@@ -47,7 +51,7 @@ public class XRefMergerTest extends TestCase {
         
         //before
         List<RecordObject> objects = model.listIndividualsOfClass(RecordObject.class, false);
-        assertEquals(4, objects.size());
+        assertEquals("Wrong number of objects before merging.", 4, objects.size());
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
@@ -55,7 +59,7 @@ public class XRefMergerTest extends TestCase {
                 
         //after
         objects = model.listIndividualsOfClass(RecordObject.class, false);
-        assertEquals(2, objects.size());
+        assertEquals("Wrong number of objects after merging.", 2, objects.size());
         
         for (RecordObject o : objects) {
             System.out.println(o.getURI());
@@ -76,7 +80,7 @@ public class XRefMergerTest extends TestCase {
         o1.addXRef(authA, "b");
         
         RecordObject o2 = RecordObject.createOrGet(model, authA, "b");
-        o1.addXRef(authA, "a");
+        o2.addXRef(authA, "a");
         
         RecordObject.createOrGet(model, authA, "c");
         
@@ -84,22 +88,60 @@ public class XRefMergerTest extends TestCase {
         
         //before
         List<RecordObject> objects = model.listIndividualsOfClass(RecordObject.class, false);
-        assertEquals(4, objects.size());
+        assertEquals("Wrong number of objects before merging.", 4, objects.size());
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
         merger.merge(model.listIndividualsOfClass(RecordObject.class, false), authA, true, false);
-                
+        
+        
         //after
         objects = model.listIndividualsOfClass(RecordObject.class, false);
-        assertEquals(3, objects.size());
-        
+        assertEquals("Wrong number of objects after merging.", 3, objects.size());
+                
         for (RecordObject o : objects) {
             System.out.println(o.getURI());
             for (XRef xref : o.listXRefs()) {
                 System.out.println("-> "+xref.getValue());
             }
         }
+    }
+    
+    public void testUnique() {
+        
+        LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+        
+        Authority authA = Authority.createOrGet(model,"A");
+        Authority authB = Authority.createOrGet(model,"B");
+        
+        RecordObject o1 = RecordObject.createOrGet(model, authA, "1");
+        o1.addXRef(authB, "a");
+        
+        RecordObject o2 = RecordObject.createOrGet(model, authA, "2");
+        o2.addXRef(authB, "a");
+        
+        RecordObject o3 = RecordObject.createOrGet(model, authA, "3");
+        o3.addXRef(authB, "a");
+        
+        RecordObject o4 = RecordObject.createOrGet(model, authA, "4");
+        o4.addXRef(authB, "b");
+        o4.addXRef(authB, "c");
+        
+        //before
+        List<RecordObject> objects = model.listIndividualsOfClass(RecordObject.class, false);
+        assertEquals("Wrong number of objects before merging.", 4, objects.size());
+                
+        //Perform merging
+        XRefBasedMerger merger = new XRefBasedMerger();
+        boolean failed = false;
+        try {
+            merger.merge(model.listIndividualsOfClass(RecordObject.class, false), authB, false, true);
+        } catch (InconsistencyException e) {
+            failed = true;
+        }
+        
+        assertEquals("Non-uniqueness did not trigger excption. ",true, failed);
+        
     }
     
 }

@@ -30,8 +30,6 @@ import java.util.Set;
 
 /**
  * a class representing a connection to an adjacent node in an RDF graph.
- */
-/**
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */

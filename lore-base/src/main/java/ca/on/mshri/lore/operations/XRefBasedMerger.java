@@ -31,11 +31,25 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Merges two or more record objects from a given collection if they share an 
+ * XRef of a given Authority. 
+ * Can also be run in <code>allMustMatch</code> mode, where record objects are merged only if 
+ * they share <i>all</i> XRefs from that Authority.
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class XRefBasedMerger {
     
+    /**
+     * Perform the merger operation.
+     * 
+     * @param selection The a selection of objects on which the algorithm will run.
+     * @param authority The XRef authority based on which equality will be determined.
+     * @param allMustMatch If true, all XRefs from the given authority must match between
+     * two objects for them to be considered equal.
+     * @param uniqueKeys If true, the occurrence of objects with multiple xrefs of the 
+     * chosen authority will trigger an exception.
+     */
     public void merge(Collection<RecordObject> selection, Authority authority, boolean allMustMatch, boolean uniqueKeys) {
         
         Map<String,Set<Individual>> index = new HashMap<String, Set<Individual>>();

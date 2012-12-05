@@ -22,6 +22,17 @@
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
     // Datatypes
     //
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +148,9 @@
 
     <!-- http://llama.mshri.on.ca/lore-base.owl#Experiment -->
 
-    <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#Experiment"/>
+    <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#Experiment">
+        <rdfs:comment>An experiment that has been performed. May or may not be a record object</rdfs:comment>
+    </owl:Class>
     
 
 
@@ -145,19 +158,41 @@
 
     <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#Publication">
         <rdfs:subClassOf rdf:resource="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
+        <rdfs:comment>A scientific publication. Must be a record object and thus have at least one cross reference</rdfs:comment>
     </owl:Class>
     
 
 
     <!-- http://llama.mshri.on.ca/lore-base.owl#RecordObject -->
 
-    <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
+    <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#RecordObject">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://llama.mshri.on.ca/lore-base.owl#hasXRef"/>
+                <owl:someValuesFrom rdf:resource="http://llama.mshri.on.ca/lore-base.owl#XRef"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
     
 
 
     <!-- http://llama.mshri.on.ca/lore-base.owl#XRef -->
 
     <owl:Class rdf:about="http://llama.mshri.on.ca/lore-base.owl#XRef">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://llama.mshri.on.ca/lore-base.owl#hasAuthority"/>
+                        <owl:someValuesFrom rdf:resource="http://llama.mshri.on.ca/lore-base.owl#Authority"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://llama.mshri.on.ca/lore-base.owl#hasValue"/>
+                        <owl:someValuesFrom rdf:resource="&xsd;string"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="&owl;Thing"/>
     </owl:Class>
     
@@ -175,8 +210,6 @@
         <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
         <owl:members rdf:parseType="Collection">
             <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#Authority"/>
-            <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#Experiment"/>
-            <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#Publication"/>
             <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
             <rdf:Description rdf:about="http://llama.mshri.on.ca/lore-base.owl#XRef"/>
         </owl:members>
