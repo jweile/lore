@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo;
+package ca.on.mshri.lore.phenotype.hpo;
 
+import ca.on.mshri.lore.phenotype.hpo.OboParser;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import junit.framework.TestCase;

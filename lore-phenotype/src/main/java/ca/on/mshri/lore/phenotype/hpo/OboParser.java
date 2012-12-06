@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo;
+package ca.on.mshri.lore.phenotype.hpo;
 
-import ca.on.mshri.lore.hpo.model.HpoOntModel;
+import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -41,7 +41,7 @@ final class OboParser {
     /**
      * the ontology model.
      */
-    private HpoOntModel model;
+    private PhenotypeModel model;
     
     /**
      * current line number.
@@ -57,7 +57,7 @@ final class OboParser {
      * Constructor
      * @param model ontology model.
      */
-    public OboParser(HpoOntModel model) {
+    public OboParser(PhenotypeModel model) {
         this.model = model;
     }
     

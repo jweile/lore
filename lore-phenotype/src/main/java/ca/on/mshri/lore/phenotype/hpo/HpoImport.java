@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo;
+package ca.on.mshri.lore.phenotype.hpo;
 
-import ca.on.mshri.lore.hpo.model.HpoOntModel;
+import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -51,7 +51,7 @@ public final class HpoImport {
                 //check arguments and complain if necessary
                 if (args.length < 1) {
                     throw new RuntimeException(
-                            "Usage: java -jar lore-hpo.jar <tdbLocation>"
+                            "Usage: java -jar lore-phenotype.jar <tdbLocation>"
                             );
                 }
                                 
@@ -68,7 +68,7 @@ public final class HpoImport {
             }
         };
         
-        main.setLogFileName("lore-hpo.log");
+        main.setLogFileName("lore-phenotype.log");
         
         main.start(args);
     }
@@ -87,7 +87,7 @@ public final class HpoImport {
             
             tdbSet = TDBFactory.createDataset(tdbFile.getAbsolutePath());
             
-            HpoOntModel model = new HpoOntModel(OntModelSpec.OWL_MEM, tdbSet.getDefaultModel());
+            PhenotypeModel model = new PhenotypeModel(OntModelSpec.OWL_MEM, tdbSet.getDefaultModel());
             
             //parse HPO OBO
 

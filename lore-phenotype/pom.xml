@@ -8,9 +8,9 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
   <groupId>ca.on.mshri</groupId>
-  <artifactId>lore-hpo</artifactId>
+  <artifactId>lore-phenotype</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>lore-hpo</name>
+  <name>lore-phenotype</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

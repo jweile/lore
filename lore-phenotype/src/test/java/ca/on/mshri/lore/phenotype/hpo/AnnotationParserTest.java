@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo;
+package ca.on.mshri.lore.phenotype.hpo;
 
+import ca.on.mshri.lore.phenotype.hpo.AnnotationParser;
 import ca.on.mshri.lore.genome.Gene;
-import ca.on.mshri.lore.hpo.model.HpoOntModel;
-import ca.on.mshri.lore.hpo.model.Phenotype;
+import ca.on.mshri.lore.phenotype.PhenotypeModel;
+import ca.on.mshri.lore.phenotype.Phenotype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -59,13 +60,13 @@ public class AnnotationParserTest extends TestCase {
             
             annoStream = new FileInputStream("src/test/resources/phenotype_to_genes_test.txt");
             
-            HpoOntModel model = new HpoOntModel(OntModelSpec.OWL_MEM, ModelFactory.createOntologyModel());
-            model.read(new FileInputStream("src/main/resources/lore-hpo.owl"),null);
+            PhenotypeModel model = new PhenotypeModel(OntModelSpec.OWL_MEM, ModelFactory.createOntologyModel());
+//            model.read(new FileInputStream("src/main/resources/lore-phenotype.owl"),null);
 
             AnnotationParser instance = new AnnotationParser(model);
             instance.parse(annoStream);
             
-            Property asso = model.getProperty(HpoOntModel.URI+"isAssociatedWith");
+            Property asso = model.getProperty(PhenotypeModel.URI+"isAssociatedWith");
             
             List<Gene> genes = model.listIndividualsOfClass(Gene.class, false);
             for (Gene gene: genes) {

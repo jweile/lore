@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo.model;
+package ca.on.mshri.lore.phenotype;
 
 import ca.on.mshri.lore.genome.GenomeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -24,17 +24,17 @@ import com.hp.hpl.jena.rdf.model.Model;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class HpoOntModel extends GenomeModel {
+public class PhenotypeModel extends GenomeModel {
     
-    public static final String URI = "http://llama.mshri.on.ca/lore/hpo.owl";
+    public static final String URI = "http://llama.mshri.on.ca/lore-phenotype.owl";
 //    public static final String SBNS = "http://llama.mshri.on.ca/sbns.owl#";
 //    public static final String ENTREZ = "urn:entrez:geneid#";
 
-    public HpoOntModel(OntModelSpec spec, Model model) {
+    public PhenotypeModel(OntModelSpec spec, Model model) {
         //super constructor loads dependencies, recursively
         super(spec, model);
         //read owl specs
-        read(GenomeModel.class.getClassLoader().getResourceAsStream("lore-hpo.owl"), null);
+        read(GenomeModel.class.getClassLoader().getResourceAsStream("lore-phenotype.owl"), null);
     }
     
 //    public List<Gene> listGenes() {

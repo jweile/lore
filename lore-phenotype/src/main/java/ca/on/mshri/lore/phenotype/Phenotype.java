@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo.model;
+package ca.on.mshri.lore.phenotype;
 
 import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.RecordObject;
@@ -33,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  */
 public class Phenotype extends RecordObject {
     
-    public static final String CLASS_URI = HpoOntModel.URI+"#Phenotype";
+    public static final String CLASS_URI = PhenotypeModel.URI+"#Phenotype";
 
     protected Phenotype(Node n, EnhGraph g) {
         super(n, g);
@@ -53,7 +53,7 @@ public class Phenotype extends RecordObject {
         }
     }
     
-    public static Phenotype createOrGet(GenomeModel model, Authority auth, String id) {
+    public static Phenotype createOrGet(PhenotypeModel model, Authority auth, String id) {
         Phenotype out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:Phenotype#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
@@ -61,7 +61,7 @@ public class Phenotype extends RecordObject {
     }
 
     public String getName() {
-        RDFNode propertyValue = getPropertyValue(getModel().getProperty(HpoOntModel.URI+"hasName"));
+        RDFNode propertyValue = getPropertyValue(getModel().getProperty(PhenotypeModel.URI+"hasName"));
         if (propertyValue == null) {
             return null;
         } else {
@@ -71,7 +71,7 @@ public class Phenotype extends RecordObject {
 
     public void setName(String name) {
         //FIXME: check if one exists before adding a new one
-        addProperty(getModel().getProperty(HpoOntModel.URI+"hasName"), name);
+        addProperty(getModel().getProperty(PhenotypeModel.URI+"hasName"), name);
     }
     
 }

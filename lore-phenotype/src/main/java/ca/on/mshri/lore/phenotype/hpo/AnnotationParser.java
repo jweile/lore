@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.hpo;
+package ca.on.mshri.lore.phenotype.hpo;
 
 import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.XRef;
 import ca.on.mshri.lore.genome.Gene;
-import ca.on.mshri.lore.hpo.model.HpoOntModel;
-import ca.on.mshri.lore.hpo.model.Phenotype;
+import ca.on.mshri.lore.phenotype.PhenotypeModel;
+import ca.on.mshri.lore.phenotype.Phenotype;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,16 +36,16 @@ import java.util.regex.Pattern;
  */
 final class AnnotationParser {
 
-    private HpoOntModel model;
+    private PhenotypeModel model;
     
     private static final Pattern pattern = Pattern.compile("(.*)\\((.*)\\)");
 
-    public AnnotationParser(HpoOntModel model) {
+    public AnnotationParser(PhenotypeModel model) {
         this.model = model;
     }
     
     
-    void parse(InputStream annoStream) {
+    public void parse(InputStream annoStream) {
         
         BufferedReader b = new BufferedReader(new InputStreamReader(annoStream));
         
@@ -92,7 +92,7 @@ final class AnnotationParser {
 //                    gene.setName(geneName);
                     
                     //connect the gene with the phenotype
-                    gene.addProperty(model.getProperty(HpoOntModel.URI+"isAssociatedWith"), phenotype);
+                    gene.addProperty(model.getProperty(PhenotypeModel.URI+"isAssociatedWith"), phenotype);
                     
                 }
                 

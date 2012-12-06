@@ -12,12 +12,12 @@
     
     <modules>
         <module>lore-psimi</module>
-        <module>lore-hpo</module>
-    <module>lore-base</module>
-    <module>lore-genome</module>
-    <module>lore-interaction</module>
-    <module>lore-molecules</module>
-  </modules>
+        <module>lore-phenotype</module>
+        <module>lore-base</module>
+        <module>lore-genome</module>
+        <module>lore-interaction</module>
+        <module>lore-molecules</module>
+    </modules>
 
     <properties>
       <netbeans.hint.license>lgpl30</netbeans.hint.license>
