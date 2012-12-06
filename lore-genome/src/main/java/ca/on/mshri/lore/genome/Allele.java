@@ -17,6 +17,7 @@
 package ca.on.mshri.lore.genome;
 
 import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.RecordObject;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
@@ -24,6 +25,15 @@ import com.hp.hpl.jena.ontology.ConversionException;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Property;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -51,11 +61,53 @@ public class Allele extends RecordObject {
         }
     }
     
+    public Gene getGene() {
+        
+        List<Gene> genes = new ArrayList<Gene>();
+        
+        QueryExecution qexec = QueryExecutionFactory
+                .create("SELECT ?gene WHERE {?gene <http://llama.mshri.on.ca/lore-genome.owl#hasAllele> <"+this.getURI()+">}",getModel());
+        try {
+            ResultSet result = qexec.execSelect();
+            while (result.hasNext()) {
+                QuerySolution sol = result.next();
+                genes.add(Gene.fromIndividual(sol.get("gene").as(Individual.class)));
+            }
+        } finally {
+            qexec.close();
+        }
+        
+        if (genes.isEmpty()) {
+            return null;
+        } else if (genes.size() > 1) {
+            throw new InconsistencyException(getURI()+"has more than one associated Gene!");
+        } else {
+            return genes.get(1);
+        }
+        
+    }
+    
+    public void setGene(Gene gene) {
+        
+        Property hasAllele = getModel().getProperty(GenomeModel.URI+"#hasAllele");
+        
+        Gene existing = getGene();
+        if (existing != null) {
+            Logger.getLogger(Allele.class.getName())
+                    .log(Level.WARNING, "Overwriting existing Gene association of allele "+getURI());
+            existing.removeProperty(hasAllele, this);
+        }
+        
+        gene.addProperty(hasAllele, this);
+        
+    }
+    
     public static Allele createOrGet(GenomeModel model, Authority auth, String id) {
         Allele out = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:Allele#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
         return out;
     }
+    
     
 }
