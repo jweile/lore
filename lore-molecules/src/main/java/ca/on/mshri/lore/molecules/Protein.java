@@ -27,6 +27,10 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -64,6 +68,17 @@ public class Protein extends Molecule {
             }
         }
         return out;
+    }
+    
+    public void setEncodingGene(Gene gene) {
+        Property enc = getModel().getProperty(MoleculesModel.URI+"#encodedBy");
+        Resource existing = getPropertyResourceValue(enc);
+        if (existing != null) {
+            Logger.getLogger(Protein.class.getName())
+                    .log(Level.WARNING, "Overwriting existing encoding gene resource!");
+            removeAll(enc);
+        }
+        addProperty(enc, gene);
     }
     
     /**
