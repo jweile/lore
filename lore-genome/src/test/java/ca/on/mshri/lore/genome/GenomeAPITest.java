@@ -42,13 +42,12 @@ public class GenomeAPITest extends TestCase {
         super.tearDown();
     }
     
-    public void test() throws Exception {
+    public void testGenes() throws Exception {
+        
         GenomeModel model = new GenomeModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
-        
-        Authority entrez = Authority.createOrGet(model,"entrez");
-        
-        Gene g1 = Gene.createOrGet(model, entrez, "7001");
-        Gene g2 = Gene.createOrGet(model, entrez, "7001");
+                
+        Gene g1 = Gene.createOrGet(model, model.ENTREZ, "7001");
+        Gene g2 = Gene.createOrGet(model, model.ENTREZ, "7001");
         assertEquals(g1,g2);
         
         for (XRef xref : g1.listXRefs()) {
@@ -57,5 +56,17 @@ public class GenomeAPITest extends TestCase {
             System.out.println(" -> "+xref.getValue());
             
         }
+    }
+    
+    public void testAlleles() throws Exception {
+        
+        GenomeModel model = new GenomeModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+                
+        Gene g1 = Gene.createOrGet(model, model.ENTREZ, "7001");
+        
+        Allele a1 = Allele.createOrGet(model, model.ENTREZ, "7001.1");
+        
+        a1.setGene(g1);
+        
     }
 }

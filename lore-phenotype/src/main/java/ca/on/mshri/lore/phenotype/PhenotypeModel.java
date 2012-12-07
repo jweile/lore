@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.phenotype;
 
+import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.genome.GenomeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -27,14 +28,18 @@ import com.hp.hpl.jena.rdf.model.Model;
 public class PhenotypeModel extends GenomeModel {
     
     public static final String URI = "http://llama.mshri.on.ca/lore-phenotype.owl";
-//    public static final String SBNS = "http://llama.mshri.on.ca/sbns.owl#";
-//    public static final String ENTREZ = "urn:entrez:geneid#";
+    
+    public final Authority HPO;
+    public final Authority OMIM;
 
     public PhenotypeModel(OntModelSpec spec, Model model) {
         //super constructor loads dependencies, recursively
         super(spec, model);
         //read owl specs
         read(GenomeModel.class.getClassLoader().getResourceAsStream("lore-phenotype.owl"), null);
+        
+        HPO = Authority.createOrGet(this, "HPO");
+        OMIM = Authority.createOrGet(this, "OMIM");
     }
     
 //    public List<Gene> listGenes() {

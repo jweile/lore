@@ -48,10 +48,7 @@ final class AnnotationParser {
     public void parse(InputStream annoStream) {
         
         BufferedReader b = new BufferedReader(new InputStreamReader(annoStream));
-        
-        Authority hpo = Authority.createOrGet(model, "HPO");
-        Authority entrez = Authority.createOrGet(model, "Entrez");
-        
+                
         try {
             
             String line; int lnum = 0;
@@ -72,7 +69,7 @@ final class AnnotationParser {
                 String termId = termMatcher.group(2);
                 
                 //get or create the phenotype
-                Phenotype phenotype = Phenotype.createOrGet(model, hpo, termId);
+                Phenotype phenotype = Phenotype.createOrGet(model, model.HPO, termId);
                 if (phenotype.getName() == null) {
                     Logger.getLogger(AnnotationParser.class.getName())
                             .log(Level.WARNING, "Phenotype "+termId+" unknown. Initializing...");
@@ -88,7 +85,7 @@ final class AnnotationParser {
                     String geneName = geneMatcher.group(1);
                     String geneId = geneMatcher.group(2);
                     
-                    Gene gene = Gene.createOrGet(model, entrez, geneId);
+                    Gene gene = Gene.createOrGet(model, model.ENTREZ, geneId);
 //                    gene.setName(geneName);
                     
                     //connect the gene with the phenotype

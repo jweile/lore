@@ -41,7 +41,6 @@ public class TabParserTest extends TestCase {
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, 
                 ModelFactory.createDefaultModel());
         
-        Authority entrez = Authority.createOrGet(model, "Entrez");
         Experiment exp = Experiment.createOrGet(model, "CCSB-HI1.1");
         
         OntClass physInt = model.getOntClass(PhysicalInteraction.CLASS_URI);
@@ -50,7 +49,7 @@ public class TabParserTest extends TestCase {
         
         TabParser parser = new TabParser();
         
-        parser.parse(model, in, entrez, exp, physInt, Protein.class, true);
+        parser.parse(model, in, model.ENTREZ, exp, physInt, Protein.class, true);
         
         List<Interaction> interactions = model.listIndividualsOfClass(Interaction.class, false);
         
@@ -61,7 +60,7 @@ public class TabParserTest extends TestCase {
             
             for (RecordObject o : participants) {
                 System.out.print("  -> ");
-                System.out.println(getXRefValue(o, entrez));
+                System.out.println(getXRefValue(o, model.ENTREZ));
             }
             
         }

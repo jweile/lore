@@ -42,6 +42,8 @@ public class LoreModel extends OntModelImpl {
      */
     public static final String URI = "http://llama.mshri.on.ca/lore-base.owl";
     
+    public final Authority PUBMED;
+    
     /**
      * creates a new model
      * @param spec
@@ -50,6 +52,8 @@ public class LoreModel extends OntModelImpl {
     public LoreModel(OntModelSpec spec, Model model) {
         super(spec, model);
         read(LoreModel.class.getClassLoader().getResourceAsStream("lore-base.owl"), null);
+        
+        PUBMED = Authority.createOrGet(this, "PubMed");
     }
     
 //    /**

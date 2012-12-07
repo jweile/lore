@@ -39,15 +39,12 @@ public class InteractionsTest extends TestCase {
                 
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, 
                 ModelFactory.createDefaultModel());
-        
-        Authority entrez = Authority.createOrGet(model, "Entrez");
-        Authority pubmed = Authority.createOrGet(model, "Pubmed");
-        
-        final Gene g1 = Gene.createOrGet(model, entrez, "0123");
-        final Gene g2 = Gene.createOrGet(model, entrez, "1234");
+                
+        final Gene g1 = Gene.createOrGet(model, model.ENTREZ, "0123");
+        final Gene g2 = Gene.createOrGet(model, model.ENTREZ, "1234");
         
         Experiment exp = Experiment.createOrGet(model, "testPub01");
-        exp.setPublication(Publication.createOrGet(model, pubmed, "01234"));
+        exp.setPublication(Publication.createOrGet(model, model.PUBMED, "01234"));
         
         OntClass iType = model.getOntClass(InteractionModel.URI+"#SyntheticLethality");
         

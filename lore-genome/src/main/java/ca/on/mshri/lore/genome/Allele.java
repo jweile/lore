@@ -65,16 +65,23 @@ public class Allele extends RecordObject {
         
         List<Gene> genes = new ArrayList<Gene>();
         
-        QueryExecution qexec = QueryExecutionFactory
-                .create("SELECT ?gene WHERE {?gene <http://llama.mshri.on.ca/lore-genome.owl#hasAllele> <"+this.getURI()+">}",getModel());
+        String qry = "PREFIX : <http://llama.mshri.on.ca/lore-genome.owl#>\n SELECT ?gene WHERE {?gene :hasAllele <"+this.getURI()+">}";
+        
+        QueryExecution qexec = null;
         try {
+            qexec = QueryExecutionFactory
+                .create(qry,getModel());
             ResultSet result = qexec.execSelect();
             while (result.hasNext()) {
                 QuerySolution sol = result.next();
                 genes.add(Gene.fromIndividual(sol.get("gene").as(Individual.class)));
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed: "+qry, e);
         } finally {
-            qexec.close();
+            if (qexec != null) {
+                qexec.close();
+            }
         }
         
         if (genes.isEmpty()) {
@@ -88,6 +95,10 @@ public class Allele extends RecordObject {
     }
     
     public void setGene(Gene gene) {
+        
+        if (gene == null) {
+            throw new NullPointerException();
+        }
         
         Property hasAllele = getModel().getProperty(GenomeModel.URI+"#hasAllele");
         

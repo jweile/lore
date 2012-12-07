@@ -48,7 +48,6 @@ public class InteractionParser {
         
     public void parse(InteractionModel model, InputStream in) {
         
-        Authority entrez = Authority.createOrGet(model, "EntrezGene");
         Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
         Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-1.0");
         OntClass protein = model.getOntClass(Protein.CLASS_URI);
@@ -81,12 +80,12 @@ public class InteractionParser {
                 }
                 
                 //get model components
-                Gene dbGene = Gene.createOrGet(model, entrez, cols[dbId]);
-                Protein dbProtein = Protein.createOrGet(model,entrez, cols[dbId]);
+                Gene dbGene = Gene.createOrGet(model, model.ENTREZ, cols[dbId]);
+                Protein dbProtein = Protein.createOrGet(model, model.ENTREZ, cols[dbId]);
                 dbProtein.setEncodingGene(dbGene);
                 
-                Gene adGene = Gene.createOrGet(model, entrez, cols[adId]);
-                Protein adProtein = Protein.createOrGet(model,entrez, cols[adId]);
+                Gene adGene = Gene.createOrGet(model, model.ENTREZ, cols[adId]);
+                Protein adProtein = Protein.createOrGet(model, model.ENTREZ, cols[adId]);
                 adProtein.setEncodingGene(adGene);
                 
                 PhysicalInteraction interaction = PhysicalInteraction.createOrGet(model, exp, protein, dbProtein, adProtein);

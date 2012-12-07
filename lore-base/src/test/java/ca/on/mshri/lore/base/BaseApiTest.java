@@ -58,7 +58,7 @@ public class BaseApiTest extends TestCase {
         assertEquals(foo1, foo2);
         
         assertEquals(2, model.listIndividualsOfClass(RecordObject.class, false).size());
-        assertEquals(2, model.listIndividualsOfClass(Authority.class, false).size());
+        assertEquals(2+1, model.listIndividualsOfClass(Authority.class, false).size());
         assertEquals(3, model.listIndividualsOfClass(XRef.class, false).size());
         
         for (RecordObject o : model.listIndividualsOfClass(RecordObject.class, false)) {

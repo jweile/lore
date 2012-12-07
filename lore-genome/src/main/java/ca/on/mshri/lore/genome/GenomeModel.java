@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.genome;
 
+import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.LoreModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -27,6 +28,16 @@ import com.hp.hpl.jena.rdf.model.Model;
 public class GenomeModel extends LoreModel {
     
     public static final String URI = "http://llama.mshri.on.ca/lore-genome.owl";
+    
+    /**
+     * Entrez Gene namespace.
+     */
+    public final Authority ENTREZ;
+    
+    /**
+     * HUGO Gene Nomenclature namespace.
+     */
+    public final Authority HGNC;
 
     /**
      * Creates the model and loads owl specs all dependencies
@@ -38,6 +49,9 @@ public class GenomeModel extends LoreModel {
         super(spec, model);
         //read owl specs
         read(GenomeModel.class.getClassLoader().getResourceAsStream("lore-genome.owl"), null);
+        
+        ENTREZ = Authority.createOrGet(this, "EntrezGene");
+        HGNC = Authority.createOrGet(this, "HGNC");
     }
     
     
