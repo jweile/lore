@@ -56,7 +56,7 @@ public class XRef extends IndividualImpl {
     
     public Authority getAuthority() {
         
-        NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasNamespace"));
+        NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasAuthority"));
         Authority out = null;
         while (it.hasNext()) {
             if (out == null) {
@@ -88,7 +88,7 @@ public class XRef extends IndividualImpl {
         
         XRef xref = fromIndividual(model.getOntClass(CLASS_URI)
                 .createIndividual("urn:lore:XRef#"+auth.getAuthorityId()+":"+value));
-        xref.addProperty(model.getProperty(LoreModel.URI+"#hasNamespace"), auth);
+        xref.addProperty(model.getProperty(LoreModel.URI+"#hasAuthority"), auth);
         xref.addLiteral(model.getProperty(LoreModel.URI+"#hasValue"), value);
         return xref;
     }
