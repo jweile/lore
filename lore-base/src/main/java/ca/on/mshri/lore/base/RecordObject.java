@@ -60,6 +60,22 @@ public class RecordObject extends IndividualImpl {
         return list;
     }
     
+    /**
+     * Returns the value of one of the xrefs with the given authority for this object.
+     * If there are multiple xrefs of that authority associated with this object, it 
+     * is not defined, which one will be returned. If none are found, null is returned.
+     * @param a the authority.
+     * @return 
+     */
+    public String getXRefValue(Authority a) {
+        for (XRef xref : listXRefs()) {
+            if (xref.getAuthority().equals(a)) {
+                return xref.getValue();
+            }
+        }
+        return null;
+    }
+    
     public void addXRef(XRef xref) {
         addProperty(getModel().getProperty(LoreModel.URI+"#hasXRef"), xref);
     }
