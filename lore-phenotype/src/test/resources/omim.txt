@@ -2097,3 +2097,1805 @@ supermim: 3/20/1990
 carol: 12/14/1989
 carol: 11/2/1989
 
+*RECORD*
+*FIELD* NO
+100650
+*FIELD* TI
++100650 ALDEHYDE DEHYDROGENASE 2 FAMILY; ALDH2
+;;ALDEHYDE DEHYDROGENASE 2;;
+ALDH, LIVER MITOCHONDRIAL;;
+ACETALDEHYDE DEHYDROGENASE 2
+SUBLINGUAL NITROGLYCERIN, SUSCEPTIBILITY TO POOR RESPONSE TO, INCLUDED;;
+ALDH2/HMGIC FUSION GENE, INCLUDED;;
+ESOPHAGEAL CANCER, ALCOHOL-RELATED, SUSCEPTIBILITY TO, INCLUDED
+*FIELD* TX
+
+DESCRIPTION
+
+Acetaldehyde dehydrogenase (EC 1.2.1.3) is the next enzyme after alcohol
+dehydrogenase (see 103700) in the major pathway of alcohol metabolism.
+There are 2 major ALDH isozymes in the liver: cytosolic ALDH1 (ALDH1A1;
+100640) and mitochondrial ALDH2.
+
+CLONING
+
+Hsu et al. (1985) isolated partial cDNA clones of ALDH1 and ALDH2 from a
+human liver cDNA library. Hsu et al. (1988) isolated and characterized
+ALDH2 genomic clones. The deduced ALDH2 protein contains 517 amino
+acids, including a 17-amino acid signal peptide.
+
+GENE FUNCTION
+
+Using an unbiased proteomic search, Chen et al. (2008) identified
+mitochondrial ALDH2 as an enzyme whose activation correlated with
+reduced ischemic heart damage in rodent models. A high-throughput screen
+identified a small molecule activator of ALDH2, which they called
+Alda-1, that, when administered to rats before an ischemic event,
+reduced infarct size by 60%, most likely through its inhibitory effect
+on the formation of cytotoxic aldehydes. In vitro, Alda-1 was a
+particularly effective activator of ALDH2*2 (100650.0001), an inactive
+mutant form of the enzyme that is found in 40% of East Asian
+populations. Chen et al. (2008) concluded that the pharmacologic
+enhancement of ALDH2 activity may be useful for patients with wildtype
+or mutant ALDH2 who are subjected to cardiac ischemia, such as during
+coronary bypass surgery.
+
+GENE STRUCTURE
+
+Hsu et al. (1988) determined that the ALDH2 gene contains at least 13
+exons and spans approximately 44 kb.
+
+MAPPING
+
+Hsu et al. (1985) assigned the ALDH2 locus to chromosome 12 by means of
+a cDNA probe and Southern blot analysis of somatic cell hybrids. With a
+cDNA fragment corresponding to the 3-prime coding part of human ALDH1
+mRNA, Braun et al. (1986) studied human-rodent somatic cell hybrids and
+confirmed the assignment to chromosome 12. The mitochondrial and
+cytosolic forms of ALDH are coded by mouse chromosomes 4 and 19,
+respectively (Mather and Holmes, 1984). Comparative mapping in man,
+mouse, and bovine led Womack (1990) to suggest that ALDH2 is in the
+distal part of 12q, distal to IFNG (147570), a conclusion consistent
+with other information on the mapping of these 2 loci.
+
+MOLECULAR GENETICS
+
+Data on gene frequencies of allelic variants were tabulated by
+Roychoudhury and Nei (1988).
+
+The ALDH2 alleles encoding the active and inactive subunits are termed
+'ALDH2*1' and 'ALDH2*2,' respectively; see 100650.0001. It had been
+thought that the 2 alleles were expressed codominantly, and that only
+individuals homozygous for ALDH2*2 were ALDH2-deficient. However,
+studies of the inheritance of alcohol-induced flushing (610251) in
+families suggested that the trait is dominant (Schwitters et al., 1982).
+
+- Early Studies of ALDH Isoforms 
+
+Harada et al. (1980) presented evidence that ALDH is polymorphic in
+Japanese. They identified 2 major isozymes: a faster migrating (low Km
+for acetaldehyde) and a slower migrating isozyme (high Km for
+acetaldehyde). The unusual slower-migrating phenotype, which had less
+enzymatic activity, was found in 52% of the specimens; the
+fast-migrating isozyme was absent in these specimens. Harada et al.
+(1980) postulated that initial intoxicating symptoms after alcohol
+drinking in these individuals may be due to delayed oxidation of
+acetaldehyde due to variant or absent ALDH. The slow-migrating ALDH
+isoform was strongly inactivated by disulfiram, whereas the
+faster-migrating isoform was relatively insensitive to disulfiram. These
+isoforms were later identified as ALDH1 and ALDH2, respectively.
+
+Agarwal et al. (1981) performed a population genetic study in East
+Asians of several different extractions using hair root lysates to
+investigate ALDH isozymes. Between 40 and 80% of the several East Asian
+groups were found to be deficient in the faster migrating isozyme,
+termed ALDH2, whereas not a single European individual was deficient.
+The deficiency was invariably associated with sensitivity to alcohol.
+Family studies suggested autosomal recessive inheritance of the
+deficiency. Harada et al. (1981) found deficiency of the
+fast-metabolizing isoform in 43% of Japanese; all deficient persons had
+flushing symptoms and, after alcohol drinking, showed an increased mean
+acetaldehyde concentration of 37.3 micromoles as compared with 2.1
+micromoles in nondeficient persons. Impraim et al. (1982) investigated
+the basis of the lack in about 50% of East Asians of 1 of the 2 major
+liver ALDH isozymes. Consistent with a convention of nomenclature
+adopted by the worldwide workshops, ALDH1 is cytosolic and ALDH2 is
+mitochondrial. Impraim et al. (1982) confirmed that it was the ALDH2
+isozyme that was missing in persons of Asian descent. The unusual ALDH2
+isozyme in Japanese liver was enzymatically inactive but immunologically
+cross-reactive. Thus, a structural mutation at the ALDH2 locus was
+presumed to be the genetic basis.
+
+Goedde et al. (1983) noted the existence of 4 isozymes of ALDH, which
+differed in electrophoretic mobility and isoelectric point. In a
+population study, they found that the frequency of deficiency of the
+more active isoform was 69% in Indians of the Ecuador Highlands, 44% in
+Japanese, and 35% in Chinese. This deficiency was not seen in Egyptians,
+Liberians, Kenyans, or Europeans. The authors suggested that deficiency
+is related to flushing and a slower metabolism of acetaldehyde, which
+could in turn result in a lower frequency of alcoholism and
+alcohol-related problems. (Note that the nomenclature used by some of
+these authors is confused: ALDH1 is actually ALDH2).
+
+- Molecular Basis
+
+Hsu et al. (1987) developed a method for distinguishing the 2 main
+alleles by means of allele-specific 21-base synthetic oligonucleotides.
+Using a pair of synthetic oligonucleotides, one complementary to the
+ALDH2*1 allele and the other complementary to the ALDH2*2 allele,
+
+Shibuya and Yoshida (1988) determined the genotypes of 49 unrelated
+Japanese persons and 12 Caucasians. The frequency of the atypical allele
+was found to be 0.35 in the Japanese samples examined. The atypical
+allele was not found in the Caucasians.
+
+Crabb et al. (1989) did genotyping on the liver from 24 Japanese
+individuals, using the PCR technique for amplification of genomic DNA.
+In correlating genotype with phenotype, they found that both
+heterozygotes and homozygotes for ALDH2*2 are deficient in ALDH2
+activity; that is, the ALDH2*2 allele is dominant. Since ALDH2 is a
+homotetrameric enzyme, random association of active and inactive
+subunits, equally expressed, should generate about 6% normal tetramers;
+the remainder would contain at least 1 mutant subunit. Thus, if all
+tetramers containing at least 1 mutant subunit were inactive, there
+would be only 6% activity in heterozygotes. This low amount of activity
+is likely to be below the detection limit of activity staining of the
+gels.
+
+Using allele-specific oligonucleotides for ALDH2*2, Singh et al. (1989)
+studied phenotypically deficient individuals in the Chinese, Japanese,
+and South Korean families to determine heterozygous or homozygous
+status. All individuals with a heterozygous genotype were found to be
+deficient, thus demonstrating that only the normal homotetrameric enzyme
+is catalytically active.
+
+Oota et al. (2004) used the ALDH2*2 allele, which is responsible for
+catalytic deficiency of ALDH2, and 4 noncoding SNPs to study ALDH2
+haplotype frequency and linkage disequilibrium in 37 worldwide
+populations. Only 4 major SNP-defined haplotypes were found to account
+for almost all chromosomes in all populations. A fifth haplotype
+harbored the functional variant and was found only in East Asians.
+
+- ALDH2 and Alcoholism
+
+Crabb (1990) pointed out that the single base mutation in ALDH2
+responsible for acute alcohol-flushing reaction in Asians, glu504-to-lys
+(ALDH2*2; 100650.0001), is the best-characterized genetic factor
+influencing alcohol drinking behavior.
+
+Shibuya et al. (1988) studied 23 Japanese with alcoholic liver disease.
+No difference was found in the genotypes at the ADH2 (103720) locus;
+however, at the ALDH2 locus, 20 of the 23 patients were homozygous for
+ALDH2*1, only 3 were heterozygous, and none of the patients was
+homozygous for ALDH2*2. The results were interpreted as indicating that
+Japanese with the atypical allele are at a much lower risk for alcoholic
+liver disease, presumably due to their sensitivity to alcohol
+intoxication.
+
+Thomasson et al. (1991) hypothesized that the polymorphisms of both of
+the liver enzymes responsible for the oxidative metabolism of ethanol
+may modify the predisposition to development of alcoholism (103780).
+Using leukocyte DNA amplified by PCR and allele-specific
+oligonucleotides in a study of Chinese men living in Taiwan, they
+demonstrated that alcoholics had significantly lower frequencies not
+only of ALDH2*2 but also of ADH1B*2 (103720.0001) and ADH1C*1 (see
+103730.0002). Goedde et al. (1992) gave extensive population frequency
+data on ALDH2 as well as on ADH1B. They again showed that the atypical
+ALDH2 gene (ALDH2*2) is extremely rare in Caucasians, Blacks, Papua New
+Guineans, Australian Aborigines, and Aurocanians (South Chile), but
+widely prevalent among East Asians. They cited evidence indicating that
+individuals possessing the ALDH2*2 allele show alcohol-related
+sensitivity responses such as facial flushing, are usually not habitual
+drinkers, and appear to suffer less from alcoholism and alcohol-related
+liver disease.
+
+Muramatsu et al. (1995) used the PCR/RFLP method to determine the
+genotypes of the ADH2 and ALDH2 loci of alcoholic and nonalcoholic
+Chinese living in Shanghai. They found that the alcoholics had
+significantly lower frequencies of the ADH2*2 and ALDH2*2 alleles than
+did the nonalcoholics, suggesting the inhibitory effects of these
+alleles for the development of alcoholism. In the nonalcoholic subjects,
+ADH2*2 had little, if any, effect, despite the significant effect of the
+ALDH2*2 allele in decreasing the alcohol consumption of the individual.
+Taken together, these results were considered consistent with the
+proposed hypothesis for the development of alcoholism, i.e., drinking
+behavior is greatly influenced by the individual's genotype of
+alcohol-metabolizing enzymes and the risk of becoming alcoholic is
+proportionate with the ethanol consumption of the individual.
+
+To investigate possible interactions among the variant alleles ADH2*2,
+ADH3*1, and ALDH2*2, Chen et al. (1999) genotyped 340 alcoholic and 545
+control Han Chinese living in Taiwan at the ADH2, ADH3, and ALDH2 loci.
+After the influence of ALDH2*2 was controlled for, multiple logistic
+regression analysis indicated that allelic variation at ADH3 exerts no
+significant effect on the risk of alcoholism. Any presumed affect could
+be accounted for by linkage disequilibrium between ADH3*1 and ADH2*2;
+the 2 genes are located on 4q22. ALDH2*2 homozygosity, regardless of the
+ADH2 genotype, was fully protective against alcoholism; no individual
+showing such homozygosity was found among the alcoholics. Logistic
+regression analyses of the remaining 6 combinatorial genotypes of the
+polymorphic ADH2 and ALDH2 loci indicated that individuals carrying 1 or
+2 copies of ADH2*2 and a single copy of ALDH2*2 had the lowest risk
+(odds ratios = 0.04-0.05) for alcoholism, as compared with the ADH2*1/*1
+and ALDH2*1/*1 genotypes. The disease risk associated with the
+ADH2*2/*2-ALDH2*1/*1 genotype appeared to be about half of that
+associated with the ADH2*1/*2-ALDH2*1/*1 genotype. These results
+suggested that protection afforded by the ADH2*2 allele may be
+independent of that afforded by ALDH2*2.
+
+Chai et al. (2005) examined ADH2, ADH3, and ALDH2 polymorphisms in 72
+alcoholic and 38 nonalcoholic healthy Korean men. Forty-eight of the
+alcoholic men had Cloninger type 1 and 24 had Cloninger type 2
+alcoholism. The frequency of ADH2*1 (103720.0001) and ADH3*2
+(103730.0002) alleles was significantly higher in men with type 2
+alcoholism than in men with type 1 alcoholism and in healthy men. The
+frequency of the ALDH2*1 allele was significantly higher in men with
+alcohol dependence than in healthy men. Chai et al. (2005) suggested
+that the genetic characteristics of alcohol metabolism in type 1
+alcoholism falls between nonalcoholism and type 2 alcoholism.
+
+Luo et al. (2006) genotyped 16 markers within the ADH gene cluster, 4
+markers within the ALDH2 gene, and 38 unlinked ancestry-informative
+markers in a case-control sample of 801 individuals. Associations
+between markers and disease were analyzed by a Hardy-Weinberg
+equilibrium test, a conventional case-control comparison, a structured
+association analysis, and a novel diplotype trend regression (DTR)
+analysis. All markers were found to be in Hardy-Weinberg equilibrium in
+controls, but some markers showed Hardy-Weinberg disequilibrium in cases
+of alcohol dependence. Genotypes of many markers were associated with
+alcohol dependence. DTR analysis showed that the ADH5 (103710) genotypes
+and diplotypes of ADH1A (103700), ADH1B (103720), ADH7 (600086), and
+ALDH2 were associated with alcohol dependence in European Americans
+and/or African Americans. The risk-influencing alleles were fine mapped
+from among the markers studied and were found to coincide with some well
+known functional variants. They demonstrated that DTR was more powerful
+than many other conventional association methods. They also found that
+several ADH genes and the ALDH2 gene were susceptibility loci for
+alcohol dependence, and the associations were best explained by several
+independent risk genes.
+
+Although the ALDH2*2 allele is considered to be a genetic deterrent for
+alcoholism, Muramatsu et al. (1996) found that 80 of 655 Japanese
+alcoholics had the mutant allele. The authors postulated that these
+alcoholics had some other factor that overcame the adverse effects of
+acetaldehydemia and that such a factor might reside in the brain's
+'reward system,' in which dopamine plays a crucial role. Muramatsu et
+al. (1996) studied variation at the DRD4 locus (126452) and found a
+higher frequency of a 5-repeat allele of the DRD4 receptor 48-bp repeat
+polymorphism in alcoholics with ALDH2*2 than in 100 other alcoholics and
+144 controls. They found that alcoholics with the 5-repeat allele also
+abused other drugs more often.
+
+- ALDH2/HMGIC Fusion Gene
+
+Kazmierczak et al. (1995) found that the ALDH2 gene was a translocation
+partner of the HMGIC gene (HMGA2; 600698) in a uterine leiomyoma. Fusion
+genes involving HMGIC are found in pleomorphic adenomas of salivary
+glands and in a variety of benign mesenchymal tumors.
+
+ANIMAL MODEL
+
+Using an antisense oligonucleotide (ASO-9) containing the
+5-prime-TCCC-3-prime motif, which acts by greatly reducing mRNA levels,
+Garver et al. (2001) showed that rat hepatoma cells had reduced Aldh2
+mRNA levels and activity, resulting in more than 90% inhibition of Aldh2
+synthesis, probably mediated by RNase H hydrolysis. Mismatches in the
+TCCC motif, in particular, reduced the efficacy of ASO-9, which
+specifically reduced mRNA levels of Aldh2 but not of a control
+mitochondrial enzyme, glutamate dehydrogenase (GLUD1; 138130). Treatment
+of rats with ASO-9 specifically reduced Aldh2 activity by approximately
+40% and increased plasma acetaldehyde levels 4-fold after ethanol
+administration. Behavioral analysis indicated that ASO-9 treatment
+induced an aversion to ethanol. After initial consumption, a reduction
+of 61% in ethanol consumption was observed in treated rats, a level
+comparable to that achieved with disulfiram (Antabuse). Garver et al.
+(2001) concluded that the specificity and lack of side effects of an ASO
+that inhibits ALDH2 expression and mimics the Asian phenotype would be
+advantageous when compared with disulfiram.
+
+Nitroglycerin, or glyceryl trinitrate (GTN), elicits nitric oxide
+(NO)-based signaling to dilate blood vessels. Chen et al. (2005) found
+that mitochondrial bioconversion of GTN to NO was absent in mitochondria
+obtained from Aldh2-null mice. Vasoactivity from alternative
+nitro(so)vasodilators was unaffected. GTN bioactivity could still be
+generated in mutant mice and their isolated vascular tissue, but only at
+substantially higher concentrations of GTN. Chen et al. (2005) concluded
+that ALDH2 is necessary and sufficient for vasoactivity derived from
+therapeutic levels of GTN.
+
+Yao et al. (2010) found that a selective ALDH2 inhibitor (CVT-10216),
+suppressed cocaine self-administration in rats and prevented cocaine- or
+cue-induced reinstatement in a rat model of cocaine relapse-like
+behavior. Inhibition of ALDH2 was found to decrease cocaine-stimulated
+dopamine production in neurons in the primary ventral tegmental area by
+increasing the formation of tetrahydropapaveroline (THP). THP was found
+to selectively inhibit phosphorylated (activated) tyrosine hydroxylase
+(TH; 191290), and thus reduce dopamine production via negative feedback.
+Yao et al. (2010) concluded that reducing cocaine- and
+craving-associated increases in dopamine release appears to be the
+mechanism by which ALDH2 inhibition suppresses cocaine-seeking behavior.
+
+Langevin et al. (2011) found that the Fanconi anemia DNA repair pathway
+counteracts acetaldehyde-induced genotoxicity in mice. Their results
+showed that the acetaldehyde-catabolizing enzyme Aldh2 is essential for
+the development of Fancd2 (613984)-null embryos. Nevertheless,
+acetaldehyde-catabolism-competent mothers (Aldh2 heterozygotes) could
+support the development of double-mutant Aldh2-null/Fancd2-null mice.
+However, these embryos were unusually sensitive to ethanol exposure in
+utero, and ethanol consumption by postnatal double-deficient mice
+rapidly precipitated bone marrow failure. Lastly, Aldh2-null/Fancd2-null
+mice spontaneously developed acute leukemia. Langevin et al. (2011)
+concluded that acetaldehyde-mediated DNA damage may critically
+contribute to the genesis of fetal alcohol syndrome in fetuses, as well
+to normal development, hematopoietic failure, and cancer predisposition
+in Fanconi anemia (see 227650) patients.
+
+*FIELD* AV
+.0001
+ALCOHOL SENSITIVITY, ACUTE
+ALCOHOL DEPENDENCE, PROTECTION AGAINST, INCLUDED;;
+HANGOVER, SUSCEPTIBILITY TO, INCLUDED;;
+SUBLINGUAL NITROGLYCERIN, SUSCEPTIBILITY TO POOR RESPONSE TO, INCLUDED;;
+ESOPHAGEAL CANCER, ALCOHOL-RELATED, SUSCEPTIBILITY TO, INCLUDED
+ALDH2, GLU504LYS (dbSNP rs671)
+
+The designation for the ALDH2*2 polymorphism has been changed from
+GLU487LYS to GLU504LYS. The numbering change includes the N-terminal
+mitochondrial leader peptide of 17 amino acids (Li et al., 2006).
+
+The ALDH2*2-encoded protein was first reported to have a change from
+glutamic acid (glutamate) to lysine at residue 487 (Yoshida et al.,
+1984). Hempel et al. (1985) and Hsu et al. (1985) also showed that the
+catalytic deficiency in mitochondrial ALDH in East Asians that manifests
+as acute alcohol sensitivity (610251) can be traced to a structural
+point mutation at amino acid position 487 of the polypeptide. The
+substitution of lysine for glutamic acid results from a G-A transition.
+
+About 50% of East Asians are missing the ALDH2 isozyme. Impraim et al.
+(1982) found that the livers of East Asians lacking the ALDH2 isozyme
+show an enzymatically inactive but immunologically cross-reactive
+material (CRM) corresponding to the ALDH2 isozyme.
+
+To study the mechanism by which the ALDH2*2 allele exerts its dominant
+effect in decreasing ALDH2 activity in liver extracts and producing
+cutaneous flushing when the subject drinks alcohol, Xiao et al. (1995)
+cloned ALDH2*1 cDNA and generated the ALDH2*2 allele by site-directed
+mutagenesis. These cDNAs were transduced using retroviral vectors into
+HeLa and CV1 cells, which do not express ALDH2. The normal allele
+directed synthesis of immunoreactive ALDH2 protein with the expected
+isoelectric point and increased aldehyde dehydrogenase activity. The
+ALDH2*2 allele directed synthesis of mRNA and immunoreactive protein,
+but the protein lacked enzymatic activity. When ALDH2*1-expressing cells
+were transduced with ALDH2*2 vectors, both mRNAs were expressed and
+immunoreactive proteins with isoelectric points ranging between those of
+the 2 gene products were present, indicating that the subunits formed
+heteromers. ALDH2 activity in these cells was reduced below that of the
+parental ALDH2*1-expressing cells. Thus, the authors concluded that
+ALDH2*2 allele is sufficient to cause ALDH2 deficiency in vitro.
+
+Xiao et al. (1996) referred to the ALDH2 enzyme encoded by the ALDH2*1
+allele (the wildtype form) as ALDH2E and the enzyme subunit encoded by
+ALDH2*2 as ALDH2K. They found that the ALDH2E enzyme was very stable,
+with a half-life of at least 22 hours. ALDH2K, on the other hand, had an
+enzyme half-life of only 14 hours. In cells expressing both subunits,
+most of the subunits assemble as heterotetramers, and these enzymes had
+a half-life of 13 hours. Thus, the effect of ALDH2K on enzyme turnover
+is dominant. Their studies indicated that ALDH2*2 exerts its dominant
+effect both by interfering with the catalytic activity of the enzyme and
+by increasing its turnover.
+
+Because genetic epidemiologic studies have suggested a mechanism by
+which homozygosity for the ALDH2*2 allele inhibits the development of
+alcoholism (103780) in Asians, Peng et al. (1999) recruited 18 adult Han
+Chinese men, matched by age, body-mass index, nutritional state, and
+homozygosity at the ALDH2 gene loci from a population of 273 men. Six
+individuals were chosen for each of the 3 ALDH2 allotypes, i.e., 2
+homozygotes and 1 heterozygote. Following a low dose of ethanol,
+homozygous ALDH2*2 individuals were found to be strikingly responsive
+with pronounced cardiovascular hemodynamic effects as well as subjective
+perception of general discomfort for as long as 2 hours following
+ingestion.
+
+Among 71 Japanese nondrinkers and 268 drinkers of alcohol, Liu et al.
+(2005) found that drinkers had a significantly higher frequency of the
+504glu allele. Individuals with the 504lys allele had an increased risk
+of alcohol-induced flushing (odds ratio of 33.0).
+
+In a study of 140 men and women of Chinese, Japanese, and Korean
+heritage, Wall et al. (2000) found that those with ALDH2*2 alleles
+experienced more severe hangovers (see 610251) and suggested that this
+may contribute, in part, to protection against the development of
+excessive or problematic drinking in Asian Americans. Yokoyama et al.
+(2005) found that inactive heterozygous ALDH2, alcohol flushing, and
+increased mean corpuscular volume (MCV) were positively associated with
+hangover susceptibility in Japanese workers, suggesting that
+acetaldehyde is etiologically linked to the development of hangover.
+
+In 80 Han Chinese patients with arteriography-confirmed coronary artery
+disease who used only sublingual nitroglycerin, or glyceryl trinitrate
+(GTN) for angina relief, Li et al. (2006) found that the ALDH2*2 allele
+was associated with lack of efficacy of sublingual GTN. Enzyme kinetic
+analysis revealed that the catalytic efficiency of GTN metabolism of the
+glu504 protein is approximately 10-fold higher than that of the lys504
+enzyme. Li et al. (2006) concluded that the presence of the ALDH2*2
+allele contributes, in large part, to the lack of an efficacious
+clinical response to GTN and recommended that this genetic factor be
+considered when administering GTN, particularly to Asian patients, 30 to
+50% of whom possess the inactive ALDH2*2 mutant allele.
+
+In a study of 32 adult Han Chinese male students with no personal or
+family history of alcoholism, Peng et al. (2007) found that
+heterozygosity for the ALDH2*2 allele resulted in higher acetaldehyde
+levels after alcohol ingestion compared to wildtype homozygotes. After
+ingestion, heterozygotes also had faster heart rates, faster blood flow
+in the facial and carotid arteries, and more subjective discomfort
+compared to wildtype homozygotes. Overall, the findings indicated that
+acetaldehyde, rather than ethanol or acetate, are responsible for
+observed alcohol sensitivity reactions. Peng et al. (2007) postulated
+that ALDH2*2 heterozygotes have decreased aversion to the adverse
+effects of alcohol, and thus increased risk of drinking, compared to
+those who are homozygous for ALDH2*2.
+
+Among 1,032 Korean individuals, Kim et al. (2008) found that the
+combination of the ADH1B his48 allele (dbSNP rs1229984; 103720.0001) and
+the ALDH2 lys504 allele offered protection against alcoholism.
+Individuals who carried both susceptibility alleles (arg48 and glu504,
+respectively) had a significantly increased risk for alcoholism (OR,
+91.43; p = 1.4 x 10(-32)). Individuals with 1 protective and 1
+susceptibility allele had a lesser increased risk for alcoholism (OR,
+11.40; p = 3.5 x 10(-15)) compared to those with both protective
+alleles. Kim et al. (2008) calculated that alcoholism in the Korean
+population is 86.5% attributable to the detrimental effect of the ADH1B
+arg48 and the ALDH2 glu504 alleles.
+
+In a case-control study with 221 Chinese patients with esophageal cancer
+and 191 controls, Ding et al. (2010) found that alcohol drinkers with
+the ALDH2 A allele showed a significantly increased risk of esophageal
+cancer compared to drinkers with the ALDH2 G/G genotype (OR, 3.08) or
+compared to nondrinkers with any genotype (OR, 3.05). There was a
+significantly higher risk of esophageal cancer in those with higher
+alcohol consumption (OR, 11.93), and a dose-dependent positive effect
+was observed. Drinkers with high cumulative lifetime consumption
+(greater than 2.5 kg*year calculated as grams of alcohol consumed per
+day multiplied by number of years of consumption) carrying both the
+ALHD2 A allele and the G allele of ADH1B (his48 allele) had an even
+higher risk of esophageal cancer (OR, 53.15) compared to individuals
+with the ALDH2 G/G and ADH1B A/A genotypes. Ding et al. (2010)
+hypothesized that increased acetaldehyde in drinkers with these
+susceptibility alleles has a carcinogenic effect.
+
+*FIELD* SA
+Agarwal et al. (1981); Bennion and Li (1976); Goedde et al. (1986);
+Goedde et al. (1979); Harada et al. (1981); Harada et al. (1978);
+Reed  (1977); Yoshida  (1984); Yoshida et al. (1983)
+*FIELD* RF
+1. Agarwal, D. P.; Harada, S.; Goedde, H. W.: Racial differences
+in biological sensitivity to ethanol: the role of alcohol dehydrogenase
+and aldehyde dehydrogenase isozymes. Alcoholism 5: 12-16, 1981.
+
+2. Agarwal, D. P.; Meier-Tackmann, D.; Harada, S.; Goedde, H. W.;
+Du, R.: Mechanism of biological sensitivity to alcohol: inherited
+deficiency of aldehyde dehydrogenase isoenzyme I in Mongoloids. (Abstract) Sixth
+Int. Cong. Hum. Genet., Jerusalem 102 only, 1981.
+
+3. Bennion, L. J.; Li, T.-K.: Alcohol metabolism in American Indians
+and whites: lack of racial differences in metabolic rate and liver
+alcohol dehydrogenase. New Eng. J. Med. 294: 9-13, 1976.
+
+4. Braun, T.; Grzeschik, K. H.; Bober, E.; Singh, S.; Agarwal, D.
+P.; Goedde, H. W.: The structural gene for the mitochondrial aldehyde
+dehydrogenase maps to human chromosome 12. Hum. Genet. 73: 365-367,
+1986.
+
+5. Chai, Y.-G.; Oh, D.-Y.; Chung, E. K.; Kim, G. S.; Kim, L.; Lee,
+Y.-S.; Choi, I.-G.: Alcohol and aldehyde dehydrogenase polymorphisms
+in men with type I and type II alcoholism. Am. J. Psychiat. 162:
+1003-1005, 2005.
+
+6. Chen, C.-C.; Lu, R.-B.; Chen, Y.-C.; Wang, M.-F.; Chang, Y.-C.;
+Li, T.-K.; Yin, S.-J.: Interaction between the functional polymorphisms
+of the alcohol-metabolism genes in protection against alcoholism. Am.
+J. Hum. Genet. 65: 795-807, 1999.
+
+7. Chen, C.-H.; Budas, G. R.; Churchill, E. N.; Disatnik, M.-H.; Hurley,
+T. D.; Mochly-Rosen, D.: Activation of aldehyde dehydrogenase-2 reduces
+ischemic damage to the heart. Science 321: 1493-1495, 2008.
+
+8. Chen, Z.; Foster, M. W.; Zhang, J.; Mao, L.; Rockman, H. A.; Kawamoto,
+T.; Kitagawa, K.; Nakayama, K. I.; Hess, D. T.; Stamler, J. S.: An
+essential role for mitochondrial aldehyde dehydrogenase in nitroglycerin
+bioactivation. Proc. Nat. Acad. Sci. 102: 12159-12164, 2005.
+
+9. Crabb, D. W.: Biological markers for increased risk of alcoholism
+and for quantitation of alcohol consumption. J. Clin. Invest. 85:
+311-315, 1990.
+
+10. Crabb, D. W.; Edenberg, H. J.; Bosron, W. F.; Li, T.-K.: Genotypes
+for aldehyde dehydrogenase deficiency and alcohol sensitivity: the
+inactive ALDH2*2 allele is dominant. J. Clin. Invest. 83: 314-316,
+1989.
+
+11. Ding, J.; Li, S.; Cao, H.; Wu, J.; Gao, C.; Liu, Y.; Zhou, J.;
+Chang, J.; Yao, G.: Alcohol dehydrogenase-2 and aldehyde dehydrogenase-2
+genotypes, alcohol drinking and the risk for esophageal cancer in
+a Chinese population. J. Hum. Genet. 55: 97-102, 2010.
+
+12. Garver, E.; Tu, G.; Cao, Q.-N.; Aini, M.; Zhou, F.; Israel, Y.
+: Eliciting the low-activity aldehyde dehydrogenase Asian phenotype
+by an antisense mechanism results in an aversion to ethanol. J. Exp.
+Med. 194: 571-580, 2001.
+
+13. Goedde, H. W.; Agarwal, D. P.; Fritze, G.; Meier-Tackmann, D.;
+Singh, S.; Beckmann, G.; Bhatia, K.; Chen, L. Z.; Fang, B.; Lisker,
+R.; Paik, Y. K.; Rothhammer, F.; Saha, N.; Segal, B.; Srivastava,
+L. M.; Czeizel, A.: Distribution of ADH-2 and ALDH2 genotypes in
+different populations. Hum. Genet. 88: 344-346, 1992.
+
+14. Goedde, H. W.; Agarwal, D. P.; Harada, S.; Meier-Tackmann, D.;
+Ruofu, D.; Bienzle, U.; Kroeger, A.; Hussein, L.: Population genetic
+studies on aldehyde dehydrogenase isozyme deficiency and alcohol sensitivity. Am.
+J. Hum. Genet. 35: 769-772, 1983.
+
+15. Goedde, H. W.; Agarwal, D. P.; Harada, S.; Rothhammer, F.; Whittaker,
+J. O.; Lisker, R.: Aldehyde dehydrogenase polymorphism in North American,
+South American, and Mexican Indian populations. Am. J. Hum. Genet. 38:
+395-399, 1986.
+
+16. Goedde, H. W.; Harada, S.; Agarwal, D. P.: Racial differences
+in alcohol sensitivity: a new hypothesis. Hum. Genet. 51: 331-334,
+1979.
+
+17. Harada, S.; Agarwal, D. P.; Goedde, H. W.: Aldehyde dehydrogenase
+deficiency as cause of facial flushing reaction to alcohol in Japanese.
+(Letter) Lancet 317: 982 only, 1981. Note: Originally Volume II.
+
+18. Harada, S.; Agarwal, D. P.; Goedde, H. W.: Isozyme variations
+in acetaldehyde dehydrogenase (E.C. 1.2.1.3) in human tissues. Hum.
+Genet. 44: 181-185, 1978.
+
+19. Harada, S.; Agarwal, D. P.; Goedde, H. W.: Aldehyde metabolism
+and polymorphism of aldehyde dehydrogenase in Japanese. (Abstract) Sixth
+Int. Cong. Hum. Genet., Jerusalem 103 only, 1981.
+
+20. Harada, S.; Misawa, S.; Agarwal, D. P.; Goedde, H. W.: Liver
+alcohol dehydrogenase and aldehyde dehydrogenase in the Japanese:
+isozyme variation and its possible role in alcohol intoxication. Am.
+J. Hum. Genet. 32: 8-15, 1980.
+
+21. Hempel, J.; Kaiser, R.; Jornvall, H.: Mitochondrial aldehyde
+dehydrogenase from human liver: primary structure, differences in
+relation to the cytosolic enzyme and functional correlations. Europ.
+J. Biochem. 153: 13-28, 1985.
+
+22. Hsu, L. C.; Bendel, R. E.; Yoshida, A.: Direct detection of usual
+and atypical alleles on the human aldehyde dehydrogenase-2 (ALDH2)
+locus. Am. J. Hum. Genet. 41: 996-1001, 1987.
+
+23. Hsu, L. C.; Bendel, R. E.; Yoshida, A.: Genomic structure of
+the human mitochondrial aldehyde dehydrogenase gene. Genomics 2:
+57-65, 1988.
+
+24. Hsu, L. C.; Tani, K.; Fujiyoshi, T.; Kurachi, K.; Yoshida, A.
+: Cloning of cDNAs for human aldehyde dehydrogenases 1 and 2. Proc.
+Nat. Acad. Sci. 82: 3771-3775, 1985.
+
+25. Hsu, L. C.; Yoshida, A.; Mohandas, T.: Chromosomal assignment
+of the genes for human aldehyde dehydrogenase 1 (ALDH1) and aldehyde
+dehydrogenase 2 (ALDH2). (Abstract) Cytogenet. Cell Genet. 40: 656-657,
+1985.
+
+26. Impraim, C.; Wang, G.; Yoshida, A.: Structural mutation in a
+major human aldehyde dehydrogenase gene results in loss of enzyme
+activity. Am. J. Hum. Genet. 34: 837-841, 1982.
+
+27. Kazmierczak, B.; Hennig, Y.; Wanschura, S.; Rogalla, P.; Bartnitzke,
+S.; van de Ven, W. J. M.; Bullerdiek, J.: Description of a novel
+fusion transcript between HMGI-C, a gene encoding for a member of
+the high mobility group proteins, and the mitochondrial aldehyde dehydrogenase
+gene. Cancer Res. 55: 6038-6039, 1995.
+
+28. Kim, D.-J.; Choi, I.-G.; Park, B. L.; Lee, B.-C.; Ham, B.-J.;
+Yoon, S.; Bae, J. S.; Cheong, H. S.; Shin, H. D.: Major genetic components
+underlying alcoholism in Korean population. Hum. Molec. Genet. 17:
+854-858, 2008.
+
+29. Langevin, F.; Crossan, G. P.; Rosado, I. V.; Arends, M. J.; Patel,
+K. J.: Fancd2 counteracts the toxic effects of naturally produced
+aldehydes in mice. Nature 475: 53-58, 2011.
+
+30. Li, Y.; Zhang, D.; Jin, W.; Shao, C.; Yan, P.; Xu, C.; Sheng,
+H.; Liu, Y.; Yu, J.; Xie, Y.; Zhao, Y.; Lu, D.; Nebert, D. W.; Harrison,
+D. C.; Huang, W.; Jin, L.: Mitochondrial aldehyde dehydrogenase-2
+(ALDH2) glu504lys polymorphism contributes to the variation in efficacy
+of sublingual nitroglycerin. J. Clin. Invest. 116: 506-511, 2006.
+
+31. Liu, Y.; Yoshimura, K.; Hanaoka, T.; Ohnami, S.; Ohnami, S.; Kohno,
+T.; Yoshida, T.; Sakamoto, H.; Sobue, T.; Tsugane, S.: Association
+of habitual smoking and drinking with single nucleotide polymorphism
+(SNP) in 40 candidate genes: data from random population-based Japanese
+samples. J. Hum. Genet. 50: 62-68, 2005.
+
+32. Luo, X.; Kranzler, H. R.; Zuo, L.; Wang, S.; Schork, N. J.; Gelernter,
+J.: Diplotype trend regression analysis of the ADH gene cluster and
+the ALDH2 gene: multiple significant associations with alcohol dependence. Am.
+J. Hum. Genet. 78: 973-987, 2006.
+
+33. Mather, P. B.; Holmes, R. S.: Biochemical genetics of aldehyde
+dehydrogenase isoenzymes in the mouse: evidence for stomach and testis-specific
+isoenzymes. Biochem. Genet. 22: 981-995, 1984.
+
+34. Muramatsu, T.; Higuchi, S.; Murayama, M.; Matsushita, S.; Hayashida,
+M.: Association between alcoholism and the dopamine D4 receptor gene. J.
+Med. Genet. 33: 113-115, 1996.
+
+35. Muramatsu, T.; Zu-Cheng, W.; Yi-Ru, F.; Kou-Bao, H.; Heqin, Y.;
+Yamada, K.; Higuchi, S.; Harada, S.; Kono, H.: Alcohol and aldehyde
+dehydrogenase genotypes and drinking behavior of Chinese living in
+Shanghai. Hum. Genet. 96: 151-154, 1995.
+
+36. Oota, H.; Pakstis, A. J.; Bonne-Tamir, B.; Goldman, D.; Grigorenko,
+E.; Kajuna, S. L. B.; Karoma, N. J.; Kungulilo, S.; Lu, R.-B.; Odunsi,
+K.; Okonofua, F.; Zhukova, O. V.; Kidd, J. R.; Kidd, K. K.: The evolution
+and population genetics of the ALDH2 locus: random genetic drift,
+selection, and low levels of recombination. Ann. Hum. Genet. 68:
+93-109, 2004.
+
+37. Peng, G.-S.; Chen, Y.-C.; Tsao, T.-P.; Wang, M.-F.; Yin, S.-J.
+: Pharmacokinetic and pharmacodynamic basis for partial protection
+against alcoholism in Asians, heterozygous for the variant ALDH2*2
+gene allele. Pharmacogenet. Genomics 17: 845-855, 2007.
+
+38. Peng, G.-S.; Wang, M.-F.; Chen, C.-Y.; Luu, S.-U.; Chou, H.-C.;
+Li, T.-K.; Yin, S.-J.: Involvement of acetaldehyde for full protection
+against alcoholism by homozygosity of the variant allele of mitochondrial
+aldehyde dehydrogenase gene in Asians. Pharmacogenetics 9: 463-476,
+1999.
+
+39. Reed, T. E.: Three heritable responses to alcohol in a heterogeneous
+randomly mated mouse strain: inferences for humans. J. Studies Alcohol 38:
+618-632, 1977.
+
+40. Roychoudhury, A. K.; Nei, M.: Human Polymorphic Genes: World
+Distribution.  New York: Oxford Univ. Press (pub.)  1988.
+
+41. Schwitters, S. Y.; Johnson, R. C.; Johnson, S. B.; Ahern, F. M.
+: Familial resemblances in flushing following alcohol use. Behav.
+Genet. 12: 349-352, 1982.
+
+42. Shibuya, A.; Ikuta, T.; Hsu, L. C.; Yoshida, A.: Genotypes of
+alcohol metabolizing enzymes in Japanese with alcoholic liver diseases:
+a strong association of the usual Caucasian type aldehyde dehydrogenase
+allele (ALDH2) with the disease. (Abstract) Am. J. Hum. Genet. 43:
+A201, 1988.
+
+43. Shibuya, A.; Yoshida, A.: Frequency of the atypical aldehyde
+dehydrogenase-2 gene (ALDH2/2) in Japanese and Caucasians. Am. J.
+Hum. Genet. 43: 741-743, 1988.
+
+44. Singh, S.; Fritze, G.; Fang, B.; Harada, S.; Paik, Y. K.; Eckey,
+R.; Agarwal, D. P.; Goedde, H. W.: Inheritance of mitochondrial aldehyde
+dehydrogenase: genotyping in Chinese, Japanese and South Korean families
+reveals dominance of the mutant allele. Hum. Genet. 83: 119-121,
+1989.
+
+45. Thomasson, H. R.; Edenberg, H. J.; Crabb, D. W.; Mai, X.-L.; Jerome,
+R. E.; Li, T.-K.; Wang, S.-P.; Lin, Y.-T.; Lu, R.-B.; Yin, S.-J.:
+Alcohol and aldehyde dehydrogenase genotypes and alcoholism in Chinese
+men. Am. J. Hum. Genet. 48: 677-681, 1991.
+
+46. Wall, T. L.; Horn, S. M.; Johnson, M. L.; Smith, T. L.; Carr,
+L. G.: Hangover symptoms in Asian Americans with variations in the
+aldehyde dehydrogenase (ALDH2) gene. J. Stud. Alcohol 61: 13-17,
+2000.
+
+47. Womack, J. E.: Personal Communication. College Station, Texas 
+2/26/1990.
+
+48. Xiao, Q.; Weiner, H.; Crabb, D. W.: The mutation in the mitochondrial
+aldehyde dehydrogenase (ALDH2) gene responsible for alcohol-induced
+flushing increases turnover of the enzyme tetramers in a dominant
+fashion. J. Clin. Invest. 98: 2027-2032, 1996.
+
+49. Xiao, Q.; Weiner, H.; Johnston, T.; Crabb, D. W.: The aldehyde
+dehydrogenase ALDH2*2 allele exhibits dominance over ALDH2*1 in transduced
+HeLa cells. J. Clin. Invest. 96: 2180-2186, 1995.
+
+50. Yao, L.; Fan, P.; Arolfo, M.; Jiang, Z.; Olive, M. F.; Zablocki,
+J.; Sun, H.-L.; Chu, N.; Lee, J.; Kim, H.-Y.; Leung, K.; Shryock,
+J.; Blackburn, B.; Diamond, I.: Inhibition of aldehyde dehydrogenase-2
+suppresses cocaine seeking by generating THP, a cocaine use-dependent
+inhibitor of dopamine synthesis. Nature Med. 16: 1024-1028, 2010.
+
+51. Yokoyama, M.; Yokoyama, A.; Yokoyama, T.; Funazu, K.; Hamana,
+G.; Kondo, S.; Yamashita, T.; Nakamura, H.: Hangover susceptibility
+in relation to aldehyde dehydrogenase-2 genotype, alcohol flushing,
+and mean corpuscular volume in Japanese workers. Alcohol Clin. Exp.
+Res. 29: 1165-1171, 2005.
+
+52. Yoshida, A.: Determination of aldehyde dehydrogenase phenotypes
+using hair roots: re-examination. Hum. Genet. 66: 296-299, 1984.
+
+53. Yoshida, A.; Huang, I.-Y.; Ikawa, M.: Molecular abnormality of
+an inactive aldehyde dehydrogenase variant commonly found in Orientals. Proc.
+Nat. Acad. Sci. 81: 258-261, 1984.
+
+54. Yoshida, A.; Wang, G.; Dave, V.: Determination of genotypes of
+human aldehyde dehydrogenase ALDH-2 locus. Am. J. Hum. Genet. 35:
+1107-1116, 1983.
+
+*FIELD* CS
+
+Metabolic:
+   Increased intoxicating symptoms after alcohol drinking
+
+Skin:
+   Facial flushing after alcohol intake
+
+Misc:
+   Oriental type alcohol flushing with abnormal ALDH2
+
+Lab:
+   Mitochondrial acetaldehyde dehydrogenase;
+   Delayed oxidation of acetaldehyde;
+   High Km for NAD;
+   Low Km foracetaldehyde;
+   Disulfiram insensitive
+
+*FIELD* CN
+Ada Hamosh - updated: 9/6/2011
+Cassandra L. Kniffin - updated: 12/3/2010
+Cassandra L. Kniffin - updated: 3/25/2010
+Cassandra L. Kniffin - updated: 3/24/2010
+Cassandra L. Kniffin - updated: 1/19/2010
+Cassandra L. Kniffin - updated: 12/30/2009
+Ada Hamosh - updated: 9/29/2008
+Marla J. F. O'Neill - updated: 7/10/2006
+Victor A. McKusick - updated: 6/6/2006
+Victor A. McKusick - updated: 5/18/2006
+Patricia A. Hartz - updated: 9/28/2005
+Cassandra L. Kniffin - updated: 9/1/2005
+John Logan Black, III - updated: 8/8/2005
+Victor A. McKusick - updated: 6/2/2004
+Victor A. McKusick - updated: 1/16/2004
+Paul J. Converse - updated: 11/29/2001
+Victor A. McKusick - updated: 11/4/1999
+Victor A. McKusick - updated: 9/24/1999
+Victor A. McKusick - updated: 4/30/1998
+Mark H. Paalman - updated: 6/12/1996
+
+*FIELD* CD
+Victor A. McKusick: 6/4/1986
+
+*FIELD* ED
+alopez: 09/07/2011
+terry: 9/6/2011
+carol: 2/22/2011
+wwang: 12/6/2010
+ckniffin: 12/3/2010
+wwang: 6/21/2010
+ckniffin: 3/25/2010
+ckniffin: 3/24/2010
+wwang: 1/27/2010
+ckniffin: 1/19/2010
+wwang: 1/15/2010
+ckniffin: 12/30/2009
+ckniffin: 10/27/2009
+alopez: 9/30/2008
+terry: 9/29/2008
+carol: 7/17/2008
+wwang: 7/13/2006
+terry: 7/10/2006
+carol: 6/21/2006
+alopez: 6/13/2006
+terry: 6/6/2006
+alopez: 5/19/2006
+terry: 5/18/2006
+carol: 4/4/2006
+mgross: 10/6/2005
+terry: 9/28/2005
+wwang: 9/1/2005
+ckniffin: 9/1/2005
+wwang: 8/10/2005
+terry: 8/8/2005
+tkritzer: 6/8/2004
+terry: 6/2/2004
+joanna: 3/17/2004
+cwells: 1/20/2004
+terry: 1/16/2004
+mgross: 12/5/2001
+terry: 11/29/2001
+carol: 4/3/2001
+carol: 11/8/1999
+terry: 11/4/1999
+alopez: 10/26/1999
+terry: 9/24/1999
+carol: 9/4/1998
+dkim: 7/17/1998
+dholmes: 5/12/1998
+carol: 5/5/1998
+terry: 4/30/1998
+terry: 12/6/1996
+mark: 6/12/1996
+mark: 2/26/1996
+terry: 2/20/1996
+mark: 2/2/1996
+terry: 1/26/1996
+mark: 10/15/1995
+warfield: 3/31/1994
+mimadm: 3/11/1994
+carol: 1/26/1994
+carol: 6/9/1992
+supermim: 3/16/1992
+
+*RECORD*
+*FIELD* NO
+100660
+*FIELD* TI
+*100660 ALDEHYDE DEHYDROGENASE, FAMILY 3, SUBFAMILY A, MEMBER 1; ALDH3A1
+;;ALDEHYDE DEHYDROGENASE 3; ALDH3;;
+ACETALDEHYDE DEHYDROGENASE 3;;
+ALDH, STOMACH TYPE
+*FIELD* TX
+See 100640. In stomach tissue, Teng (1981) described an isozymic form of
+aldehyde dehydrogenase (ALDH). It did not use formaldehyde,
+acetaldehyde, or pyruvic aldehyde. Furfuraldehyde and, to a lesser
+extent, propionaldehyde were readily oxidized. Teng (1981) found 1
+genetic variant among 71 Chinese stomach specimens and a second
+different variant among 33 Asiatic Indian specimens. Unlike liver ALDH,
+which appears to be a tetramer, the electrophoretic pattern in the
+heterozygotes suggested that stomach ALDH is a monomer. ALDH3 is also
+present in lung. By study of somatic cell hybrids, Santisteban et al.
+(1985) assigned the ALDH3 gene to chromosome 17.
+
+Using PCR with primers based on conserved regions of aldehyde
+dehydrogenases, Hsu et al. (1992) isolated ALDH3 clones from a human
+stomach cDNA library. The ALDH3 open reading frame encodes a protein of
+453 amino acids. The ALDH3 gene consists of 10 exons spanning
+approximately 8 kb. Human ALDH3 protein is 81% identical to that of
+ALDH3 from rat hepatocarcinoma cells. By analysis of Northern blots and
+PCR products, Hsu et al. (1992) found that ALDH3 is transcribed at high
+levels in human stomach and in hepatoma cells, but at very low levels in
+normal liver. ALDH3 protein expressed in E. coli exhibited kinetic
+properties similar to that of ALDH3 purified from human stomach and
+liver.
+
+Data on gene frequencies of allelic variants were tabulated by
+Roychoudhury and Nei (1988).
+
+By in situ hybridization, Hiraoka et al. (1995) mapped the ALDH3 gene to
+17p11.2. Rogers et al. (1997) found that ALDH3 is 50 to 85 kb from a
+closely related gene, ALDH10 (270200), and stated that the close
+linkage, sequence similarity (66% identity between the coding sequences,
+excluding the final 35 codons unique to ALDH10), and structural
+conservation indicate that the 2 genes share a common origin.
+
+Vasiliou et al. (1999) reviewed eukaryotic aldehyde dehydrogenase genes,
+tabulated allelic variants in the human, and recommended nomenclature
+based on divergent evolution and chromosomal mapping. They considered
+ALDH3 a 'trivial' designation and suggested ALDH3A1 as the official
+symbol.
+
+ALDH3 constitutes 20 to 40% of the total water-soluble proteins in
+mammalian cornea. Kays and Piatigorsky (1997) showed by Northern blot
+analysis that ALDH3 expression in the mouse is at least 500-fold higher
+in the cornea than in any other tissue examined, with very low levels of
+expression detected in stomach, urinary bladder, ocular lens, and lung.
+Histochemical localization showed that this exceptional level of
+expression in the mouse cornea occurs in the anterior epithelial cells,
+and that little ALDH3 is present in the keratocytes or corneal
+endothelial cells. As the anterior-most layer of the cornea, the
+epithelium is faced with continual impingement by environmental
+stressors, such as UV radiation, that can have deleterious effects on
+cellular function. The abundant expression of ALDH3 in the corneal
+epithelium is believed to play a role in protecting this vital tissue,
+as well as the rest of the eye, from damage generated by UV exposure.
+With a demonstrated substrate preference for the medium-length aliphatic
+aldehyde products of UV-induced lipid peroxidation, ALDH3 is thought to
+be responsible for preventing the accumulation of these toxic products
+in the cornea. In addition to its detoxification function, ALDH3 may
+protect the eye by the direct absorption of UV radiation. The high
+UV-absorbing capacity of ALDH3, which is attributed both to its high
+tryptophan content and to its ability to bind NAD, led some
+investigators to term this major corneal protein 'absorbin.'
+
+Kays and Piatigorsky (1997) showed that a promoter fragment derived from
+the mouse ALDH3 gene is capable of targeting expression of the
+chloramphenicol acetyltransferease (cat) reporter gene specifically to
+the epithelial layer of the cornea in transgenic mice, mimicking the
+expression pattern of the endogenous ALDH3 gene. Together with other
+results, the experiments indicated that tissue-specific expression of
+ALDH3 is determined by positive and negative elements in the 5-prime
+flanking region of the gene and suggested putative silencers located in
+intron 1.
+
+*FIELD* RF
+1. Hiraoka, L. R.; Hsu, L.; Hsieh, C.-L.: Assignment of ALDH3 to
+human chromosome 17p11.2 and ALDH5 to human chromosome 9p13. Genomics 25:
+323-325, 1995.
+
+2. Hsu, L. C.; Chang, W.-C.; Shibuya, A.; Yoshida, A.: Human stomach
+aldehyde dehydrogenase cDNA and genomic cloning, primary structure,
+and expression in Escherichia coli. J. Biol. Chem. 267: 3030-3037,
+1992.
+
+3. Kays, W. T.; Piatigorsky, J.: Aldehyde dehydrogenase class 3 expression:
+identification of a cornea-preferred gene promoter in transgenic mice. Proc.
+Nat. Acad. Sci. 94: 13594-13599, 1997.
+
+4. Rogers, G. R.; Markova, N. G.; De Laurenzi, V.; Rizzo, W. B.; Compton,
+J. G.: Genomic organization and expression of the human fatty aldehyde
+dehydrogenase gene (FALDH). Genomics 39: 127-135, 1997.
+
+5. Roychoudhury, A. K.; Nei, M.: Human Polymorphic Genes: World Distribution. 
+New York: Oxford Univ. Press (pub.)  1988.
+
+6. Santisteban, I.; Povey, S.; West, L. F.; Parrington, J. M.; Hopkinson,
+D. A.: Chromosome assignment, biochemical and immunological studies
+on a human aldehyde dehydrogenase, ALDH3. Ann. Hum. Genet. 49: 87-100,
+1985.
+
+7. Teng, Y.-S.: Stomach aldehyde dehydrogenase: report of a new locus. Hum.
+Hered. 31: 74-77, 1981.
+
+8. Vasiliou, V.; Bairoch, A.; Tipton, K. F.; Nebert, D. W.: Eukaryotic
+aldehyde dehydrogenase (ALDH) genes: human polymorphisms, and recommended
+nomenclature based on divergent evolution and chromosomal mapping. Pharmacogenetics 9:
+421-434, 1999.
+
+*FIELD* CN
+Victor A. McKusick - updated: 6/12/2000
+Victor A. McKusick - updated: 11/4/1999
+Rebekah S. Rasooly - updated: 2/10/1998
+
+*FIELD* CD
+Victor A. McKusick: 6/4/1986
+
+*FIELD* ED
+carol: 04/03/2001
+terry: 6/12/2000
+carol: 11/9/1999
+terry: 11/4/1999
+dkim: 7/17/1998
+dkim: 6/30/1998
+carol: 6/16/1998
+alopez: 2/10/1998
+mimman: 9/24/1997
+jenny: 7/2/1997
+jenny: 7/1/1997
+alopez: 6/3/1997
+terry: 2/7/1995
+mimadm: 2/11/1994
+supermim: 3/16/1992
+carol: 12/6/1990
+supermim: 3/20/1990
+ddp: 10/26/1989
+
+*RECORD*
+*FIELD* NO
+100670
+*FIELD* TI
+*100670 ALDEHYDE DEHYDROGENASE 1 FAMILY, MEMBER B1; ALDH1B1
+;;ALDEHYDE DEHYDROGENASE 5; ALDH5;;
+ACETALDEHYDE DEHYDROGENASE 5
+*FIELD* TX
+
+CLONING
+
+The 2 aldehyde dehydrogenase isozymes that play a major role in ethanol
+detoxification, ALDH1 (100640) and ALDH2 (100650), are cytosolic and
+mitochondrial forms, respectively. Their organization is basically
+similar; their sizes are 53 kb and 44 kb, respectively, and both contain
+13 coding exons interrupted by introns of comparable lengths. Hsu et al.
+(1989) cloned a novel ALDH gene, ALDH5, from a cosmid human DNA library.
+Although it contains no introns, Northern blot hybridization of human
+liver RNA revealed a unique mRNA component that hybridized with this
+gene probe but with neither the ALDH1 probe or the ALDH2 probe. ALDH5
+encodes a deduced 517-amino acid protein that shares 70.6% and 62.8%
+sequence identity with the ALDH2 and ALDH1 proteins, respectively.
+
+Hsu and Chang (1991) provided a full report on the ALDH5 gene, which
+they referred to as ALDHx.
+
+MAPPING
+
+Hsu et al. (1989) assigned the ALDH5 gene to chromosome 9 by Southern
+blot analysis of rodent-human hybrid cell DNAs. By in situ
+hybridization, Hiraoka et al. (1995) mapped the ALDH5 gene to 9p13.
+
+*FIELD* SA
+Harada et al. (1980)
+*FIELD* RF
+1. Harada, S.; Agarwal, D. P.; Goedde, H. W.: Electrophoretic and
+biochemical studies of human aldehyde dehydrogenase isozymes in various
+tissues. Life Sci. 26: 1773-1780, 1980.
+
+2. Hiraoka, L. R.; Hsu, L.; Hsieh, C.-L.: Assignment of ALDH3 to
+human chromosome 17p11.2 and ALDH5 to human chromosome 9p13. Genomics 25:
+323-325, 1995.
+
+3. Hsu, L. C.; Chang, W.-C.; Yoshida, A.: Cloning of a new human
+aldehyde dehydrogenase gene and comparison with liver cytosolic ALDH1
+and mitochondrial ALDH2 genes. (Abstract) Am. J. Hum. Genet. 45
+(suppl.): A196 only, 1989.
+
+4. Hsu, L. C.; Chang, W. C.: Cloning and characterization of a new
+functional human aldehyde dehydrogenase gene. J. Biol. Chem. 266:
+12257-12265, 1991.
+
+*FIELD* CD
+Victor A. McKusick: 6/4/1986
+
+*FIELD* ED
+carol: 07/16/2008
+carol: 4/3/2001
+dkim: 7/17/1998
+dkim: 6/30/1998
+jenny: 7/1/1997
+terry: 2/7/1995
+carol: 10/22/1992
+carol: 8/28/1992
+supermim: 3/16/1992
+supermim: 3/20/1990
+carol: 11/7/1989
+
+*RECORD*
+*FIELD* NO
+100675
+*FIELD* TI
+100675 ACETAMINOPHEN METABOLISM
+*FIELD* TX
+Acetaminophen (paracetamol) is extensively conjugated with glucuronic
+acid and sulfate before renal excretion. A minor metabolic route
+involves microsomal oxidation of acetaminophen to a hepatotoxic reactive
+intermediate, which subsequently undergoes glutathione (GSH)
+conjugation, yielding cysteine and mercapturate conjugates, both of
+which are excreted in the urine (Slattery et al., 1987). Evidence was
+presented by de Morais et al. (1989) that, in comparison with normal
+subjects, glucuronidation of acetaminophen is impaired in subjects with
+Gilbert syndrome (143500), a disorder in which glucuronidation of
+bilirubin is impaired. In studies of 125 Caucasian and 33 Oriental
+subjects, Patel et al. (1992) found no difference in the mean fraction
+of acetaminophen excreted as glucuronide: 51.5% in Caucasians versus
+51.8% in Orientals. However, bimodality was apparent in both groups,
+with 20% of Caucasians and 33% of Oriental subjects displaying
+relatively extensive glucuronidation. In addition, glucuronidation
+displayed a strong negative correlation with sulfation (r = -0.97),
+suggesting a compensatory or complementary relationship between the 2
+metabolic pathways. The mean fractional excretions of cysteine and
+mercapturate conjugates between Caucasians and Orientals did show
+significant differences (p = less than 0.005).
+
+*FIELD* RF
+1. de Morais, S. M. F.; Uetrecht, J. P.; Wells, P. G.: Decreased
+glucuronidation and increased bioactivation of acetaminophen in Gilbert's
+disease. (Abstract) FASEB J. 3: A739 only, 1989.
+
+2. Patel, M.; Tang, B. K.; Kalow, W.: Variability of acetaminophen
+metabolism in Caucasians and Orientals. Pharmacogenetics 2: 38-45,
+1992.
+
+3. Slattery, J. T.; Wilson, J. M.; Kalhorn, T. F.; Nelson, S. D.:
+Dose-dependent pharmacokinetics of acetaminophen: evidence of glutathione
+depletion in humans. Clin. Pharm. Ther. 41: 413-418, 1987.
+
+*FIELD* CS
+
+Skin:
+   Jaundice
+
+Lab:
+   Impaired acetaminophen glucuronidation in Gilbert syndrome (143500)
+
+Inheritance:
+   Autosomal dominant
+
+*FIELD* CD
+Victor A. McKusick: 7/21/1992
+
+*FIELD* ED
+terry: 09/24/2008
+terry: 11/10/1997
+mimadm: 4/14/1994
+carol: 10/13/1992
+carol: 8/10/1992
+carol: 7/21/1992
+
+*RECORD*
+*FIELD* NO
+100678
+*FIELD* TI
+*100678 ACETYL-CoA ACETYLTRANSFERASE 2; ACAT2
+;;ACETOCOENZYME A ACETYLTRANSFERASE 2;;
+ACETOACETYL-CoA THIOLASE, CYTOSOLIC
+*FIELD* TX
+
+DESCRIPTION
+
+The ACAT2 gene encodes cytosolic acetoacetyl-CoA thiolase (EC 2.3.1.9),
+which is important in the utilization of ketone bodies (de Groot et al.,
+1977). Mitochondrial acetoacetyl-CoA thiolase is encoded by the ACAT1
+gene (607809).
+
+CLONING
+
+Song et al. (1994) cloned an ACAT2 cDNA by use of an antibody against
+the human enzyme. The deduced amino acid sequence had 34 to 57% homology
+with 4 other human thiolases and 4 acetoacetyl-CoA thiolases of
+microorganisms.
+
+MAPPING
+
+The TCP1 gene (186980) is located on 6p in the vicinity of the major
+histocompatibility complex, and the murine homolog, Tcp1, is located in
+the t-complex region of mouse chromosome 17. In the mouse, a related
+gene, Tcp1x, is tightly linked to Tcp1. Ashworth (1993) showed that 2
+genes located 3-prime to the murine Tcp1 and Tcp1x genes code for
+proteins highly homologous to acetyl-CoA acetyltransferases. These Acat
+genes are in opposite orientation to the Tcp1 genes, and transcription
+results in mRNA species that contain the last exon of Tcp1 or Tcp1x
+within the 3-prime untranslated region of the respective Acat mRNA.
+Willison et al. (1987) showed that in humans the TCP1 and ACAT2 genes
+also overlap. Retention of this close linkage during mammalian evolution
+suggests the possibility of some functional significance. Transcription
+of both DNA strands at a given locus is common in prokaryotic and viral
+systems. For examples of overlapping transcriptional units in humans,
+see Morel et al. (1989) and Laudet et al. (1991).
+
+As the human TCP1 gene had been assigned to 6q25-q27 by study of somatic
+cell hybrids and by in situ hybridization, the ACAT2 gene was suspected
+to be localized to the same chromosome region. By fluorescence in situ
+hybridization, Masuno et al. (1996) demonstrated that the ACAT2 gene is
+located on 6q25.3-q26.
+
+*FIELD* RF
+1. Ashworth, A.: Two acetyl-CoA acetyltransferase genes located in
+the t-complex region of mouse chromosome 17 partially overlap the
+Tcp-1 and Tcp-1x genes. Genomics 18: 195-198, 1993.
+
+2. de Groot, C. J.; Luit-de Haan, G.; Hulstaert, C. E.; Hoomes, F.
+A.: A patient with severe neurologic symptoms and acetoacetyl-CoA
+thiolase deficiency. Pediat. Res. 11: 1112-1116, 1977.
+
+3. Laudet, V.; Begue, A.; Henry-Duthoit, C.; Joubel, A.; Martin, P.;
+Stehelin, D.; Saule, S.: Genomic organization of the human thyroid
+hormone alpha (c-erbA-1) gene. Nucleic Acids Res. 19: 1105-1112,
+1991.
+
+4. Masuno, M.; Fukao, T.; Song, X.-Q.; Yamaguchi, S.; Orii, T.; Kondo,
+N.; Imaizumi, K.; Kuroki, Y.: Assignment of the human cytosolic acetoacetyl-coenzyme
+A thiolase (ACAT2) gene to chromosome 6q25.3-q26. Genomics 36: 217-218,
+1996.
+
+5. Morel, Y.; Bristow, J.; Gitelman, S. E.; Miller, W. L.: Transcript
+encoded on the opposite strand of the human steroid 21-hydroxylase/complement
+component C4 gene locus. Proc. Nat. Acad. Sci. 86: 6582-6586, 1989.
+
+6. Song, X.-Q.; Fukao, T.; Yamaguchi, S.; Miyazawa, S.; Hashimoto,
+T.; Orii, T.: Molecular cloning and nucleotide sequence of complementary
+DNA for human hepatic cytosolic acetoacetyl-coenzyme A thiolase. Biochem.
+Biophys. Res. Commun. 201: 478-485, 1994.
+
+7. Willison, K.; Kelly, A.; Dudley, K.; Goodfellow, P.; Spurr, N.;
+Groves, V.; Gorman, P.; Sheer, D.; Trowsdale, J.: The human homologue
+of the mouse t-complex gene, TCP1, is located on chromosome 6 but
+is not near the HLA region. EMBO J. 6: 1967-1974, 1987.
+
+*FIELD* CN
+Victor A. McKusick - updated: 3/12/2003
+
+*FIELD* CD
+Victor A. McKusick: 12/2/1993
+
+*FIELD* ED
+carol: 06/21/2011
+ckniffin: 6/21/2011
+carol: 11/30/2004
+mgross: 3/17/2004
+carol: 2/25/2004
+carol: 5/23/2003
+tkritzer: 3/25/2003
+terry: 3/12/2003
+dkim: 7/17/1998
+mark: 9/12/1996
+terry: 9/4/1996
+carol: 10/12/1994
+carol: 12/20/1993
+carol: 12/2/1993
+
+*RECORD*
+*FIELD* NO
+100680
+*FIELD* TI
+^100680 MOVED TO 100740
+*FIELD* TX
+This entry was incorporated into entry 100740 on August 4, 2010.
+
+*FIELD* CD
+Victor A. McKusick: 6/4/1986
+*FIELD* ED
+alopez: 08/04/2010
+supermim: 3/16/1992
+carol: 7/13/1990
+supermim: 3/20/1990
+ddp: 10/26/1989
+marie: 3/25/1988
+reenie: 6/4/1986
+*RECORD*
+*FIELD* NO
+100690
+*FIELD* TI
+*100690 CHOLINERGIC RECEPTOR, NICOTINIC, ALPHA POLYPEPTIDE 1; CHRNA1
+;;CHRNA;;
+ACETYLCHOLINE RECEPTOR, MUSCLE, ALPHA SUBUNIT; ACHRA
+*FIELD* TX
+
+DESCRIPTION
+
+The acetylcholine receptor of muscle, like the nicotinic acetylcholine
+receptor of the Torpedo electric organ, has 5 subunits of 4 different
+types: 2 alpha and 1 each of beta, gamma, and delta subunits. In the
+electric organ the subunits show conspicuous sequence homology. The
+transmembrane topology of the subunits and the location of functionally
+important regions, such as the acetylcholine-binding site and the
+transmembrane segments involved in the ionic channel, have been
+proposed.
+
+CLONING
+
+Noda et al. (1983) cloned cDNA for the alpha subunit precursor of the
+calf skeletal muscle AChR and a human genomic DNA segment containing the
+CHRNA1 gene. Nucleotide sequences showed marked homology with the
+counterpart of Torpedo sp. (electric ray).
+
+Analyzing acetylcholine receptor clones isolated from a human leg muscle
+cDNA library, Beeson et al. (1990) found that the alpha subunit exists
+in 2 isoforms. A novel 75-nucleotide exon P3A, between exons 3 and 4,
+results in the insertion of 25 amino acids into the alpha subunit,
+giving the new isoform 462 amino acids. The transcript lacking P3A
+(P3A-) encodes a functional subunit, whereas the transcript containing
+P3A (P3A+) encodes a nonfunctional subunit. The P3A- and P3A+
+transcripts are generated in a 1:1 ratio in human muscle (Masuda et al.,
+2008).
+
+Schoepfer et al. (1988) showed that a human medulloblastoma cell line
+expressed a muscle type rather than a neuronal type of acetylcholine
+receptor. They succeeded in isolating cDNA clones for the alpha subunit
+and suggested that these should be useful in obtaining large amounts of
+human muscle-type acetylcholine receptor alpha-subunit protein for
+studies of the autoimmune response in myasthenia gravis (see 601462).
+
+Keiger et al. (2003) surveyed the developmental expression of nicotinic
+receptors, including CHRNA1, in chick and human spinal cord.
+
+GENE STRUCTURE
+
+The protein-coding sequence of the human ACHRA gene is divided into 9
+exons that correspond to different structural and functional domains of
+the precursor molecule (Noda et al., 1983).
+
+Beeson et al. (1990) identified the exon P3A and found that CHNRA1 gene
+is alternatively spliced. Masuda et al. (2008) found that a -8G
+nucleotide in intron 3 is an essential nucleotide of an intronic
+splicing silencer (ISS) that markedly decreases recognition of exon P3A
+by heterogeneous nuclear ribonucleoprotein (hnRNP) H (HNRPH1; 601035).
+They showed that hnRNP H is the transfactor that normally binds to this
+ISS and suppresses expression of P3A.
+
+MAPPING
+
+By means of somatic cell hybridization, Beeson et al. (1989, 1990)
+assigned the CHRNA gene to chromosome 2; by in situ hybridization, they
+regionalized the gene to 2q24-q32, with the major peak of grains being
+at 2q32. By linkage analysis, Lobos (1993) placed the CHRNA gene about
+27 cM proximal to the crystallin G pseudogene marker, CRYGP1, located at
+2q33-q35; the CHRND (100720) and CHRNG (100730) loci were placed about
+31 cM distal to CRYGP1.
+
+Heidmann et al. (1986) mapped the mouse alpha subunit gene to chromosome
+17, but Taylor and Rowe (1989) determined that the mouse Chrna1 gene is
+in fact located on chromosome 2.
+
+GENE FUNCTION
+
+Giraud et al. (2007) described a mechanism controlling thymic
+transcription of a prototypic tissue-restricted human autoantigen gene,
+CHRNA1. This gene encodes the alpha subunit of the muscle acetylcholine
+receptor, which is the main target of pathogenic autoantibodies in
+autoimmune myasthenia gravis (254200). On resequencing the CHRNA1 gene,
+Giraud et al. (2007) identified a functional biallelic variant in the
+promoter that was associated with early onset of disease in 2
+independent human populations (France and U.K.). The authors showed that
+this variant prevented binding of interferon regulatory factor-8 (IRF8;
+601565) and abrogated CHRNA1 promoter activity in thymic epithelial
+cells in vitro. Notably, both the CHRNA1 promoter variant and AIRE
+(607358) modulated CHRNA1 mRNA levels in human medullary thymic
+epithelial cells ex vivo and also in a transactivation assay. Giraud et
+al. (2007) concluded that their findings revealed a critical function of
+AIRE and the interferon signaling pathway in regulating quantitative
+expression of this autoantigen in the thymus, suggesting that together
+they set the threshold for self-tolerance versus autoimmunity.
+
+BIOCHEMICAL FEATURES
+
+By recording images at liquid-helium temperatures and applying a
+computational method to correct for distortions, Miyazawa et al. (2003)
+reported the crystal structure of the acetylcholine receptor of the
+Torpedo electric ray at a resolution of 4 angstroms. The pore is shaped
+by an inner ring of 5 alpha helices, which curve radially to create a
+tapering path for the ions, and an outer ring of 15 alpha helices, which
+coil around each other and shield the inner ring from the lipids. The
+gate is a constricting hydrophobic girdle at the middle of a lipid
+bilayer, formed by weak interactions between neighboring inner helices.
+When acetylcholine enters the ligand-binding domain, it triggers
+rotations of the protein chains on opposite sides of the entrance to the
+pore. These rotations are communicated through the inner helices and
+open the pore by breaking the girdle apart.
+
+Lape et al. (2008) investigated partial agonists for 2 members of the
+nicotinic superfamily, the muscle nicotinic acetylcholine receptor and
+the glycine receptor (138491), and found that the open-shut reaction is
+similar for both full and partial agonists, but the response to partial
+agonists is limited by an earlier conformation change (flipping) that
+takes place when the channel is still shut. Lape et al. (2008) suggested
+that their observations have implications for the interpretation of
+structural studies and for the design of partial agonists for
+therapeutic use.
+
+MOLECULAR GENETICS
+
+- Myasthenia Gravis
+
+Garchon et al. (1994) identified 2 stable polymorphic dinucleotide
+repeats within the first intron of the CHRNA gene, designated HB and BB.
+They found that the HB*14 allele conferred a relative risk for
+myasthenia gravis (254200) of 2.5 in 81 unrelated patients compared with
+100 control subjects. Very significantly, family analysis based on
+haplotype segregation data indicated that parental haplotypes associated
+with HB*14 always segregated to the child with myasthenia gravis,
+whereas their transmission to unaffected sibs was as expected ('was
+equilibrated,' in the words of the authors). Myasthenia gravis patients
+always showed a high frequency of microsatellite variants not seen in
+controls.
+
+Giraud et al. (2007) found that the minor allele G of dbSNP rs16862847
+was associated with early onset of disease in French and U.K. myasthenia
+gravis patients in a combined sample of 96 patients in the lower
+quartile of the age distribution versus 234 patients in the upper 3
+quartiles of the age distribution and 260 controls (odds ratio = 2.19,
+95% confidence interval 1.41 to 3.39, P = 0.00048). For heterozygotes
+plus homozygotes for the G allele versus homozygotes for the A allele,
+the odds ratio for early onset of myasthenia gravis was 2.66 (95%
+confidence interval 1.6 to 4.41, P = 0.00015).
+
+- Congenital Myasthenic Syndromes
+
+In a patient with slow-channel congenital myasthenic syndrome (601462),
+Engel et al. (1996) identified a heterozygous mutation in the CHRNA1
+gene (100690.0001).
+
+In 2 sibs with fast-channel congenital myasthenic syndrome (608930),
+Wang et al. (1999) identified compound heterozygosity for 2 mutations in
+the CHRNA gene (100690.0007; 100690.0008).
+
+- Lethal Multiple Pterygium Syndrome
+
+Michalk et al. (2008) reported 2 families in which homozygous nonsense
+mutations in CHRNA1 (e.g., 100690.0013) caused lethal multiple pterygium
+syndrome (253290).
+
+*FIELD* AV
+.0001
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, ASN217LYS 
+
+In a 30-year-old woman with slow-channel congenital myasthenic syndrome
+(601462), Engel et al. (1996) identified a heterozygous 651C-G
+transversion in exon 6 of the CHRNA1 gene, resulting in an asn217-to-lys
+(N217K) substitution at a conserved residue in the M1 transmembrane
+domain. The mutation cosegregated with the disease through 3
+generations. Functional expression studies showed that the N217K
+mutation slowed the rate of AChR channel closure, increased the apparent
+affinity for ACh, and enhanced desensitization. Cationic overload of the
+postsynaptic region caused an endplate myopathy.
+
+.0002
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, VAL156MET 
+
+In a patient with SCCMS (601462), Croxen et al. (1997) identified a
+heterozygous 466G-A transition in the CHRNA1 gene, resulting in a
+val156-to-met (V156M) substitution in a putative ACh-binding region of
+the protein. Functional studies suggested that the V156M mutation
+stabilizes the open state of the AChR channel.
+
+.0003
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, THR254ILE 
+
+In a 60-year-old woman whose myasthenic syndrome (SCCMS; 601462) had
+first become symptomatic at the age of 16, Croxen et al. (1997)
+identified a heterozygous 761C-T transition in the CHRNA1 gene,
+resulting in a thr254-to-ile (T254I) substitution in the M2
+transmembrane domain which lines the AChR channel pore. The patient was
+previously reported by Chauplannaz and Bady (1994). Functional
+expression studies suggested that the T254I mutation stabilized the open
+state of the AChR channel.
+
+.0004
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, GLY153SER 
+
+In 5 members of a family and another unrelated person affected by a
+slow-channel congenital myasthenic syndrome (601462), Sine et al. (1995)
+identified a heterozygous 457G-A transition in the CHRNA1 gene,
+resulting in a gly153-to-ser (G153S) substitution in the extracellular
+domain of the subunit. Electrophysiologic analysis of endplates revealed
+prolonged decay of miniature endplate currents and prolonged activation
+episodes of single AChR channels. Single-channel kinetic analysis of
+engineered alpha-G153S AChR showed a markedly decreased rate of
+acetylcholine dissociation, indicating an increased affinity for ACh,
+causing the mutant AChR to open repeatedly during ACh occupancy. In
+addition, ACh binding measurements combined with the kinetic analysis
+indicated increased desensitization of the mutant AChR. Sine et al.
+(1995) concluded that ACh binding affinity can dictate the time course
+of the synaptic response.
+
+Croxen et al. (1997) identified the G153S mutation in a 41-year-old
+woman with SCCMS and her affected mother. Both patients were previously
+reported by Chauplannaz and Bady (1994). The G153S substitution resides
+in the putative ACh-binding domain of the protein, and functional
+expression studies suggested that the G153S mutation impedes
+dissociation of ACh from the AChR.
+
+.0005
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, SER269ILE 
+
+In a 28-year-old woman who first developed symptoms of SCCMS (601462) in
+the eighth month of her first pregnancy (Oosterhuis et al., 1987),
+Croxen et al. (1997) identified an 806G-T transversion in the CHRNA1
+gene, resulting in a ser269-to-ile (S269I) substitution. The mutation
+lies within the short extracellular sequence between M2 and M3
+transmembrane domains of the protein.
+
+.0006
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, VAL249PHE 
+
+In a patient with a severe form of SCCMS (601462), Milone et al. (1997)
+identified a heterozygous 745G-T transversion in exon 7 of the CHRNA1
+gene, resulting in a val249-to-phe (V249F) substitution in the M2
+transmembrane domain of the protein that does not face the channel
+lumen. The patient's unaffected father was a mosaic for the mutation.
+Functional expression studies showed that the V249F mutation causes
+increased channel opening in the absence of ACh, prolonged opening in
+the presence of ACh, increased affinity for ACh, and enhanced
+desensitization. The findings indicated that the structure of the M2
+domain is essential for correct stabilization of functional channel
+states and that mutation in this region results in multiple functional
+defects.
+
+.0007
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, VAL285ILE 
+
+In 2 sibs with fast-channel congenital myasthenic syndrome (608930),
+Wang et al. (1999) identified compound heterozygosity for 2 mutations in
+the CHRNA gene. The functional mutation was an 853G-A transition in exon
+7, resulting in a val285-to-ile (V285I) substitution in the upper third
+of the M3 transmembrane domain. The other mutation was a 697T-G
+transversion in exon 6, resulting in a phe233-to-val substitution
+(F233V; 100690.0008) in the M1 transmembrane domain, causing markedly
+reduced protein expression; this was essentially a null mutation.
+Functional expression studies showed that the V285I mutation reduced the
+amplitude of the miniature endplate current (MEPC), accelerated the
+decay of the MEPC, and reduced total current flow through the AChR
+channel. Kinetic analysis showed abnormally slow channel opening and
+rapid closing, resulting in an abnormally brief current.
+
+.0008
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, PHE233VAL 
+
+See 100690.0007 and Wang et al. (1999).
+
+.0009
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, PHE256LEU 
+
+In a patient with fast-channel CMS (608930) originally reported by
+Vincent et al. (1981), Webster et al. (2004) identified a heterozygous
+766T-C transition in exon 7 of the CHRNA1 gene, resulting in a
+phe256-to-leu (F256L) substitution in the M2 transmembrane domain of the
+protein. Functional expression studies showed that the F256L mutation
+results in fewer and shorter ion channel activations, with a decreased
+channel opening rate and an increased channel closing rate. The
+patient's mildly affected father also had the F256L mutation. Webster et
+al. (2004) noted that autosomal dominant inheritance of fast-channel CMS
+is rare.
+
+.0010
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, VAL132LEU 
+
+In a girl with severe fast-channel CMS (608930), Shen et al. (2003)
+identified compound heterozygosity for 2 mutations in the CHRNA1 gene: a
+frameshifting null mutation (381delC; 100690.0011), and a 394G-C
+transversion, resulting in a val132-to-leu (V132L) substitution, in a
+highly conserved cys-loop at the junction between the extracellular
+ligand-binding and transmembrane domains of the protein. Functional
+kinetic expression studies showed that channels with the V132L mutation
+had an increased dissociation constant for ACh, shorter burst duration,
+and resistance to desensitization, culminating in a reduced probability
+of channel opening over a range of ACh concentrations. The mutant
+channel showed an approximately 30-fold decrease of ACh binding affinity
+for the second of 2 closed-state binding sites, but only a 2-fold
+decrease in gating efficiency. Mutations corresponding to the val132
+residue in other AChR subunits showed different effects, indicating
+functional asymmetry between cys-loops of the different subunits.
+
+.0011
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, 1-BP DEL, 381C
+
+See 100690.0010 and Shen et al. (2003).
+
+.0012
+MYASTHENIC SYNDROME, CONGENITAL, SLOW-CHANNEL
+CHRNA1, CYS418TRP  
+
+In a 27-year-old man with congenital slow-channel myasthenic syndrome
+(601462) and mild symptoms since birth, Shen et al. (2006) identified a
+de novo heterozygous 1362C-G transversion in the CHRNA1 gene, resulting
+in a cys418-to-trp (C418W) substitution in the M4 domain of the protein.
+This residue is highly conserved across AChR-alpha subunits of different
+species but not across individual subunits. Functional kinetic
+expression studies in HEK cells showed that the AChR with the mutant
+alpha-subunit increased the channel opening equilibrium and the mean
+duration of open durations and bursts characteristic of a slow-channel
+mutation. The C418W mutant subunit increased the rate of channel opening
+and slowed the rate of channel closing, but had no effect on agonist
+binding. Shen et al. (2006) used a check plasmid as a screening tool to
+identify a specific siRNA that suppressed the mutant, but not the
+wildtype allele, at the mRNA, protein, and functional levels in vitro.
+
+.0013
+MULTIPLE PTERYGIUM SYNDROME, LETHAL TYPE
+CHRNA1, ARG254LEU  
+
+In a consanguineous Pakistani family, Michalk et al. (2008) demonstrated
+that multiple pterygium syndrome (253290) was caused by homozygosity for
+a G-to-T transversion at nucleotide 761 in exon 6 of the CHRNA1 gene
+that resulted in an arg234-to-leu (R234L) substitution in the mature
+protein (R254L in the precursor).
+
+.0014
+MULTIPLE PTERYGIUM SYNDROME, LETHAL TYPE
+CHRNA1, 17-BP DUP, NT117
+
+In a nonconsanguineous African family, Michalk et al. (2008) found that
+multiple pterygium syndrome (253290) was caused by homozygous
+duplication of 17 basepairs in exon 2 of the CHRNA1 gene, 117-133dup17,
+that resulted in frameshift and subsequent premature protein termination
+(H24RfsX19; H45RfsX19 in the precursor).
+
+.0015
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, IVS3AS, G-A, -8  
+
+In a woman with autosomal recessive inheritance of fast-channel
+congenital myasthenic syndrome (608930), Masuda et al. (2008) identified
+compound heterozygosity for 2 mutations in the CHRNA1 gene: a G-to-A
+transition in intron 3 (IVS3-8G-A) and a 937C-T transition in exon 7,
+resulting in an arg313-to-trp (R313W; 100690.0016) substitution in a
+highly conserved residue. Neither mutation was found in 200 control
+alleles. Functional expression studies in HEK cells showed decreased
+expression of the R313W mutant, which showed mild fast-channel
+properties. The -8G-A transition occurred just before exon P3A, and
+disrupted an intronic splicing silencer (ISS) sequence, resulting in the
+inclusion of exon P3A and yielding a nonfunctional protein.
+
+.0016
+MYASTHENIC SYNDROME, CONGENITAL, FAST-CHANNEL
+CHRNA1, ARG313TRP 
+
+See 100690.0015 and Masuda et al. (2008).
+
+*FIELD* SA
+Mishina et al. (1986)
+*FIELD* RF
+1. Beeson, D.; Jeremiah, S.; West, L. F.; Povey, S.; Newsom-Davis,
+J.: Assignment of the human nicotinic acetylcholine receptor genes:
+the alpha and delta subunit genes to chromosome 2 and the beta subunit
+gene to chromosome 17. Ann. Hum. Genet. 54: 199-208, 1990.
+
+2. Beeson, D.; Jeremiah, S. J.; West, L. F.; Povey, S.; Newsom-Davis,
+J.: Assignment of the human acetylcholine receptor beta subunit gene
+to chromosome 17 and the alpha and delta subunit genes to chromosome
+2. (Abstract) Cytogenet. Cell Genet. 51: 960 only, 1989.
+
+3. Beeson, D.; Morris, A.; Vincent, A.; Newsom-Davis, J.: The human
+muscle nicotinic acetylcholine receptor alpha-subunit exists as two
+isoforms: a novel exon. EMBO J. 9: 2101-2106, 1990.
+
+4. Chauplannaz, G.; Bady, B.: Hereditary myasthenic syndromes with
+late onset: usefulness of electrophysiologic tests. Rev. Neurol. 150:
+142-148, 1994.
+
+5. Croxen, R.; Newland, C.; Beeson, D.; Oosterhuis, H.; Chauplannaz,
+G.; Vincent, A.; Newsom-Davis, J.: Mutations in different functional
+domains of the human muscle acetylcholine receptor alpha subunit in
+patients with the slow-channel congenital myasthenic syndrome. Hum.
+Molec. Genet. 6: 767-774, 1997.
+
+6. Engel, A. G.; Ohno, K.; Milone, M.; Wang, H.-L.; Nakano, S.; Bouzat,
+C.; Pruitt, J. N., II; Hutchinson, D. O.; Brengman, J. M.; Bren, N.;
+Sieb, J. P.; Sine, S. M.: New mutations in acetylcholine receptor
+subunit genes reveal heterogeneity in the slow-channel congenital
+myasthenic syndrome. Hum. Molec. Genet. 5: 1217-1227, 1996.
+
+7. Garchon, H.-J.; Djabiri, F.; Viard, J.-P.; Gajdos, P.; Bach, J.-F.
+: Involvement of human muscle acetylcholine receptor alpha-subunit
+gene (CHRNA) in susceptibility to myasthenia gravis. Proc. Nat. Acad.
+Sci. 91: 4668-4672, 1994.
+
+8. Giraud, M.; Taubert, R.; Vandiedonck, C.; Ke, X.; Levi-Strauss,
+M.; Pagani, F.; Baralle, F. E.; Eymard, B.; Tranchant, C.; Gajdos,
+P.; Vincent, A.; Willcox, N.; Beeson, D.; Kyewski, B.; Garchon, H.-J.
+: An IRF8-binding promoter variant and AIRE control CHRNA1 promiscuous
+expression in thymus. Nature 448: 934-937, 2007.
+
+9. Heidmann, O.; Buonanno, A.; Geoffroy, B.; Robert, B.; Guenet, J.-L.;
+Merlie, J. P.; Changeux, J.-P.: Chromosomal localization of muscle
+nicotinic acetylcholine receptor genes in the mouse. Science 234:
+866-868, 1986.
+
+10. Keiger, C. J. H.; Prevette, D.; Conroy, W. G.; Oppenheim, R. W.
+: Developmental expression of nicotinic receptors in the chick and
+human spinal cord. J. Comp. Neurol. 455: 86-99, 2003.
+
+11. Lape, R.; Colquhoun, D.; Sivilotti, L. G.: On the nature of partial
+agonism in the nicotinic receptor superfamily. Nature 454: 722-727,
+2008.
+
+12. Lobos, E. A.: Five subunit genes of the human muscle nicotinic
+acetylcholine receptor are mapped to two linkage groups on chromosomes
+2 and 17. Genomics 17: 642-650, 1993.
+
+13. Masuda, A.; Shen, X.-M.; Ito, M.; Matsuura, T.; Engel, A. G.;
+Ohno, K.: hnRNP H enhances skipping of a nonfunctional exon P3A in
+CHRNA1 and a mutation disrupting its binding causes congenital myasthenic
+syndrome. Hum. Molec. Genet. 17: 4022-4035, 2008.
+
+14. Michalk, A.; Stricker, S.; Becker, J.; Rupps, R.; Pantzar, T.;
+Miertus, J.; Botta, G.; Naretto, V. G.; Janetzki, C.; Yaqoob, N.;
+Ott, C.-E.; Seelow, D.; and 10 others: Acetylcholine receptor pathway
+mutations explain various fetal akinesia deformation sequence disorders. Am.
+J. Hum. Genet. 82: 464-476, 2008.
+
+15. Milone, M.; Wang, H. L.; Ohno, K.; Fukudome, T.; Pruitt, J. N.;
+Bren, N.; Sine, S. M.; Engel, A. G.: Slow-channel myasthenic syndrome
+caused by enhanced activation, desensitization, and agonist binding
+affinity attributable to mutation in the M2 domain of the acetylcholine
+receptor alpha subunit. J. Neurosci. 17: 5651-5665, 1997.
+
+16. Mishina, M.; Takai, T.; Imoto, K.; Noda, M.; Takahashi, T.; Numa,
+S.; Methfessel, C.; Sakmann, B.: Molecular distinction between fetal
+and adult forms of muscle acetylcholine receptor. Nature 321: 406-411,
+1986.
+
+17. Miyazawa, A.; Fujiyoshi, Y.; Unwin, N.: Structure and gating
+mechanism of the acetylcholine receptor pore. Nature 423: 949-955,
+2003.
+
+18. Noda, M.; Furutani, Y.; Takahashi, H.; Toyosato, M.; Tanabe, T.;
+Shimizu, S.; Kikyotani, S.; Kayano, T.; Hirose, T.; Inayama, S.; Numa,
+S.: Cloning and sequence analysis of calf cDNA and human genomic
+DNA encoding alpha-subunit precursor of muscle acetylcholine receptor. Nature 305:
+818-823, 1983.
+
+19. Oosterhuis, H. J. G. H.; Newsom-Davis, J.; Wokke, J. H. J.; Molenaar,
+P. C.; Weerden, T. V.; Oen, B. S.; Jennekens, F. G. I.; Veldman, H.;
+Vincent, A.; Wray, D. W.; Prior C.; Murray, N. M. F.: The slow channel
+syndrome: two new cases. Brain 110: 1061-1079, 1987.
+
+20. Schoepfer, R.; Luther, M.; Lindstrom, J.: The human medulloblastoma
+cell line TE671 expresses a muscle-like acetylcholine receptor: cloning
+of the alpha-subunit cDNA. FEBS Lett. 226: 235-240, 1988.
+
+21. Shen, X.-M.; Deymeer, F.; Sine, S. M.; Engel, A. G.: Slow-channel
+mutation in acetylcholine receptor alpha-M4 domain and its efficient
+knockdown. Ann. Neurol. 60: 128-136, 2006.
+
+22. Shen, X.-M.; Ohno, K.; Tsujino, A.; Brengman, J. M.; Gingold,
+M.; Sine, S. M.; Engel, A. G.: Mutation causing severe myasthenia
+reveals functional asymmetry of AChR signature cystine loops in agonist
+binding and gating. J. Clin. Invest. 111: 497-505, 2003.
+
+23. Sine, S. M.; Ohno, K.; Bouzat, C.; Auerbach, A.; Milone, M.; Pruitt,
+J. N.; Engel, A. G.: Mutation of the acetylcholine receptor alpha
+subunit causes a slow-channel myasthenic syndrome by enhancing agonist
+binding affinity. Neuron 15: 229-239, 1995.
+
+24. Taylor, B. A.; Rowe, L.: Localization of the gene encoding the
+alpha-subunit of the acetylcholine receptor on chromosome 2 of the
+mouse. Cytogenet. Cell Genet. 52: 102-103, 1989.
+
+25. Vincent, A.; Cull-Candy, S. G.; Newsom-Davis, J.; Trautmann, A.;
+Molenaar, P. C.; Polak, R. L.: Congenital myasthenia: end-plate acetylcholine
+receptors and electrophysiology in five cases. :Muscle Nerve 4:
+306-318, 1981.
+
+26. Wang, H.-L.; Milone, M.; Ohno, K.; Shen, X.-M.; Tsujino, A.; Batocchi,
+A. P.; Tonali, P.; Brengman, J.; Engel, A. G.; Sine, S. M.: Acetylcholine
+receptor M3 domain: stereochemical and volume contributions to channel
+gating. Nature Neurosci. 2: 226-233, 1999. Note: Erratum: Nature
+Neurosci. 2: 485 only, 1999.
+
+27. Webster, R.; Brydson, M.; Croxen, R.; Newsom-Davis, J.; Vincent,
+A.; Beeson, D.: Mutation in the AChR ion channel gate underlies a
+fast channel congenital myasthenic syndrome. Neurology 62: 1090-1096,
+2004.
+
+*FIELD* CN
+Cassandra L. Kniffin - updated: 4/4/2011
+Ada Hamosh - updated: 9/24/2008
+Victor A. McKusick - updated: 3/31/2008
+Ada Hamosh - updated: 11/7/2007
+Cassandra L. Kniffin - updated: 6/25/2007
+Patricia A. Hartz - updated: 12/7/2005
+Cassandra L. Kniffin - updated: 2/7/2005
+Cassandra L. Kniffin - updated: 9/29/2004
+Ada Hamosh - updated: 7/8/2003
+Victor A. McKusick - updated: 1/19/2000
+Victor A. McKusick - updated: 2/20/1999
+Victor A. McKusick - updated: 6/23/1997
+Moyra Smith - updated: 10/9/1996
+
+*FIELD* CD
+Victor A. McKusick: 6/4/1986
+
+*FIELD* ED
+wwang: 04/11/2011
+ckniffin: 4/4/2011
+alopez: 9/24/2008
+terry: 9/24/2008
+alopez: 4/11/2008
+alopez: 4/9/2008
+terry: 3/31/2008
+alopez: 11/16/2007
+terry: 11/7/2007
+wwang: 6/28/2007
+ckniffin: 6/25/2007
+terry: 3/23/2006
+terry: 3/21/2006
+mgross: 12/7/2005
+carol: 3/9/2005
+wwang: 3/9/2005
+ckniffin: 2/7/2005
+carol: 10/26/2004
+carol: 10/7/2004
+ckniffin: 10/5/2004
+ckniffin: 9/29/2004
+mgross: 7/15/2003
+terry: 7/8/2003
+carol: 3/14/2002
+carol: 7/20/2000
+mcapotos: 2/2/2000
+mcapotos: 2/1/2000
+terry: 1/19/2000
+mgross: 10/29/1999
+terry: 10/21/1999
+carol: 2/22/1999
+terry: 2/20/1999
+alopez: 7/9/1997
+terry: 6/23/1997
+terry: 6/18/1997
+mark: 10/9/1996
+carol: 9/19/1994
+mimadm: 4/14/1994
+carol: 10/13/1993
+carol: 9/22/1993
+carol: 2/17/1993
+carol: 1/5/1993
+

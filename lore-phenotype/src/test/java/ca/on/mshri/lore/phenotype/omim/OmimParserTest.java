@@ -16,6 +16,10 @@
  */
 package ca.on.mshri.lore.phenotype.omim;
 
+import ca.on.mshri.lore.genome.Allele;
+import ca.on.mshri.lore.genome.Gene;
+import ca.on.mshri.lore.genome.Mutation;
+import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -46,22 +50,22 @@ public class OmimParserTest extends TestCase {
         super.tearDown();
     }
     
-    public void testMim2Gene() throws Exception {
-        
-        InputStream in = new FileInputStream("src/test/resources/mim2gene.txt");
-        
-        OmimImporter parser = new OmimImporter();
-        parser.parseMim2Gene(model, in);
-    }
-    
-    
-    public void testMorbidMap() throws Exception {
-        
-        InputStream in = new FileInputStream("src/test/resources/morbidmap");
-        
-        OmimImporter parser = new OmimImporter();
-        parser.parseMorbidMap(model, in);
-    }
+//    public void testMim2Gene() throws Exception {
+//        
+//        InputStream in = new FileInputStream("src/test/resources/mim2gene.txt");
+//        
+//        OmimImporter parser = new OmimImporter();
+//        parser.parseMim2Gene(model, in);
+//    }
+//    
+//    
+//    public void testMorbidMap() throws Exception {
+//        
+//        InputStream in = new FileInputStream("src/test/resources/morbidmap");
+//        
+//        OmimImporter parser = new OmimImporter();
+//        parser.parseMorbidMap(model, in);
+//    }
     
     
     public void testFulltextParser() throws Exception {
@@ -71,6 +75,19 @@ public class OmimParserTest extends TestCase {
         OmimFulltextParser parser = new OmimFulltextParser();
         parser.parse(model, in);
         parser.linkAlleles(model);
+        
+        for (Gene gene: model.listIndividualsOfClass(Gene.class, false)) {
+            System.out.println(gene.getLabel(null));
+            for (Allele allele : gene.listAlleles()) {
+                System.out.println("  * "+allele.getURI().substring(16));
+                for (Mutation mut : allele.listMutations()) {
+                    if (mut.getOntClass(true).getURI().equals(PointMutation.CLASS_URI)) {
+                        PointMutation pmut = PointMutation.fromIndividual(mut);
+                        System.out.println("    -> "+pmut.getFromAminoAcid()+pmut.getPosition()+pmut.getToAminoAcid());
+                    }
+                }
+            }
+        }
     }
 //    
 //    public void testAll() throws Exception {

@@ -4,8 +4,12 @@
  */
 package ca.on.mshri.lore.phenotype.omim;
 
+import ca.on.mshri.lore.base.LoreModel;
+import ca.on.mshri.lore.base.XRef;
 import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
+import ca.on.mshri.lore.genome.Mutation;
+import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.phenotype.Phenotype;
 import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -81,6 +85,12 @@ public class OmimFulltextParser {
                 
                 progress.next("Parsing");
                 
+            }
+            
+            //terminate last field and process last record
+            if (currRecord != null) {
+                writeFieldToRecord(currRecord, fieldType, currField.toString());
+                processRecord(model, currRecord);
             }
             
             progress.done();
@@ -165,7 +175,6 @@ public class OmimFulltextParser {
      * Pattern for the id and name line
      */
     private static final Pattern tiPattern = Pattern.compile("([\\+\\*%#]?\\d{6}) ([^;]+)(;(.*))?");
-    private static final Pattern snpPattern = Pattern.compile("(\\w{3})(\\d+)(\\w{3})");
     
     private void writeFieldToRecord(Record record, String fieldType, String fieldValue) {
         
@@ -249,11 +258,12 @@ public class OmimFulltextParser {
                                 insideList = false;
                                 //stupidly the last entry in the list is not a disease, but the mutant description
                                 String mutantDescription = diseaseNames.get(diseaseNames.size()-1);
+                                String[] mdParts = mutantDescription.split(", ");
                                 //so we have to remove it
                                 diseaseNames.remove(diseaseNames.size()-1);
                                 //then we can set the proper content for our object.
                                 currVariant.setDiseaseNames(diseaseNames);
-                                currVariant.setMutation(mutantDescription);
+                                currVariant.setMutation(mdParts.length > 1 ? mdParts[1] : mutantDescription);
                             } else {
                                 diseaseNames.add(line);
                             }
@@ -264,6 +274,9 @@ public class OmimFulltextParser {
         }
     }
 
+    private static final Pattern snpPattern = Pattern.compile("\\w{3}\\d+\\w{3}");
+    private static final Pattern dbSnpPattern = Pattern.compile("\\(dbSNP (\\w+\\d+)\\)");
+    
     private void processRecord(PhenotypeModel model, Record record) {
         
         if (record.getType() == Type.GENE) {
@@ -280,6 +293,19 @@ public class OmimFulltextParser {
                 String id = record.getId()+var.getId();
                 Allele allele = Allele.createOrGet(model, model.OMIM, id);
                 allele.setGene(gene);
+                
+                Matcher snpMatcher = snpPattern.matcher(var.getMutation());
+                if (snpMatcher.find()) {
+                    String mutSignature = snpMatcher.group();
+                    PointMutation mut = PointMutation.createOrGet(model, allele, mutSignature);
+                    allele.addMutation(mut);
+                    Matcher xrefMatcher = dbSnpPattern.matcher(var.getMutation());
+                    if (xrefMatcher.find()) {
+                        XRef xref = XRef.createOrGet(model, model.DB_SNP, xrefMatcher.group(1));
+                        mut.addProperty(model.getProperty(LoreModel.URI+"#hasXRef"), xref);
+                    }
+                } 
+                
                 
                 allele2variant.put(allele.getURI(), var);
                 //TODO: link variant to diseases afterwards
@@ -303,40 +329,40 @@ public class OmimFulltextParser {
         
     }
     
-    /**
-     * For sorting diseases by score
-     */
-    private static class DiseaseScore implements Comparable<DiseaseScore>{
-        
-        private String id;
-        private double score;
-
-        public DiseaseScore(String id, double score) {
-            this.id = id;
-            this.score = score;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public double getScore() {
-            return score;
-        }
-        
-        @Override
-        public int compareTo(DiseaseScore t) {
-            //sort DECREASING by score
-            if (score < t.getScore()) {
-                return 1;
-            } else if (score > t.getScore()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-        
-    }
+//    /**
+//     * For sorting diseases by score
+//     */
+//    private static class DiseaseScore implements Comparable<DiseaseScore>{
+//        
+//        private String id;
+//        private double score;
+//
+//        public DiseaseScore(String id, double score) {
+//            this.id = id;
+//            this.score = score;
+//        }
+//
+//        public String getId() {
+//            return id;
+//        }
+//
+//        public double getScore() {
+//            return score;
+//        }
+//        
+//        @Override
+//        public int compareTo(DiseaseScore t) {
+//            //sort DECREASING by score
+//            if (score < t.getScore()) {
+//                return 1;
+//            } else if (score > t.getScore()) {
+//                return -1;
+//            } else {
+//                return 0;
+//            }
+//        }
+//        
+//    }
     
     
     

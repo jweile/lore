@@ -29,7 +29,9 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -111,6 +113,21 @@ public class Allele extends RecordObject {
         
         gene.addProperty(hasAllele, this);
         
+    }
+    
+    public void addMutation(Mutation m) {
+        Property hasMut = getModel().getProperty(GenomeModel.URI+"#hasMutation");
+        addProperty(hasMut, m);
+    }
+    
+    public List<Mutation> listMutations() {
+        List<Mutation> list = new ArrayList<Mutation>();
+        Property hasMut = getModel().getProperty(GenomeModel.URI+"#hasMutation");
+        NodeIterator it = listPropertyValues(hasMut);
+        while (it.hasNext()) {
+            list.add(Mutation.fromIndividual(it.next().as(Individual.class)));
+        }
+        return list;
     }
     
     public static Allele createOrGet(GenomeModel model, Authority auth, String id) {

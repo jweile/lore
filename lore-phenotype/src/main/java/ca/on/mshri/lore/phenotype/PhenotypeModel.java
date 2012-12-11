@@ -31,6 +31,7 @@ public class PhenotypeModel extends GenomeModel {
     
     public final Authority HPO;
     public final Authority OMIM;
+    public Authority DB_SNP;
 
     public PhenotypeModel(OntModelSpec spec, Model model) {
         //super constructor loads dependencies, recursively
@@ -40,6 +41,7 @@ public class PhenotypeModel extends GenomeModel {
         
         HPO = Authority.createOrGet(this, "HPO");
         OMIM = Authority.createOrGet(this, "OMIM");
+        DB_SNP = Authority.createOrGet(this, "DBSNP");
     }
     
 //    public List<Gene> listGenes() {

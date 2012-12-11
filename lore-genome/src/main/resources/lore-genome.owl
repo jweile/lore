@@ -46,6 +46,15 @@
     
 
 
+    <!-- http://llama.mshri.on.ca/lore-genome.owl#hasMutation -->
+
+    <owl:ObjectProperty rdf:about="&lore-genome;hasMutation">
+        <rdfs:domain rdf:resource="&lore-genome;Allele"/>
+        <rdfs:range rdf:resource="&lore-genome;Mutation"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -73,10 +82,26 @@
     
 
 
+    <!-- http://llama.mshri.on.ca/lore-genome.owl#Mutation -->
+
+    <owl:Class rdf:about="&lore-genome;Mutation">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+    </owl:Class>
+    
+
+
     <!-- http://llama.mshri.on.ca/lore-genome.owl#NucleotideFeature -->
 
     <owl:Class rdf:about="&lore-genome;NucleotideFeature">
         <rdfs:subClassOf rdf:resource="&lore-base;RecordObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://llama.mshri.on.ca/lore-genome.owl#PointMutation -->
+
+    <owl:Class rdf:about="&lore-genome;PointMutation">
+        <rdfs:subClassOf rdf:resource="&lore-genome;Mutation"/>
     </owl:Class>
 </rdf:RDF>
 

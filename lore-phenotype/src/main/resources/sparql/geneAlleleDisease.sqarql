@@ -1,0 +1,15 @@
+PREFIX pheno: <http://llama.mshri.on.ca/lore-phenotype.owl#>
+PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
+PREFIX base: <http://llama.mshri.on.ca/lore-base.owl#>
+
+#Find all pairs of genes from species s that share an xref
+
+SELECT ?gene ?id ?allele ?disease
+WHERE
+{
+    ?gene genome:hasAllele ?allele .
+    ?gene base:hasXRef ?xref.
+    ?xref base:hasAuthority <urn:lore:Authority#EntrezGene> .
+    ?xref base:hasValue ?id .
+    ?allele pheno:isAssociatedWith ?disease .
+}
