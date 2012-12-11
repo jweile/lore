@@ -46,11 +46,11 @@ public class InteractionParser {
     private static final int adId = 6;
     private static final int gro = 12;
         
-    public void parse(InteractionModel model, InputStream in) {
+    public void parse(InteractionModel model, InputStream in, Experiment exp) {
         
         Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
-        Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-1.0");
-        OntClass protein = model.getOntClass(Protein.CLASS_URI);
+//        Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-1.0");
+        OntClass physIntType = model.getOntClass(PhysicalInteraction.CLASS_URI);
         
         Property pos = model.getProperty(InteractionModel.URI+"#affectsPositively");
         Property neg = model.getProperty(InteractionModel.URI+"#affectsNegatively");
@@ -88,7 +88,7 @@ public class InteractionParser {
                 Protein adProtein = Protein.createOrGet(model, model.ENTREZ, cols[adId]);
                 adProtein.setEncodingGene(adGene);
                 
-                PhysicalInteraction interaction = PhysicalInteraction.createOrGet(model, exp, protein, dbProtein, adProtein);
+                PhysicalInteraction interaction = PhysicalInteraction.createOrGet(model, exp, physIntType, dbProtein, adProtein);
                 
                 Allele dbAllele = Allele.createOrGet(model, ccsbMut, cols[mut]);
                 dbAllele.setGene(dbGene);

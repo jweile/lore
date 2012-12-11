@@ -70,10 +70,11 @@ public class PhysicalInteraction extends Interaction {
     
     
     /**
-     * Pseudo-constructor. 
+     * pseudo-constructor
      * @param model
-     * @param auth
-     * @param id
+     * @param e
+     * @param type type of interaction
+     * @param participants the participants of the interaction
      * @return 
      */
     public static PhysicalInteraction createOrGet(InteractionModel model, 
