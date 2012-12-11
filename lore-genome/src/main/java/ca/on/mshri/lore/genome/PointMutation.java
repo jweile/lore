@@ -71,7 +71,7 @@ public class PointMutation extends Mutation {
         String toAA = mutInfo[2];
         
         PointMutation out = fromIndividual(model.getOntClass(CLASS_URI)
-                .createIndividual("urn:lore:PointMutation#"+allele.getURI()+
+                .createIndividual("urn:lore:PointMutation#"+allele.getURI().substring(16)+
                 ":"+fromAA+position+toAA));
         
         out.addProperty(model.getProperty(GenomeModel.URI+"#fromAA"), fromAA);
