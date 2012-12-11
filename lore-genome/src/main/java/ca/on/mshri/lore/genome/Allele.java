@@ -91,7 +91,7 @@ public class Allele extends RecordObject {
         } else if (genes.size() > 1) {
             throw new InconsistencyException(getURI()+"has more than one associated Gene!");
         } else {
-            return genes.get(1);
+            return genes.get(0);
         }
         
     }
