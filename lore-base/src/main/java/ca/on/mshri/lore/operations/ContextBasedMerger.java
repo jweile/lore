@@ -39,10 +39,10 @@ public class ContextBasedMerger {
     /**
      * Perform the merging operation.
      * @param selection The a selection of objects on which the algorithm will run.
-     * @param contextRestriction only connected objects of this type will be considered as
+     * @param contextRestrictions only connected objects of these types will be considered as
      * part of the context of a given type.
      */
-    public void merge(Collection<? extends Individual> selection, OntClass contextRestriction) {
+    public void merge(Collection<? extends Individual> selection, OntClass... contextRestrictions) {
         
         LazyInitMap<String,Set<Individual>> index = new LazyInitMap<String, Set<Individual>>(HashSet.class);
         
@@ -52,8 +52,7 @@ public class ContextBasedMerger {
             List<String> connectionKeys = new ArrayList<String>();
             for (Connection conn : context) {
                 if (conn.getNeighbour().canAs(Individual.class) && 
-                        conn.getNeighbour().as(Individual.class)
-                        .hasOntClass(contextRestriction, false)) {
+                        inRestriction(conn.getNeighbour().as(Individual.class), contextRestrictions)) {
                     connectionKeys.add(conn.getPredicate().getURI() + "-"
                             + conn.getNeighbour().asResource().getURI());
                 }
@@ -75,6 +74,14 @@ public class ContextBasedMerger {
         
         new Merger().merge(index.values());
         
+    }
+    
+    private boolean inRestriction(Individual i, OntClass[] restriction) {
+        boolean in = false;
+        for (OntClass clazz : restriction) {
+            in |= i.hasOntClass(clazz, false);
+        }
+        return in;
     }
     
 }
