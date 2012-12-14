@@ -38,19 +38,40 @@ import java.util.Set;
  * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class XRefBasedMerger {
+public class XRefBasedMerger extends LoreOperation {
+    
+    /**
+     *  The a selection of objects on which the algorithm will run.
+     */
+    public final Parameter<Collection> selectionP = Parameter.make("selection", Collection.class);
+    
+    /**
+     * The XRef authority based on which equality will be determined.
+     */
+    public final Parameter<Authority> authorityP = Parameter.make("authority", Authority.class);
+    
+    /**
+     * If true, all XRefs from the given authority must match between
+     * two objects for them to be considered equal.
+     */
+    public final Parameter<Boolean> allMustMatchP = Parameter.make("allMustMatch", Boolean.class, false);
+    
+    /**
+     * If true, the occurrence of objects with multiple xrefs of the 
+     * chosen authority will trigger an exception.
+     */
+    public final Parameter<Boolean> uniqueKeysP = Parameter.make("uniqueKeys", Boolean.class, false);
     
     /**
      * Perform the merger operation.
-     * 
-     * @param selection The a selection of objects on which the algorithm will run.
-     * @param authority The XRef authority based on which equality will be determined.
-     * @param allMustMatch If true, all XRefs from the given authority must match between
-     * two objects for them to be considered equal.
-     * @param uniqueKeys If true, the occurrence of objects with multiple xrefs of the 
-     * chosen authority will trigger an exception.
      */
-    public void merge(Collection<RecordObject> selection, Authority authority, boolean allMustMatch, boolean uniqueKeys) {
+    @Override
+    public void run() {
+        
+        Collection<RecordObject> selection = getParameterValue(selectionP);
+        Authority authority = getParameterValue(authorityP);
+        boolean allMustMatch = getParameterValue(allMustMatchP);
+        boolean uniqueKeys = getParameterValue(uniqueKeysP);
         
         Map<String,Set<Individual>> index = new HashMap<String, Set<Individual>>();
         
@@ -100,7 +121,8 @@ public class XRefBasedMerger {
             
             //merge
             Merger merger = new Merger();
-            merger.merge(index.values());
+            merger.setParameter(merger.mergeSetsP, index.values());
+            merger.run();
             
         }
     }

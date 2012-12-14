@@ -34,15 +34,21 @@ import java.util.Set;
  * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class ContextBasedMerger {
+public class ContextBasedMerger extends LoreOperation {
     
+    public final Parameter<Collection> selectionP = Parameter.make("selection", Collection.class);
+    public final Parameter<OntClass[]> contextRestrictionsP = Parameter.make("contextRestrictions", OntClass[].class);
     /**
      * Perform the merging operation.
      * @param selection The a selection of objects on which the algorithm will run.
      * @param contextRestrictions only connected objects of these types will be considered as
      * part of the context of a given type.
      */
-    public void merge(Collection<? extends Individual> selection, OntClass... contextRestrictions) {
+    @Override
+    public void run() {
+        
+        Collection<? extends Individual> selection = getParameterValue(selectionP);
+        OntClass[] contextRestrictions = getParameterValue(contextRestrictionsP);
         
         LazyInitMap<String,Set<Individual>> index = new LazyInitMap<String, Set<Individual>>(HashSet.class);
         
@@ -72,7 +78,9 @@ public class ContextBasedMerger {
             
         }
         
-        new Merger().merge(index.values());
+        Merger merger = new Merger();
+        merger.setParameter(merger.mergeSetsP, index.values());
+        merger.run();
         
     }
     

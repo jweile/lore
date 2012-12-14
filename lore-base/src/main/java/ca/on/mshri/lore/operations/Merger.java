@@ -31,14 +31,22 @@ import java.util.logging.Logger;
  * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class Merger {
+public class Merger extends LoreOperation {
+    
+    /**
+     * a collection of sets of individuals
+     */
+    public final Parameter<Collection> mergeSetsP = Parameter.make("mergeSets", Collection.class);
     
     /**
      * Performs the merging operation.
      * @param mergeSets a collection of sets of individuals. The members of each
      * set are considered mutually redundant and will be merged.
      */
-    public void merge(Collection<Set<Individual>> mergeSets) {
+    @Override
+    public void run() {
+        
+        Collection<Set<Individual>> mergeSets = getParameterValue(mergeSetsP);
         
         //##Do the actual merging##
         Logger.getLogger(Merger.class.getName())
