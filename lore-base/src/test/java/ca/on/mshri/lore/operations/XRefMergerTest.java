@@ -21,7 +21,6 @@ import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.base.XRef;
-import ca.on.mshri.lore.operations.XRefBasedMerger;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.util.List;
@@ -55,7 +54,9 @@ public class XRefMergerTest extends TestCase {
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
-        merger.merge(model.listIndividualsOfClass(RecordObject.class, false), authA, false, false);
+        merger.setParameter(merger.selectionP, model.listIndividualsOfClass(RecordObject.class, false));
+        merger.setParameter(merger.authorityP, authA);
+        merger.run();
                 
         //after
         objects = model.listIndividualsOfClass(RecordObject.class, false);
@@ -92,7 +93,10 @@ public class XRefMergerTest extends TestCase {
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
-        merger.merge(model.listIndividualsOfClass(RecordObject.class, false), authA, true, false);
+        merger.setParameter(merger.selectionP, model.listIndividualsOfClass(RecordObject.class, false));
+        merger.setParameter(merger.authorityP, authA);
+        merger.setParameter(merger.allMustMatchP, true);
+        merger.run();
         
         
         //after
@@ -133,9 +137,12 @@ public class XRefMergerTest extends TestCase {
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
+        merger.setParameter(merger.selectionP, model.listIndividualsOfClass(RecordObject.class, false));
+        merger.setParameter(merger.authorityP, authB);
+        merger.setParameter(merger.uniqueKeysP, true);
         boolean failed = false;
         try {
-            merger.merge(model.listIndividualsOfClass(RecordObject.class, false), authB, false, true);
+            merger.run();
         } catch (InconsistencyException e) {
             failed = true;
         }

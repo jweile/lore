@@ -80,7 +80,9 @@ public class ContextBasedMergerTest extends TestCase {
         List<Experiment> selection = model.listIndividualsOfClass(Experiment.class, false);
         OntClass contextRestriction = model.getOntClass(RecordObject.CLASS_URI);
         ContextBasedMerger instance = new ContextBasedMerger();
-        instance.merge(selection, contextRestriction);
+        instance.setParameter(instance.selectionP, selection);
+        instance.setParameter(instance.contextRestrictionsP, new OntClass[]{contextRestriction});
+        instance.run();
         
         assertEquals(4, model.listIndividualsOfClass(RecordObject.class, false).size());
         assertEquals(2, model.listIndividualsOfClass(Experiment.class, false).size());
