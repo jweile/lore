@@ -19,7 +19,6 @@ package ca.on.mshri.lore.operations;
 import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.GenomeModel;
-import ca.on.mshri.lore.genome.Mutation;
 import ca.on.mshri.lore.genome.PointMutation;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -64,9 +63,12 @@ public class AlleleMergerTest extends TestCase {
         assertEquals(2,model.listIndividualsOfClass(Allele.class, false).size());
         assertEquals(2,model.listIndividualsOfClass(PointMutation.class, false).size());
         
-        new AlleleMerger().merge(new ArrayList<Gene>(){{
+        AlleleMerger am = new AlleleMerger();
+        am.setParameter(am.selectionP, new ArrayList<Gene>(){{
             add(g1);
-        }}, model);
+        }});
+        am.setParameter(am.modelP, model);
+        am.run();
         
         //after
         assertEquals(1,model.listIndividualsOfClass(Allele.class, false).size());

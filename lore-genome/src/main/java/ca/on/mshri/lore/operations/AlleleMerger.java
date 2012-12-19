@@ -22,6 +22,7 @@ import ca.on.mshri.lore.genome.GenomeModel;
 import ca.on.mshri.lore.genome.Mutation;
 import ca.on.mshri.lore.genome.PointMutation;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import de.jweile.yogiutil.LazyInitMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,17 +34,33 @@ import java.util.Set;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class AlleleMerger {
+public class AlleleMerger extends LoreOperation {
+    
+    /**
+     * List of genes.
+     * 
+     * WARNING: This assumes that the list of genes is non-redundant, i.e. has 
+     * already been consolidated and merged as appropriate based on XRefs.
+     */
+    public final Parameter<Collection> selectionP = Parameter.make("selection", Collection.class);
+    
+    /**
+     * Genome model on containing the genes.
+     */
+    public final Parameter<GenomeModel> modelP = Parameter.make("model", GenomeModel.class);
     
     /**
      * Merges the alleles and associated Mutations belonging to the given set of genes.
      * 
      * WARNING: This assumes that the list of genes is non-redundant, i.e. has 
      * already been consolidated and merged as appropriate based on XRefs.
-     * @param selection 
      */
-    public void merge(Collection<Gene> selection, GenomeModel model) {
+    @Override
+    public void run() {
                 
+        Collection<Gene> selection = getParameterValue(selectionP);
+        GenomeModel model = getParameterValue(modelP);
+        
         /* ### STEP 1 ###
          * alleles are the same if they have the same gene and the same mutations,
          * so we need to merge those mutations first
@@ -81,17 +98,22 @@ public class AlleleMerger {
             }
         }
         
-        new Merger().merge(mutationSetList);
+        Merger merger = new Merger();
+        merger.setParameter(merger.mergeSetsP, mutationSetList);
+        merger.run();
         
         
         /* ### STEP 2 ###
          * Merging the actual alleles. 
          */
         
-        new ContextBasedMerger().merge(alleles, 
-                model.getOntClass(Gene.CLASS_URI), 
-                model.getOntClass(Mutation.CLASS_URI)
-        );
+        ContextBasedMerger cbm = new ContextBasedMerger();
+        cbm.setParameter(cbm.selectionP, alleles);
+        cbm.setParameter(cbm.contextRestrictionsP, new OntClass[]{
+            model.getOntClass(Gene.CLASS_URI), 
+            model.getOntClass(Mutation.CLASS_URI)
+        });
+        cbm.run();
         
     }
 }
