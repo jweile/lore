@@ -22,6 +22,8 @@ import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.interaction.Interaction;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.molecules.MoleculesModel;
+import ca.on.mshri.lore.operations.LoreOperation;
+import ca.on.mshri.lore.operations.LoreOperation.Parameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,12 +37,34 @@ import java.util.logging.Logger;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class TabParser {
+public class TabParser extends LoreOperation {
     
-    public void parse(InteractionModel model, InputStream in, Authority interactorNS, 
-            Experiment exp, OntClass interactionType, Class<? extends RecordObject> interactorType, boolean header) {
+    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+    
+    public Parameter<InputStream> inP = Parameter.make("in", InputStream.class);
+    
+    public Parameter<Authority> interactorAuthP = Parameter.make("interactorAuth", Authority.class);
+    
+    public Parameter<Experiment> experimentP = Parameter.make("experiment", Experiment.class);
+    
+    public Parameter<OntClass> interactionTypeP = Parameter.make("interactionType", OntClass.class);
+    
+    public Parameter<Class> interactorTypeP = Parameter.make("interactorType", Class.class);
+    
+    public Parameter<Boolean> headerP = Parameter.make("header", Boolean.class, false);
+    
+    public void run() {
         
-        Class<?> moduleClass = MoleculesModel.class;//TODO: figure out how to infer this from the interactortype.
+        InteractionModel model = getParameterValue(modelP);
+        InputStream in = getParameterValue(inP);
+        Authority interactorNS = getParameterValue(interactorAuthP);
+        Experiment exp = getParameterValue(experimentP);
+        OntClass interactionType = getParameterValue(interactionTypeP);
+        Class<? extends RecordObject> interactorType = getParameterValue(interactorTypeP);
+        boolean header = getParameterValue(headerP);
+        
+        //FIXME: Needs to be infered from interactortype. Will break for non-molecule interactors!
+        Class<?> moduleClass = MoleculesModel.class;
         
         BufferedReader r = null;
         try {

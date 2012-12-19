@@ -10,6 +10,7 @@ import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.GenomeModel;
 import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.interaction.InteractionModel;
+import ca.on.mshri.lore.operations.LoreOperation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,9 +22,16 @@ import java.util.logging.Logger;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class MutantDetailParser {
+public class MutantDetailParser extends LoreOperation {
     
-    public void parse(InputStream in, InteractionModel model) {
+    public Parameter<InputStream> inP = Parameter.make("in", InputStream.class);
+    
+    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+    
+    public void run() {
+        
+        InputStream in = getParameterValue(inP);
+        InteractionModel model = getParameterValue(modelP);
         
         BufferedReader b = new BufferedReader(new InputStreamReader(in));
         

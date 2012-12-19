@@ -48,8 +48,15 @@ public class TabParserTest extends TestCase {
         InputStream in = new FileInputStream("src/test/resources/CCSB_HI1_updated.tsv");
         
         TabParser parser = new TabParser();
+        parser.setParameter(parser.modelP, model);
+        parser.setParameter(parser.inP, in);
+        parser.setParameter(parser.interactorAuthP, model.ENTREZ);
+        parser.setParameter(parser.experimentP, exp);
+        parser.setParameter(parser.interactionTypeP, physInt);
+        parser.setParameter(parser.interactorTypeP, Protein.class);
+        parser.setParameter(parser.headerP, true);
         
-        parser.parse(model, in, model.ENTREZ, exp, physInt, Protein.class, true);
+        parser.run();
         
         List<Interaction> interactions = model.listIndividualsOfClass(Interaction.class, false);
         

@@ -23,6 +23,8 @@ import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
+import ca.on.mshri.lore.operations.LoreOperation;
+import ca.on.mshri.lore.operations.LoreOperation.Parameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.rdf.model.Property;
 import java.io.BufferedReader;
@@ -38,7 +40,13 @@ import java.util.logging.Logger;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class InteractionParser {
+public class InteractionParser extends LoreOperation {
+    
+    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+    
+    public Parameter<InputStream> inP = Parameter.make("in", InputStream.class);
+    
+    public Parameter<Experiment> expP = Parameter.make("exp", Experiment.class);
     
     //column indices
     private static final int mut = 1;
@@ -46,7 +54,11 @@ public class InteractionParser {
     private static final int adId = 6;
     private static final int gro = 12;
         
-    public void parse(InteractionModel model, InputStream in, Experiment exp) {
+    public void run() {
+        
+        InteractionModel model = getParameterValue(modelP);
+        InputStream in = getParameterValue(inP);
+        Experiment exp = getParameterValue(expP);
         
         Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
 //        Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-1.0");

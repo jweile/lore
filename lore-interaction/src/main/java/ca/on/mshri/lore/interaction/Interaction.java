@@ -110,6 +110,7 @@ public class Interaction extends IndividualImpl {
             throw new ConversionException(type+" is not a subclass of "+CLASS_URI);
         }
         
+        //FIXME: need to truncate participant URIs to avoid URN syntax violation
         StringBuilder b = new StringBuilder("urn:lore:Interaction#(");
         for (RecordObject o : participants) {
             b.append(o.getURI())

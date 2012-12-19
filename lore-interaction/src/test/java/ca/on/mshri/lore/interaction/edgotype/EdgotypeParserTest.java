@@ -68,11 +68,16 @@ public class EdgotypeParserTest extends TestCase {
          Property neg = model.getProperty(InteractionModel.URI+"#affectsNegatively");
          
          InteractionParser parser = new InteractionParser();
-         parser.parse(model, in, exp);
+         parser.setParameter(parser.modelP, model);
+         parser.setParameter(parser.inP, in);
+         parser.setParameter(parser.expP, exp);
+         parser.run();
          
          in = new FileInputStream("src/test/resources/Mutant_Details.tsv");
          MutantDetailParser mdParser = new MutantDetailParser();
-         mdParser.parse(in, model);
+         mdParser.setParameter(mdParser.inP, in);
+         mdParser.setParameter(mdParser.modelP, model);
+         mdParser.run();
          
          //list contents
          for (PhysicalInteraction physInt : model.listIndividualsOfClass(PhysicalInteraction.class, false)) {
