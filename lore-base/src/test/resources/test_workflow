@@ -1,0 +1,8 @@
+
+ca.on.mshri.lore.operations.TestOperation(
+    foo = 1,
+    bar = "test"
+)
+
+ca.on.mshri.lore.operations.TestOperation(foo=5,bar="blah")
+

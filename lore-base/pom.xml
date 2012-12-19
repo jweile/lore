@@ -32,5 +32,10 @@
       <artifactId>yogiutil</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>jparsec</groupId>
+      <artifactId>jparsec</artifactId>
+      <version>2.0.1</version>
+    </dependency>
   </dependencies>
 </project>

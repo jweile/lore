@@ -64,6 +64,16 @@ public abstract class LoreOperation {
         }
         return val;
     }
+
+    public boolean hasParameter(String name) {
+        boolean has = false;
+        for (Field f : this.getClass().getFields()) {
+            if (Parameter.class.isAssignableFrom(f.getType())) {
+                has |= f.getName().equals(name);
+            }
+        }
+        return has;
+    }
     
     public static class Parameter<T> {
         
