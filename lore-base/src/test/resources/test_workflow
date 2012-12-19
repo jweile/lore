@@ -1,8 +1,20 @@
 
+# Testing method calls
 ca.on.mshri.lore.operations.TestOperation(
     foo = 1,
     bar = "test"
 )
 
+# Testing single line calls
 ca.on.mshri.lore.operations.TestOperation(foo=5,bar="blah")
+
+# Testing SPARQL expressions
+ca.on.mshri.lore.operations.TestOperation(
+    foo=5,
+    bar="
+        SELECT ?gene WHERE {
+            ?gene ?p ?o.
+        };
+        "
+)
 

@@ -49,7 +49,7 @@ public class WorkflowParser {
         
         //lexer 
         
-        Parser<Void> ws = Scanners.WHITESPACES.skipMany();
+        Parser<Void> ws = Scanners.WHITESPACES.or(Scanners.lineComment("#")).skipMany();
                 
         Parser<?> identifierTokenizer = Terminals.Identifier.TOKENIZER;
         Parser<?> valueTokenizer = Parsers.or(
