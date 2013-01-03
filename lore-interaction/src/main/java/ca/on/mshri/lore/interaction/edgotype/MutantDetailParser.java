@@ -10,7 +10,7 @@ import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.operations.LoreOperation;
-import ca.on.mshri.lore.operations.Parameter;
+import ca.on.mshri.lore.operations.util.Parameter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

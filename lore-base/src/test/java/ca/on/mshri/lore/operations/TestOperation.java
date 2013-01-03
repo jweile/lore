@@ -16,7 +16,7 @@
  */
 package ca.on.mshri.lore.operations;
 
-import ca.on.mshri.lore.operations.Parameter;
+import ca.on.mshri.lore.operations.util.Parameter;
 
 /**
  *

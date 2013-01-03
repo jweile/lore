@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.operations.util.ResourceReferences;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import com.hp.hpl.jena.ontology.OntModelSpec;

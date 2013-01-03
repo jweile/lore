@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.operations.util.RefListParameter;
 import com.hp.hpl.jena.ontology.Individual;
 
 /**

@@ -16,6 +16,8 @@
  */
 package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.operations.util.Workflow;
+import ca.on.mshri.lore.operations.util.WorkflowParser;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import junit.framework.TestCase;

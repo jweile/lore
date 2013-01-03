@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.operations.util.Parameter;
 import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.RecordObject;

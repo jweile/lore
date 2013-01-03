@@ -16,6 +16,8 @@
  */
 package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.operations.util.Parameter;
+import ca.on.mshri.lore.operations.util.Connection;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import de.jweile.yogiutil.LazyInitMap;
