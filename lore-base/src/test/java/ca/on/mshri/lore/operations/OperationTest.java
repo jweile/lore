@@ -16,7 +16,7 @@
  */
 package ca.on.mshri.lore.operations;
 
-import ca.on.mshri.lore.operations.LoreOperation.Parameter;
+import ca.on.mshri.lore.operations.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

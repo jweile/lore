@@ -16,11 +16,9 @@
  */
 package ca.on.mshri.lore.operations;
 
-import ca.on.mshri.lore.operations.LoreOperation.Parameter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -211,58 +209,32 @@ public class WorkflowParser {
             if (value == null) {
                 continue;
             }
-            
+                        
             if (parameter.getType().equals(String.class)) {
                 
-                if (value instanceof String) {
-                    op.setParameter((Parameter<String>)parameter, (String)value);
-                } else {
-                    Logger.getLogger(WorkflowParser.class.getName())
-                            .log(Level.WARNING, "Parameter "+parameter.getId()+
-                            " should be a String. Coercing...");
-                    op.setParameter((Parameter<String>)parameter, value.toString());
-                }
+                Parameter<String> p = (Parameter<String>)parameter;
+                op.setParameter(p, p.validate(value));
                 
             } else if (parameter.getType().equals(Integer.class)) {
                 
-                if (value instanceof Integer) {
-                    op.setParameter((Parameter<Integer>)parameter, (Integer)value);
-                } else if (value instanceof Number) {
-                    Logger.getLogger(WorkflowParser.class.getName())
-                            .log(Level.WARNING, "Parameter "+parameter.getId()+
-                            " should be an Integer. Coercing...");
-                    op.setParameter((Parameter<Integer>)parameter, ((Number)value).intValue());
-                } else {
-                    throw new RuntimeException("Parameter "+parameter.getId()+" must be an integer number.");
-                }
+                Parameter<Integer> p = (Parameter<Integer>)parameter;
+                op.setParameter(p, p.validate(value));
                 
             } else if (parameter.getType().equals(Double.class)) {
                 
-                if (value instanceof Double) {
-                    op.setParameter((Parameter<Double>)parameter, (Double)value);
-                } else if (value instanceof Number) {
-                    Logger.getLogger(WorkflowParser.class.getName())
-                            .log(Level.WARNING, "Parameter "+parameter.getId()+
-                            " should be a Decimal number. Coercing...");
-                    op.setParameter((Parameter<Double>)parameter, ((Number)value).doubleValue());
-                } else {
-                    throw new RuntimeException("Parameter "+parameter.getId()+" must be a decimal number.");
-                }
+                Parameter<Double> p = (Parameter<Double>)parameter;
+                op.setParameter(p, p.validate(value));
                 
             } else if (parameter.getType().equals(Boolean.class)) {
                   
-                if (value instanceof Boolean) {
-                    op.setParameter((Parameter<Boolean>)parameter, (Boolean)value);
-                } else {
-                    throw new RuntimeException("Parameter "+parameter.getId()+" must be a boolean value.");
-                }
+                Parameter<Boolean> p = (Parameter<Boolean>)parameter;
+                op.setParameter(p, p.validate(value));
                 
-            } else if (parameter.getType().equals(Collection.class)) {
+            } else if (parameter instanceof RefListParameter) {
                 
-                //TODO: Implement collection type parameters
-                throw new UnsupportedOperationException("Not yet implemented"); 
-                
-                
+                RefListParameter<?> p = (RefListParameter<?>) parameter;
+                op.setParameter(p, p.validate(value));
+                 
             } else {
                 throw new RuntimeException("Unsupported parameter type: "+parameter.getType());
             }

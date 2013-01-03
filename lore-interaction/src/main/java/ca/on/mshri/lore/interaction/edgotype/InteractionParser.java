@@ -24,7 +24,7 @@ import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
 import ca.on.mshri.lore.operations.LoreOperation;
-import ca.on.mshri.lore.operations.LoreOperation.Parameter;
+import ca.on.mshri.lore.operations.Parameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.rdf.model.Property;
 import java.io.BufferedReader;

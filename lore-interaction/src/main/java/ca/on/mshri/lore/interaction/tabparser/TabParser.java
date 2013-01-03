@@ -23,7 +23,7 @@ import ca.on.mshri.lore.interaction.Interaction;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.molecules.MoleculesModel;
 import ca.on.mshri.lore.operations.LoreOperation;
-import ca.on.mshri.lore.operations.LoreOperation.Parameter;
+import ca.on.mshri.lore.operations.Parameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import java.io.BufferedReader;
 import java.io.IOException;

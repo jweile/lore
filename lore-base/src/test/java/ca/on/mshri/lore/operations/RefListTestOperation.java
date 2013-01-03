@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Department of Molecular Genetics, University of Toronto
+ * Copyright (C) 2013 Department of Molecular Genetics, University of Toronto
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,21 +16,19 @@
  */
 package ca.on.mshri.lore.operations;
 
-import ca.on.mshri.lore.operations.Parameter;
+import com.hp.hpl.jena.ontology.Individual;
 
 /**
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class TestOperation extends LoreOperation {
+public class RefListTestOperation extends LoreOperation {
     
-    public static final Parameter<Integer> fooP = Parameter.make("foo", Integer.class);
+    public static final RefListParameter<Individual> fooP = new RefListParameter<Individual>("foo", Individual.class);
     
-    public static final Parameter<String> barP = Parameter.make("bar", String.class);
-
     @Override
     public void run() {
-        System.out.println(getParameterValue(fooP) +" "+getParameterValue(barP));
+        System.out.println(getParameterValue(fooP));
     }
     
 }
