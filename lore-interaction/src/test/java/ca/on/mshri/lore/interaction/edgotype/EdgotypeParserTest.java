@@ -32,8 +32,7 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.File;
 import junit.framework.TestCase;
 
 /**
@@ -60,7 +59,7 @@ public class EdgotypeParserTest extends TestCase {
          
          InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
          
-         InputStream in = new FileInputStream("src/test/resources/PW1.tsv");
+         File file = new File("src/test/resources/PW1.tsv");
          
          Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
          Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-PW1");
@@ -68,15 +67,17 @@ public class EdgotypeParserTest extends TestCase {
          Property neg = model.getProperty(InteractionModel.URI+"#affectsNegatively");
          
          InteractionParser parser = new InteractionParser();
-         parser.setParameter(parser.modelP, model);
-         parser.setParameter(parser.inP, in);
-         parser.setParameter(parser.expP, exp);
+//         parser.setParameter(parser.modelP, model);
+         parser.setParameter(parser.srcP, parser.srcP.validate(file.toURI().toURL()));
+         parser.setParameter(parser.expP, parser.expP.validate(exp.getURI()));
+         parser.setModel(model);
          parser.run();
          
-         in = new FileInputStream("src/test/resources/Mutant_Details.tsv");
+         file = new File("src/test/resources/Mutant_Details.tsv");
          MutantDetailParser mdParser = new MutantDetailParser();
-         mdParser.setParameter(mdParser.inP, in);
-         mdParser.setParameter(mdParser.modelP, model);
+         mdParser.setParameter(mdParser.srcP, file.toURI().toURL());
+//         mdParser.setParameter(mdParser.modelP, model);
+         mdParser.setModel(model);
          mdParser.run();
          
          //list contents

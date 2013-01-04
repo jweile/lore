@@ -25,8 +25,7 @@ import ca.on.mshri.lore.molecules.Protein;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.File;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -40,22 +39,19 @@ public class TabParserTest extends TestCase {
         
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, 
                 ModelFactory.createDefaultModel());
-        
-        Experiment exp = Experiment.createOrGet(model, "CCSB-HI1.1");
-        
-        OntClass physInt = model.getOntClass(PhysicalInteraction.CLASS_URI);
-        
-        InputStream in = new FileInputStream("src/test/resources/CCSB_HI1_updated.tsv");
+                
+        File in = new File("src/test/resources/CCSB_HI1_updated.tsv");
         
         TabParser parser = new TabParser();
-        parser.setParameter(parser.modelP, model);
-        parser.setParameter(parser.inP, in);
-        parser.setParameter(parser.interactorAuthP, model.ENTREZ);
-        parser.setParameter(parser.experimentP, exp);
-        parser.setParameter(parser.interactionTypeP, physInt);
-        parser.setParameter(parser.interactorTypeP, Protein.class);
+//        parser.setParameter(parser.modelP, model);
+        parser.setParameter(parser.srcP, parser.srcP.validate(in.toURI().toURL()));
+        parser.setParameter(parser.interactorAuthP, model.ENTREZ.getAuthorityId());
+        parser.setParameter(parser.experimentP, "CCSB-HI1.1");
+        parser.setParameter(parser.interactionTypeP, parser.interactionTypeP.validate(PhysicalInteraction.CLASS_URI));
+        parser.setParameter(parser.interactorTypeP, parser.interactorTypeP.validate(Protein.CLASS_URI));
         parser.setParameter(parser.headerP, true);
         
+        parser.setModel(model);
         parser.run();
         
         List<Interaction> interactions = model.listIndividualsOfClass(Interaction.class, false);

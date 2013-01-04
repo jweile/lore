@@ -10,7 +10,8 @@ import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.operations.LoreOperation;
-import ca.on.mshri.lore.operations.util.Parameter;
+import ca.on.mshri.lore.operations.util.URLParameter;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,16 +25,14 @@ import java.util.logging.Logger;
  */
 public class MutantDetailParser extends LoreOperation {
     
-    public Parameter<InputStream> inP = Parameter.make("in", InputStream.class);
+    public URLParameter srcP = new URLParameter("src");
     
-    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+//    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
     
     public void run() {
         
-        InputStream in = getParameterValue(inP);
-        InteractionModel model = getParameterValue(modelP);
-        
-        BufferedReader b = new BufferedReader(new InputStreamReader(in));
+        InputStream in = null;
+        InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
         
         int mutId = 0;
         int symbol = 1;
@@ -46,6 +45,9 @@ public class MutantDetailParser extends LoreOperation {
         Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
         
         try {
+            
+            in = getParameterValue(srcP).openStream();
+            BufferedReader b = new BufferedReader(new InputStreamReader(in));
             
             String line; int lnum = 0;
             while ((line = b.readLine()) != null) {
@@ -82,7 +84,9 @@ public class MutantDetailParser extends LoreOperation {
             throw new RuntimeException("Parsing failed!",ex);
         } finally {
             try {
-                b.close();
+                if (in != null) {
+                    in.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(MutantDetailParser.class.getName())
                         .log(Level.WARNING, "Unable to close stream", ex);

@@ -24,52 +24,82 @@ import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.molecules.MoleculesModel;
 import ca.on.mshri.lore.operations.LoreOperation;
 import ca.on.mshri.lore.operations.util.Parameter;
+import ca.on.mshri.lore.operations.util.RefListParameter;
+import ca.on.mshri.lore.operations.util.URLParameter;
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Parse a tab-delimted file with two columns, interpreting each row as a pair of 
+ * interactors forming an interaction. 
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class TabParser extends LoreOperation {
     
-    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+//    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
     
-    public Parameter<InputStream> inP = Parameter.make("in", InputStream.class);
+    public final URLParameter srcP = new URLParameter("src");
     
-    public Parameter<Authority> interactorAuthP = Parameter.make("interactorAuth", Authority.class);
+    /**
+     * The namespace of the identifiers listed in each column of the input file, e.g. EntrezGene.
+     */
+    public final Parameter<String> interactorAuthP = Parameter.make("interactorAuth", String.class);
     
-    public Parameter<Experiment> experimentP = Parameter.make("experiment", Experiment.class);
+    /**
+     * Experiment id. Must not contain whitespaces.
+     */
+    public final Parameter<String> experimentP = Parameter.make("experiment", String.class);
     
-    public Parameter<OntClass> interactionTypeP = Parameter.make("interactionType", OntClass.class);
+    /**
+     * The type of interaction, e.g. PhysicalInteraction
+     */
+    public final RefListParameter<OntClass> interactionTypeP = new RefListParameter("interactionType", OntClass.class);
     
-    public Parameter<Class> interactorTypeP = Parameter.make("interactorType", Class.class);
+    /**
+     * The type of interactor, e.g. Molecule
+     */
+    public final RefListParameter<OntClass> interactorTypeP = new RefListParameter("interactorType", OntClass.class);
     
-    public Parameter<Boolean> headerP = Parameter.make("header", Boolean.class, false);
+    /**
+     * Whether or not the file contains a header line that needs to be ignored.
+     */
+    public final Parameter<Boolean> headerP = Parameter.make("header", Boolean.class, false);
     
+    /**
+     * Run
+     */
     public void run() {
         
-        InteractionModel model = getParameterValue(modelP);
-        InputStream in = getParameterValue(inP);
-        Authority interactorNS = getParameterValue(interactorAuthP);
-        Experiment exp = getParameterValue(experimentP);
-        OntClass interactionType = getParameterValue(interactionTypeP);
-        Class<? extends RecordObject> interactorType = getParameterValue(interactorTypeP);
+        InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        
+        Authority interactorNS = Authority.createOrGet(model, getParameterValue(interactorAuthP));
+        
+        Experiment exp = Experiment.createOrGet(model, getParameterValue(experimentP));
+        
+        OntClass interactionType = ((List<OntClass>)getParameterValue(interactionTypeP).resolve(model)).get(0);
+        
+        OntClass interactorType = ((List<OntClass>)getParameterValue(interactorTypeP).resolve(model)).get(0);
+        
         boolean header = getParameterValue(headerP);
         
         //FIXME: Needs to be infered from interactortype. Will break for non-molecule interactors!
         Class<?> moduleClass = MoleculesModel.class;
         
-        BufferedReader r = null;
+        InputStream in = null;
         try {
             
-            r = new BufferedReader(new InputStreamReader(in));
+            in = getParameterValue(srcP).openStream();
+            BufferedReader r = new BufferedReader(new InputStreamReader(in));
             
             String line; int lnum = 0;
             while ((line = r.readLine()) != null) {
@@ -98,8 +128,8 @@ public class TabParser extends LoreOperation {
             throw new RuntimeException("Unable to read tab-delimited stream.",ex);
         } finally {
             try {
-                if (r != null) {
-                    r.close();
+                if (in != null) {
+                    in.close();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(TabParser.class.getName())
@@ -110,11 +140,19 @@ public class TabParser extends LoreOperation {
     }
     
     private RecordObject getOrCreateInteractor(InteractionModel model, 
-            Class<? extends RecordObject> interactorType, Class<?> interactorModuleClass, Authority interactorNS, String id) {
+            OntClass interactorType, Class<?> interactorModuleClass, Authority interactorNS, String id) {
         try {
-            Method createOrGet = interactorType
-                    .getMethod("createOrGet", interactorModuleClass, Authority.class, String.class);
-            RecordObject out = (RecordObject) createOrGet.invoke(null, model, interactorNS, id);
+            
+            String iName = interactorType.getURI().split("#")[1];
+            
+            //create manually, since we don't have access to the wrapper.
+            Individual outInd = interactorType.createIndividual("urn:lore:"+iName+"#"+interactorNS.getAuthorityId()+":"+id);
+            RecordObject out = RecordObject.fromIndividual(outInd);
+            out.addXRef(interactorNS, id);
+            
+//            Method createOrGet = interactorType
+//                    .getMethod("createOrGet", interactorModuleClass, Authority.class, String.class);
+//            RecordObject out = (RecordObject) createOrGet.invoke(null, model, interactorNS, id);
             return out;
         } catch (Exception ex) {
             throw new RuntimeException(ex);

@@ -24,14 +24,16 @@ import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
 import ca.on.mshri.lore.operations.LoreOperation;
-import ca.on.mshri.lore.operations.util.Parameter;
+import ca.on.mshri.lore.operations.util.RefListParameter;
+import ca.on.mshri.lore.operations.util.URLParameter;
 import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Property;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.String;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,11 +44,11 @@ import java.util.logging.Logger;
  */
 public class InteractionParser extends LoreOperation {
     
-    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+//    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
     
-    public Parameter<InputStream> inP = Parameter.make("in", InputStream.class);
+    public URLParameter srcP = new URLParameter("src");
     
-    public Parameter<Experiment> expP = Parameter.make("exp", Experiment.class);
+    public RefListParameter<Experiment> expP = new RefListParameter("exp", Experiment.class);
     
     //column indices
     private static final int mut = 1;
@@ -56,9 +58,9 @@ public class InteractionParser extends LoreOperation {
         
     public void run() {
         
-        InteractionModel model = getParameterValue(modelP);
-        InputStream in = getParameterValue(inP);
-        Experiment exp = getParameterValue(expP);
+        InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        
+        Experiment exp = ((List<Experiment>)getParameterValue(expP).resolve(model)).get(0);
         
         Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
 //        Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-1.0");
@@ -67,10 +69,12 @@ public class InteractionParser extends LoreOperation {
         Property pos = model.getProperty(InteractionModel.URI+"#affectsPositively");
         Property neg = model.getProperty(InteractionModel.URI+"#affectsNegatively");
         
-        BufferedReader r = new BufferedReader(new InputStreamReader(in));
-        
+        InputStream in = null;
         
         try {
+            in = getParameterValue(srcP).openStream();
+            BufferedReader r = new BufferedReader(new InputStreamReader(in));
+            
             //read file
             String line; int lnum = 0;
             while ((line = r.readLine()) != null) {
@@ -122,7 +126,9 @@ public class InteractionParser extends LoreOperation {
             throw new RuntimeException("Unable to read interacion data",ex);
         } finally {
             try {
-                r.close();
+                if (in != null) {
+                    in.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(InteractionParser.class.getName())
                         .log(Level.WARNING, "Unable to close stream", ex);

@@ -90,6 +90,11 @@ public class Parameter<T> {
                         .log(Level.WARNING, "Parameter "+getId()+
                         " should be an Integer. Coercing...");
                 return (T)(Integer)((Number)value).intValue();
+            } else if (value instanceof String) {
+                Logger.getLogger(WorkflowParser.class.getName())
+                        .log(Level.WARNING, "Parameter "+getId()+
+                        " should be an Integer. Coercing...");
+                return (T)(Integer)Integer.parseInt((String)value);
             } else {
                 throw new RuntimeException("Parameter "+getId()+" must be an integer number.");
             }
@@ -103,6 +108,11 @@ public class Parameter<T> {
                         .log(Level.WARNING, "Parameter "+getId()+
                         " should be a Decimal number. Coercing...");
                 return (T)(Double)((Number)value).doubleValue();
+            } else if (value instanceof String) {
+                Logger.getLogger(WorkflowParser.class.getName())
+                        .log(Level.WARNING, "Parameter "+getId()+
+                        " should be a Decimal number. Coercing...");
+                return (T)(Double)Double.parseDouble((String)value);
             } else {
                 throw new RuntimeException("Parameter "+getId()+" must be a decimal number.");
             }
@@ -111,6 +121,11 @@ public class Parameter<T> {
 
             if (value instanceof Boolean) {
                 return (T) value;
+            } else if (value instanceof String) {
+                Logger.getLogger(WorkflowParser.class.getName())
+                        .log(Level.WARNING, "Parameter "+getId()+
+                        " should be a Boolean. Coercing...");
+                return (T) (Boolean) Boolean.parseBoolean((String)value);
             } else {
                 throw new RuntimeException("Parameter "+getId()+" must be a boolean value.");
             }
