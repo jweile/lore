@@ -18,6 +18,7 @@ package ca.on.mshri.lore.operations;
 
 import ca.on.mshri.lore.operations.util.Parameter;
 import ca.on.mshri.lore.operations.util.Connection;
+import ca.on.mshri.lore.operations.util.RefListParameter;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import de.jweile.yogiutil.LazyInitMap;
@@ -38,8 +39,8 @@ import java.util.Set;
  */
 public class ContextBasedMerger extends LoreOperation {
     
-    public final Parameter<Collection> selectionP = Parameter.make("selection", Collection.class);
-    public final Parameter<OntClass[]> contextRestrictionsP = Parameter.make("contextRestrictions", OntClass[].class);
+    public final RefListParameter<Individual> selectionP = new RefListParameter<Individual>("selection", Individual.class);
+    public final RefListParameter<OntClass> contextRestrictionsP = new RefListParameter<OntClass>("contextRestrictions", OntClass.class);
     /**
      * Perform the merging operation.
      * @param selection The a selection of objects on which the algorithm will run.
@@ -49,8 +50,9 @@ public class ContextBasedMerger extends LoreOperation {
     @Override
     public void run() {
         
-        Collection<? extends Individual> selection = getParameterValue(selectionP);
-        OntClass[] contextRestrictions = getParameterValue(contextRestrictionsP);
+        List<Individual> selection = getParameterValue(selectionP).resolve(getModel());
+        OntClass[] contextRestrictions = ((List<OntClass>)getParameterValue(contextRestrictionsP)
+                .resolve(getModel())).toArray(new OntClass[0]);
         
         LazyInitMap<String,Set<Individual>> index = new LazyInitMap<String, Set<Individual>>(HashSet.class);
         

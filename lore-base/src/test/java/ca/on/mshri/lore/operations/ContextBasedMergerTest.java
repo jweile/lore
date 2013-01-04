@@ -20,10 +20,13 @@ import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.Experiment;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
+import ca.on.mshri.lore.operations.util.ResourceReferences;
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.vocabulary.RDF;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -77,11 +80,19 @@ public class ContextBasedMergerTest extends TestCase {
         assertEquals(4, model.listIndividualsOfClass(RecordObject.class, false).size());
         assertEquals(3, model.listIndividualsOfClass(Experiment.class, false).size());
         
-        List<Experiment> selection = model.listIndividualsOfClass(Experiment.class, false);
-        OntClass contextRestriction = model.getOntClass(RecordObject.CLASS_URI);
         ContextBasedMerger instance = new ContextBasedMerger();
+        
+        
+        
+        ResourceReferences<Individual> selection = instance.selectionP.validate(
+                "SELECT ?exp WHERE {?exp <"+RDF.type.getURI()+"> "
+                + "<"+Experiment.CLASS_URI+">}");
+        ResourceReferences<OntClass> contextRestriction = instance.contextRestrictionsP
+                .validate(RecordObject.CLASS_URI);
+        
         instance.setParameter(instance.selectionP, selection);
-        instance.setParameter(instance.contextRestrictionsP, new OntClass[]{contextRestriction});
+        instance.setParameter(instance.contextRestrictionsP, contextRestriction);
+        instance.setModel(model);
         instance.run();
         
         assertEquals(4, model.listIndividualsOfClass(RecordObject.class, false).size());

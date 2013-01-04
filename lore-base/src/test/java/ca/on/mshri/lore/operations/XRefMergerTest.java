@@ -17,12 +17,16 @@
 package ca.on.mshri.lore.operations;
 
 import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.Experiment;
 import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.base.XRef;
+import ca.on.mshri.lore.operations.util.ResourceReferences;
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.vocabulary.RDF;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -54,8 +58,16 @@ public class XRefMergerTest extends TestCase {
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
-        merger.setParameter(merger.selectionP, model.listIndividualsOfClass(RecordObject.class, false));
-        merger.setParameter(merger.authorityP, authA);
+        
+        ResourceReferences<RecordObject> selection = merger.selectionP.validate(
+                "SELECT ?exp WHERE {?exp <"+RDF.type.getURI()+"> "
+                + "<"+RecordObject.CLASS_URI+">}");
+        ResourceReferences<Authority> authority = merger.authorityP.validate(authA.getURI());
+        
+        merger.setParameter(merger.selectionP, selection);
+        merger.setParameter(merger.authorityP, authority);
+        
+        merger.setModel(model);
         merger.run();
                 
         //after
@@ -93,9 +105,18 @@ public class XRefMergerTest extends TestCase {
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
-        merger.setParameter(merger.selectionP, model.listIndividualsOfClass(RecordObject.class, false));
-        merger.setParameter(merger.authorityP, authA);
+        
+        
+        ResourceReferences<RecordObject> selection = merger.selectionP.validate(
+                "SELECT ?exp WHERE {?exp <"+RDF.type.getURI()+"> "
+                + "<"+RecordObject.CLASS_URI+">}");
+        ResourceReferences<Authority> authority = merger.authorityP.validate(authA.getURI());
+        
+        merger.setParameter(merger.selectionP, selection);
+        merger.setParameter(merger.authorityP, authority);
         merger.setParameter(merger.allMustMatchP, true);
+        
+        merger.setModel(model);
         merger.run();
         
         
@@ -137,9 +158,18 @@ public class XRefMergerTest extends TestCase {
                 
         //Perform merging
         XRefBasedMerger merger = new XRefBasedMerger();
-        merger.setParameter(merger.selectionP, model.listIndividualsOfClass(RecordObject.class, false));
-        merger.setParameter(merger.authorityP, authB);
+        merger.setModel(model);
+        
+        ResourceReferences<RecordObject> selection = merger.selectionP.validate(
+                "SELECT ?exp WHERE {?exp <"+RDF.type.getURI()+"> "
+                + "<"+RecordObject.CLASS_URI+">}");
+        ResourceReferences<Authority> authority = merger.authorityP.validate(authB.getURI());
+        
+        merger.setParameter(merger.selectionP, selection);
+        merger.setParameter(merger.authorityP, authority);
         merger.setParameter(merger.uniqueKeysP, true);
+        merger.setModel(model);
+        
         boolean failed = false;
         try {
             merger.run();

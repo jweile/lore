@@ -21,9 +21,10 @@ import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.base.XRef;
+import ca.on.mshri.lore.operations.util.RefListParameter;
+import ca.on.mshri.lore.operations.util.ResourceReferences;
 import com.hp.hpl.jena.ontology.Individual;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,12 +45,12 @@ public class XRefBasedMerger extends LoreOperation {
     /**
      *  The a selection of objects on which the algorithm will run.
      */
-    public final Parameter<Collection> selectionP = Parameter.make("selection", Collection.class);
+    public final RefListParameter<RecordObject> selectionP = new RefListParameter<RecordObject>("selection", RecordObject.class);
     
     /**
      * The XRef authority based on which equality will be determined.
      */
-    public final Parameter<Authority> authorityP = Parameter.make("authority", Authority.class);
+    public final RefListParameter<Authority> authorityP = new RefListParameter<Authority>("authority", Authority.class);
     
     /**
      * If true, all XRefs from the given authority must match between
@@ -69,8 +70,8 @@ public class XRefBasedMerger extends LoreOperation {
     @Override
     public void run() {
         
-        Collection<RecordObject> selection = getParameterValue(selectionP);
-        Authority authority = getParameterValue(authorityP);
+        List<RecordObject> selection = getParameterValue(selectionP).resolve(getModel());
+        Authority authority = ((ResourceReferences<Authority>)getParameterValue(authorityP)).resolve(getModel()).get(0);
         boolean allMustMatch = getParameterValue(allMustMatchP);
         boolean uniqueKeys = getParameterValue(uniqueKeysP);
         

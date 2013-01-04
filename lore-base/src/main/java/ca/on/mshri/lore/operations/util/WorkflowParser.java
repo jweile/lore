@@ -128,6 +128,7 @@ public class WorkflowParser {
         Parser<List<Pair<String, HashMap<String,Object>>>> parser = methodCallParser.many().from(lexer,ws);
         
         Workflow workflow = new Workflow();
+        //TODO: handle the model creation!
         
         //get input
         try {
@@ -139,6 +140,8 @@ public class WorkflowParser {
                 LoreOperation op = getOperation(method.a);
                 
                 processParameters(op, method.b);
+                
+                op.setModel(workflow.getModel());
                 
                 workflow.add(op);
                 

@@ -31,12 +31,15 @@ import java.util.logging.Logger;
 /**
  * Merges sets of redundant individuals.
  * 
+ * Internal use only. Not compatible with workflow parser, because of 
+ * complex parameter type.
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class Merger extends LoreOperation {
     
     /**
-     * a collection of sets of individuals
+     * a collection of sets of individuals. the members of each set will be merged.
      */
     public final Parameter<Collection> mergeSetsP = Parameter.make("mergeSets", Collection.class);
     

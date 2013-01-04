@@ -22,25 +22,25 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class RefListParameter<T extends Resource> extends Parameter<ResourceReferences>{
+public class RefListParameter<R extends Resource> extends Parameter<ResourceReferences>{
 
-    private Class<T> elementType;
+    private Class<R> elementType;
     
-    public RefListParameter(String id, Class<T> elementType) {
-        super(id, ResourceReferences.class);
+    public RefListParameter(String id, Class<R> elementType) {
+        super(id, ResourceReferences.class); 
         this.elementType = elementType;
     }
     
 
     @Override
-    public ResourceReferences<T> validate(Object value) {
+    public ResourceReferences<R> validate(Object value) {
         
         if (!(value instanceof String)) {
             throw new RuntimeException(getId()+" must be comma-separated list of URIs or a SPARQL query");
         }
         
         try {
-            return new ResourceReferences<T>((String)value, elementType);
+            return new ResourceReferences<R>((String)value, elementType);
         } catch (Exception e) {
             throw new RuntimeException(getId()+" must be comma-separated list of URIs or a SPARQL query", e);
         }

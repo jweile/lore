@@ -17,6 +17,7 @@
 package ca.on.mshri.lore.operations.util;
 
 import ca.on.mshri.lore.operations.LoreOperation;
+import com.hp.hpl.jena.rdf.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +27,20 @@ import java.util.List;
  */
 public class Workflow {
     
-    List<LoreOperation> ops = new ArrayList<LoreOperation>();
+    private List<LoreOperation> ops = new ArrayList<LoreOperation>();
+    
+    private Model model;
     
     public void add(LoreOperation op) {
         ops.add(op);
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
     
     public void run() {
