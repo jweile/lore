@@ -28,10 +28,12 @@ public class TestOperation extends LoreOperation {
     public static final Parameter<Integer> fooP = Parameter.make("foo", Integer.class);
     
     public static final Parameter<String> barP = Parameter.make("bar", String.class);
+    
+    public static final Parameter<Boolean> bazP = Parameter.make("baz", Boolean.class);
 
     @Override
     public void run() {
-        System.out.println(getParameterValue(fooP) +" "+getParameterValue(barP));
+        System.out.println(getParameterValue(fooP) +" "+getParameterValue(barP)+" "+getParameterValue(bazP));
     }
     
 }

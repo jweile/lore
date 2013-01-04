@@ -31,6 +31,7 @@ import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Scanners;
 import org.codehaus.jparsec.Terminals;
 import org.codehaus.jparsec.Token;
+import org.codehaus.jparsec.Tokens.Fragment;
 import org.codehaus.jparsec.functors.Map;
 import org.codehaus.jparsec.functors.Pair;
 import org.codehaus.jparsec.functors.Tuple3;
@@ -43,8 +44,8 @@ public class WorkflowParser {
     
     
     public Workflow parse(InputStream in) {
-        
-        Terminals operators = Terminals.operators("=", "(", ")",",",".");
+                
+        Terminals terminals = Terminals.caseSensitive(new String[]{"=", "(", ")",",","."}, new String[]{"TRUE","FALSE"});
         
         //lexer 
         
@@ -57,7 +58,7 @@ public class WorkflowParser {
                 Terminals.IntegerLiteral.TOKENIZER
         );
         
-        Parser<?> lexer = Parsers.or(operators.tokenizer(), identifierTokenizer, valueTokenizer);
+        Parser<?> lexer = Parsers.or(terminals.tokenizer(), identifierTokenizer, valueTokenizer);
         
         
         //syntactic parser
@@ -65,7 +66,11 @@ public class WorkflowParser {
         Parser<String> identifierParser = Terminals.Identifier.PARSER;
         
         Parser<Object> valueParser = Parsers.or(
+                
+                //String literals
                 (Parser<? extends Object>)Terminals.StringLiteral.PARSER, 
+                
+                //Decimal numbers
                 Terminals.DecimalLiteral.PARSER.map(new org.codehaus.jparsec.functors.Map<String,Double>() {
 
                     public Double map(String from) {
@@ -73,16 +78,27 @@ public class WorkflowParser {
                     }
                     
                 }),
+                
+                //Integer numbers
                 Terminals.IntegerLiteral.PARSER.map(new org.codehaus.jparsec.functors.Map<String,Integer>() {
 
                     public Integer map(String from) {
                         return Integer.parseInt(from);
                     }
                     
+                }),
+                
+                //Booleans
+                terminals.token("TRUE","FALSE").map(new org.codehaus.jparsec.functors.Map<Token,Boolean>() {
+
+                    public Boolean map(Token from) {
+                        return Boolean.parseBoolean(((Fragment)from.value()).text());
+                    }
+                    
                 })
         );
         
-        Parser<String> methodNameParser = identifierParser.sepBy1(operators.token(".")).map(new org.codehaus.jparsec.functors.Map<List<String>,String>() {
+        Parser<String> methodNameParser = identifierParser.sepBy1(terminals.token(".")).map(new org.codehaus.jparsec.functors.Map<List<String>,String>() {
 
             public String map(List<String> from) {
                 StringBuilder b = new StringBuilder();
@@ -97,7 +113,7 @@ public class WorkflowParser {
            
         });
         
-        Parser<Pair<String,Object>> parameterParser = Parsers.tuple(identifierParser, operators.token("="), valueParser)
+        Parser<Pair<String,Object>> parameterParser = Parsers.tuple(identifierParser, terminals.token("="), valueParser)
                 .map(new org.codehaus.jparsec.functors.Map<Tuple3<String, Token, Object>,Pair<String,Object>>() {
 
             public Pair<String, Object> map(Tuple3<String, Token, Object> from) {
@@ -107,9 +123,9 @@ public class WorkflowParser {
         });
         
         Parser<HashMap<String,Object>> parameterBlockParser = Parsers.between(
-                operators.token("("), 
-                parameterParser.sepBy(operators.token(",")), 
-                operators.token(")")
+                terminals.token("("), 
+                parameterParser.sepBy(terminals.token(",")), 
+                terminals.token(")")
         ).map(new Map<List<Pair<String, Object>>,HashMap<String,Object>>() {
 
             public HashMap<String, Object> map(List<Pair<String, Object>> from) {  
