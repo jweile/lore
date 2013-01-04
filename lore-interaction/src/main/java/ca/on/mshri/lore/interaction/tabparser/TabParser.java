@@ -158,5 +158,10 @@ public class TabParser extends LoreOperation {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return true;
+    }
     
 }

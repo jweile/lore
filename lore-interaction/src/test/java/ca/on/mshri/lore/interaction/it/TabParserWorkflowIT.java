@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.base.it;
+package ca.on.mshri.lore.interaction.it;
 
-import ca.on.mshri.lore.base.LoreModel;
+import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.RecordObject;
+import ca.on.mshri.lore.base.XRef;
+import ca.on.mshri.lore.interaction.Interaction;
+import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.operations.util.Workflow;
 import ca.on.mshri.lore.operations.util.WorkflowParser;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -31,9 +34,9 @@ import junit.framework.TestCase;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class WorkflowParserIT extends TestCase {
+public class TabParserWorkflowIT extends TestCase {
     
-    public WorkflowParserIT(String testName) {
+    public TabParserWorkflowIT(String testName) {
         super(testName);
     }
     
@@ -49,18 +52,39 @@ public class WorkflowParserIT extends TestCase {
     
     public void test() throws Exception {
         
-        InputStream in = new FileInputStream("src/test/resources/test_workflow2");
+        InteractionModel model = new InteractionModel(OntModelSpec.OWL_DL_MEM, ModelFactory.createDefaultModel());
         
-        WorkflowParser parser = new WorkflowParser();
-        Workflow workflow = parser.parse(in);
+        InputStream in = new FileInputStream("src/test/resources/test_workflow");
         
-        workflow.setModel(new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel()));
+        WorkflowParser wp = new WorkflowParser();
+        Workflow workflow = wp.parse(in);
         
+        workflow.setModel(model);
         workflow.run();
-        List<RecordObject> objs = workflow.getModel().listIndividualsOfClass(RecordObject.class, false);
         
-        assertEquals(1, objs.size());
+        List<Interaction> interactions = model.listIndividualsOfClass(Interaction.class, false);
+        
+        for (Interaction interaction : interactions) {
+            List<? extends RecordObject> participants = interaction.listParticipants();
+            
+            System.out.println(interaction.getOntClass());
+            
+            for (RecordObject o : participants) {
+                System.out.print("  -> ");
+                System.out.println(getXRefValue(o, model.ENTREZ));
+            }
+            
+        }
+        
     }
     
     
+    private String getXRefValue(RecordObject o, Authority a) {
+        for (XRef x : o.listXRefs()) {
+            if (x.getAuthority().equals(a)) {
+                return x.getValue();
+            }
+        }
+        return null;
+    }
 }

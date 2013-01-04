@@ -255,6 +255,11 @@ public class WorkflowParser {
                 RefListParameter<?> p = (RefListParameter<?>) parameter;
                 op.setParameter(p, p.validate(value));
                  
+            } else if (parameter instanceof URLParameter) {
+                
+                URLParameter p = (URLParameter) parameter;
+                op.setParameter(p, p.validate(value));
+                 
             } else {
                 throw new RuntimeException("Unsupported parameter type: "+parameter.getType());
             }

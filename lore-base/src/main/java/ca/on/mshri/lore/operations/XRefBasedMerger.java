@@ -138,5 +138,10 @@ public class XRefBasedMerger extends LoreOperation {
         b.deleteCharAt(b.length()-1);
         return b.toString();
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
         
 }

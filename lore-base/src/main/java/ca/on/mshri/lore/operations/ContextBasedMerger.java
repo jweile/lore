@@ -16,14 +16,12 @@
  */
 package ca.on.mshri.lore.operations;
 
-import ca.on.mshri.lore.operations.util.Parameter;
 import ca.on.mshri.lore.operations.util.Connection;
 import ca.on.mshri.lore.operations.util.RefListParameter;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import de.jweile.yogiutil.LazyInitMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +92,11 @@ public class ContextBasedMerger extends LoreOperation {
             in |= i.hasOntClass(clazz, false);
         }
         return in;
+    }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
     }
     
 }

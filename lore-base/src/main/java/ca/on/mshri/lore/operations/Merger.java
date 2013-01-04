@@ -104,5 +104,10 @@ public class Merger extends LoreOperation {
             }
         }
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
     
 }

@@ -81,5 +81,10 @@ public class OperationTest extends TestCase {
             }
             
         }
+
+        @Override
+        public boolean requiresReasoner() {
+            return false;
+        }
     }
 }

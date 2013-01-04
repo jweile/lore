@@ -87,6 +87,8 @@ public abstract class LoreOperation {
     public void setModel(LoreModel model) {
         this.model = model;
     }
+
+    public abstract boolean requiresReasoner();
     
     
 }

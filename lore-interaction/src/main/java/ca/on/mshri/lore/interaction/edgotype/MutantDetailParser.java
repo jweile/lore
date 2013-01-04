@@ -93,5 +93,10 @@ public class MutantDetailParser extends LoreOperation {
             }
         }
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
     
 }

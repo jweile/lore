@@ -16,8 +16,9 @@
  */
 package ca.on.mshri.lore.operations.util;
 
-import ca.on.mshri.lore.operations.util.Workflow;
-import ca.on.mshri.lore.operations.util.WorkflowParser;
+import ca.on.mshri.lore.base.LoreModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import junit.framework.TestCase;
@@ -48,6 +49,7 @@ public class WorkflowParserTest extends TestCase {
         
         Workflow workflow = new WorkflowParser().parse(in);
         
+        workflow.setModel(new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel()));
         workflow.run();
         
     }

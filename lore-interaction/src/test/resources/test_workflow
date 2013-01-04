@@ -1,0 +1,19 @@
+###
+# Execute Tab parser on HI1 dataset
+#
+ca.on.mshri.lore.interaction.tabparser.TabParser(
+
+  # FIXME: Find a way of not having to hard-code an absolute path here
+  src = "file:///Users/jweile/NetBeansProjects/lore/lore-interaction/src/test/resources/CCSB_HI1_updated.tsv",
+
+  interactorAuth = "EntrezGene",
+
+  experiment = "CCSB_HI1_updated",
+
+  interactionType = "http://llama.mshri.on.ca/lore-interaction.owl#PhysicalInteraction",
+
+  interactorType = "http://llama.mshri.on.ca/lore-molecules.owl#Protein",
+
+  header = TRUE
+
+)

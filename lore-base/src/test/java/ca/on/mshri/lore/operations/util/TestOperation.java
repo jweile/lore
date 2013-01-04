@@ -35,5 +35,10 @@ public class TestOperation extends LoreOperation {
     public void run() {
         System.out.println(getParameterValue(fooP) +" "+getParameterValue(barP)+" "+getParameterValue(bazP));
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
     
 }

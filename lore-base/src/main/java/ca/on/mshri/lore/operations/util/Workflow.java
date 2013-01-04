@@ -19,7 +19,6 @@ package ca.on.mshri.lore.operations.util;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.operations.LoreOperation;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,17 +41,21 @@ public class Workflow {
     }
 
     public void setModel(LoreModel model) {
+        if (this.model != null) {
+            throw new RuntimeException("Attempted to overwrite workflow model.");
+        }
         this.model = model;
     }
     
     public void run() {
         
-        //create new graph
-        model = new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
-        
         //run operations
         for (LoreOperation op : ops) {
-            op.setModel(model);
+            if (op.requiresReasoner()) {
+                op.setModel(new LoreModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, model));
+            } else {
+                op.setModel(model);
+            }
             op.run();
         }
         

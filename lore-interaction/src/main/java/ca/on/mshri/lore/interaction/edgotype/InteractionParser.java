@@ -155,4 +155,9 @@ public class InteractionParser extends LoreOperation {
             }
         }
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
 }

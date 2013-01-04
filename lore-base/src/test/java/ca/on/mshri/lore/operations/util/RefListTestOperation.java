@@ -32,5 +32,10 @@ public class RefListTestOperation extends LoreOperation {
     public void run() {
         System.out.println(getParameterValue(fooP));
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
     
 }

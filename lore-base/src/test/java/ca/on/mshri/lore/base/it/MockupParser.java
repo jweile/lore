@@ -38,5 +38,10 @@ public class MockupParser extends LoreOperation{
         r2.addXRef(authB, "foo");
         
     }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
+    }
     
 }

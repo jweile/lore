@@ -17,8 +17,10 @@
 package ca.on.mshri.lore.phenotype.omim;
 
 import ca.on.mshri.lore.genome.Gene;
+import ca.on.mshri.lore.operations.LoreOperation;
 import ca.on.mshri.lore.phenotype.Phenotype;
 import ca.on.mshri.lore.phenotype.PhenotypeModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Property;
 import de.jweile.yogiutil.CliIndeterminateProgress;
 import java.io.BufferedReader;
@@ -39,7 +41,7 @@ import java.util.regex.Pattern;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class OmimImporter {
+public class OmimImporter extends LoreOperation {
     
     Properties resources;
     
@@ -53,8 +55,11 @@ public class OmimImporter {
         
     }
     
-    public void parse(PhenotypeModel model) {
+    @Override
+    public void run() {
                 
+        PhenotypeModel model = new PhenotypeModel(OntModelSpec.OWL_MEM, getModel());
+        
         parseMim2Gene(model, openStream("mim2gene"));
         
         parseMorbidMap(model, openStream("morbidmap"));
@@ -289,5 +294,10 @@ public class OmimImporter {
             throw new RuntimeException("Cannot read mim2gene",ex);
         } 
             
+    }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
     }
 }

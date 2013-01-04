@@ -24,7 +24,6 @@ import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.operations.util.RefListParameter;
 import ca.on.mshri.lore.operations.util.ResourceReferences;
 import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import de.jweile.yogiutil.LazyInitMap;
 import java.util.ArrayList;
@@ -119,5 +118,10 @@ public class AlleleMerger extends LoreOperation {
         cbm.setModel(model);
         cbm.run();
         
+    }
+
+    @Override
+    public boolean requiresReasoner() {
+        return false;
     }
 }
