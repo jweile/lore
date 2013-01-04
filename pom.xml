@@ -17,7 +17,8 @@
         <module>lore-genome</module>
         <module>lore-interaction</module>
         <module>lore-molecules</module>
-    </modules>
+    <module>lore-cli</module>
+  </modules>
 
     <properties>
       <netbeans.hint.license>lgpl30</netbeans.hint.license>
