@@ -64,10 +64,10 @@ public class AlleleMergerTest extends TestCase {
         assertEquals(2,model.listIndividualsOfClass(PointMutation.class, false).size());
         
         AlleleMerger am = new AlleleMerger();
-        am.setParameter(am.selectionP, new ArrayList<Gene>(){{
-            add(g1);
-        }});
-        am.setParameter(am.modelP, model);
+        
+        am.setParameter(am.selectionP, am.selectionP.validate(g1.getURI()));
+//        am.setParameter(am.modelP, model);
+        am.setModel(model);
         am.run();
         
         //after

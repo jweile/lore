@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.operations;
 
+import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.operations.util.Parameter;
 import com.hp.hpl.jena.rdf.model.Model;
 import java.lang.reflect.Field;
@@ -34,7 +35,7 @@ public abstract class LoreOperation {
     
     private Map<Parameter<?>,Object> paramValues = new HashMap<Parameter<?>, Object>();
     
-    private Model model;
+    private LoreModel model;
     
     public abstract void run();
     
@@ -79,11 +80,11 @@ public abstract class LoreOperation {
         return has;
     }
 
-    public Model getModel() {
+    public LoreModel getModel() {
         return model;
     }
 
-    public void setModel(Model model) {
+    public void setModel(LoreModel model) {
         this.model = model;
     }
     

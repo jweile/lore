@@ -141,7 +141,7 @@ public class WorkflowParser {
                 
                 processParameters(op, method.b);
                 
-                op.setModel(workflow.getModel());
+//                op.setModel(workflow.getModel());
                 
                 workflow.add(op);
                 

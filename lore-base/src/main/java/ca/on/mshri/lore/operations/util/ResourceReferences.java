@@ -29,6 +29,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -46,6 +47,14 @@ public class ResourceReferences<T extends Resource> {
 
     public ResourceReferences(String descriptor, Class<T> type) {
         preProcess(descriptor);
+        this.type = type;
+    }
+    
+    public ResourceReferences(Collection<? extends T> elements, Class<T> type) {
+        uriList = new ArrayList<URI>();
+        for (T element : elements) {
+            uriList.add(URI.create(element.getURI()));
+        }
         this.type = type;
     }
     

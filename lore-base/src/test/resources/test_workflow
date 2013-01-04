@@ -1,16 +1,16 @@
 
 # Testing method calls
-ca.on.mshri.lore.operations.TestOperation(
+ca.on.mshri.lore.operations.util.TestOperation(
     foo = 1,
     bar = "test"
 )
 
 # Testing single line calls
-ca.on.mshri.lore.operations.TestOperation(foo=5,bar="blah")
+ca.on.mshri.lore.operations.util.TestOperation(foo=5,bar="blah")
 
 
 # Testing SPARQL expressions
-ca.on.mshri.lore.operations.RefListTestOperation(
+ca.on.mshri.lore.operations.util.RefListTestOperation(
     foo="SELECT ?gene WHERE {
             ?gene ?p ?o.
          }

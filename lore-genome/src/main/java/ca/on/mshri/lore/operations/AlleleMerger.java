@@ -16,14 +16,16 @@
  */
 package ca.on.mshri.lore.operations;
 
-import ca.on.mshri.lore.operations.util.Parameter;
 import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.GenomeModel;
 import ca.on.mshri.lore.genome.Mutation;
 import ca.on.mshri.lore.genome.PointMutation;
+import ca.on.mshri.lore.operations.util.RefListParameter;
+import ca.on.mshri.lore.operations.util.ResourceReferences;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import de.jweile.yogiutil.LazyInitMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,12 +45,12 @@ public class AlleleMerger extends LoreOperation {
      * WARNING: This assumes that the list of genes is non-redundant, i.e. has 
      * already been consolidated and merged as appropriate based on XRefs.
      */
-    public final Parameter<Collection> selectionP = Parameter.make("selection", Collection.class);
+    public final RefListParameter<Gene> selectionP = new RefListParameter("selection", Gene.class);
     
-    /**
-     * Genome model on containing the genes.
-     */
-    public final Parameter<GenomeModel> modelP = Parameter.make("model", GenomeModel.class);
+//    /**
+//     * Genome model on containing the genes.
+//     */
+//    public final Parameter<GenomeModel> modelP = Parameter.make("model", GenomeModel.class);
     
     /**
      * Merges the alleles and associated Mutations belonging to the given set of genes.
@@ -59,8 +61,9 @@ public class AlleleMerger extends LoreOperation {
     @Override
     public void run() {
                 
-        Collection<Gene> selection = getParameterValue(selectionP);
-        GenomeModel model = getParameterValue(modelP);
+        GenomeModel model = new GenomeModel(OntModelSpec.OWL_MEM, getModel());
+        
+        Collection<Gene> selection = getParameterValue(selectionP).resolve(getModel());
         
         /* ### STEP 1 ###
          * alleles are the same if they have the same gene and the same mutations,
@@ -109,11 +112,11 @@ public class AlleleMerger extends LoreOperation {
          */
         
         ContextBasedMerger cbm = new ContextBasedMerger();
-        cbm.setParameter(cbm.selectionP, alleles);
-        cbm.setParameter(cbm.contextRestrictionsP, new OntClass[]{
-            model.getOntClass(Gene.CLASS_URI), 
-            model.getOntClass(Mutation.CLASS_URI)
-        });
+        cbm.setParameter(cbm.selectionP, new ResourceReferences<Allele>(alleles, Allele.class));
+        cbm.setParameter(cbm.contextRestrictionsP, cbm.contextRestrictionsP.validate(
+                Gene.CLASS_URI+","+Mutation.CLASS_URI)
+        );
+        cbm.setModel(model);
         cbm.run();
         
     }

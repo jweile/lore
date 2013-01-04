@@ -1,0 +1,13 @@
+
+# Mock-up parser
+ca.on.mshri.lore.base.it.MockupParser()
+
+# XRef-based merger
+ca.on.mshri.lore.operations.XRefBasedMerger(
+  selection=
+    "SELECT ?obj WHERE {
+      ?obj <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://llama.mshri.on.ca/lore-base.owl#RecordObject>.
+    }",
+  authority="urn:lore:Authority#B"
+)
+

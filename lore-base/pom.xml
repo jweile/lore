@@ -2,40 +2,67 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>ca.on.mshri</groupId>
+  <artifactId>lore-base</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  
+  <name>lore-base</name>
+  
   <parent>
     <groupId>ca.on.mshri</groupId>
     <artifactId>lore</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  <groupId>ca.on.mshri</groupId>
-  <artifactId>lore-base</artifactId>
-  <version>0.1-SNAPSHOT</version>
-  <name>lore-base</name>
-  <url>http://maven.apache.org</url>
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.12.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
+      
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
       <version>2.9.0-incubating</version>
     </dependency>
+    
     <dependency>
       <groupId>de.jweile</groupId>
       <artifactId>yogiutil</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
+    
     <dependency>
       <groupId>jparsec</groupId>
       <artifactId>jparsec</artifactId>
       <version>2.0.1</version>
     </dependency>
+    
   </dependencies>
+  
 </project>

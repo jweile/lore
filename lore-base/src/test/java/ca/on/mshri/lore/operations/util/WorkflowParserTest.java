@@ -14,23 +14,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.operations;
+package ca.on.mshri.lore.operations.util;
 
-import ca.on.mshri.lore.operations.util.Parameter;
+import ca.on.mshri.lore.operations.util.Workflow;
+import ca.on.mshri.lore.operations.util.WorkflowParser;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import junit.framework.TestCase;
 
 /**
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class TestOperation extends LoreOperation {
+public class WorkflowParserTest extends TestCase {
     
-    public static final Parameter<Integer> fooP = Parameter.make("foo", Integer.class);
-    
-    public static final Parameter<String> barP = Parameter.make("bar", String.class);
-
-    @Override
-    public void run() {
-        System.out.println(getParameterValue(fooP) +" "+getParameterValue(barP));
+    public WorkflowParserTest(String testName) {
+        super(testName);
     }
     
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+    
+    public void test() throws Exception {
+        
+        InputStream in = new FileInputStream("src/test/resources/test_workflow");
+        
+        Workflow workflow = new WorkflowParser().parse(in);
+        
+        workflow.run();
+        
+    }
 }

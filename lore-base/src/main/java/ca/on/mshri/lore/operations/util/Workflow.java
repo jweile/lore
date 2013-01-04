@@ -16,8 +16,10 @@
  */
 package ca.on.mshri.lore.operations.util;
 
+import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.operations.LoreOperation;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,24 +31,28 @@ public class Workflow {
     
     private List<LoreOperation> ops = new ArrayList<LoreOperation>();
     
-    private Model model;
+    private LoreModel model;
     
     public void add(LoreOperation op) {
         ops.add(op);
     }
 
-    public Model getModel() {
+    public LoreModel getModel() {
         return model;
     }
 
-    public void setModel(Model model) {
+    public void setModel(LoreModel model) {
         this.model = model;
     }
     
     public void run() {
         
-        //TODO: add operation for creating new graph.
+        //create new graph
+        model = new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+        
+        //run operations
         for (LoreOperation op : ops) {
+            op.setModel(model);
             op.run();
         }
         
