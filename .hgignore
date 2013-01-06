@@ -11,4 +11,4 @@ nbactions.xml
 \.bak$
 \.sublime.*$
 \.DS_Store$
-
+output/

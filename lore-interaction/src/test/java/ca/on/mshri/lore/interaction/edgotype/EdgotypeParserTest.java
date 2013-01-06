@@ -62,14 +62,14 @@ public class EdgotypeParserTest extends TestCase {
          File file = new File("src/test/resources/PW1.tsv");
          
          Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
-         Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-PW1");
+//         Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-PW1");
          Property pos = model.getProperty(InteractionModel.URI+"#affectsPositively");
          Property neg = model.getProperty(InteractionModel.URI+"#affectsNegatively");
          
          InteractionParser parser = new InteractionParser();
 //         parser.setParameter(parser.modelP, model);
          parser.setParameter(parser.srcP, parser.srcP.validate(file.toURI().toURL()));
-         parser.setParameter(parser.expP, parser.expP.validate(exp.getURI()));
+         parser.setParameter(parser.expP, "CCSB-Edgotyping-PW1");
          parser.setModel(model);
          parser.run();
          
