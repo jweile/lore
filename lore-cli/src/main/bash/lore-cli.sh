@@ -1,3 +1,3 @@
 #!/bin/bash
-java -Xmx1G -cp '.:./modules/*' -jar bin/lore-cli-0.1-SNAPSHOT.jar $@
+java -Xmx1G -cp 'bin/*:lib/*:modules/*' ca.on.mshri.lore.cli.Main $@
 exit $?
