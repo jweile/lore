@@ -29,6 +29,7 @@ import ca.on.mshri.lore.operations.util.URLParameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Property;
+import de.jweile.yogiutil.CliIndeterminateProgress;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +58,9 @@ public class InteractionParser extends LoreOperation {
         
     public void run() {
         
+        Logger.getLogger(InteractionParser.class.getName())
+                .log(Level.INFO, "Interaction parser started");
+        
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
         
         Experiment exp = Experiment.createOrGet(model, getParameterValue(expP));
@@ -73,6 +77,8 @@ public class InteractionParser extends LoreOperation {
         try {
             in = getParameterValue(srcP).openStream();
             BufferedReader r = new BufferedReader(new InputStreamReader(in));
+            
+            CliIndeterminateProgress progress = new CliIndeterminateProgress();
             
             //read file
             String line; int lnum = 0;
@@ -97,16 +103,26 @@ public class InteractionParser extends LoreOperation {
                 //get model components
                 Gene dbGene = Gene.createOrGet(model, model.ENTREZ, cols[dbId]);
                 Protein dbProtein = Protein.createOrGet(model, model.ENTREZ, cols[dbId]);
-                dbProtein.setEncodingGene(dbGene);
+                if (dbProtein.getEncodingGene() == null || !dbProtein.getEncodingGene().equals(dbGene)) {
+                    dbProtein.setEncodingGene(dbGene);
+                }
                 
                 Gene adGene = Gene.createOrGet(model, model.ENTREZ, cols[adId]);
                 Protein adProtein = Protein.createOrGet(model, model.ENTREZ, cols[adId]);
-                adProtein.setEncodingGene(adGene);
+                if (adProtein.getEncodingGene() == null || !adProtein.getEncodingGene().equals(adGene)) {
+                    adProtein.setEncodingGene(adGene);
+                }
                 
                 PhysicalInteraction interaction = PhysicalInteraction.createOrGet(model, exp, physIntType, dbProtein, adProtein);
                 
-                Allele dbAllele = Allele.createOrGet(model, ccsbMut, cols[mut]);
-                dbAllele.setGene(dbGene);
+                Allele dbAllele = Allele.createOrGet(model, ccsbMut, 
+                        cols[mut].equals("0") ? 
+                        cols[dbId]+"."+cols[mut] : 
+                        cols[mut]
+                );
+                if (dbAllele.getGene() == null || !dbAllele.getGene().equals(dbGene)) {
+                    dbAllele.setGene(dbGene);
+                }
                 
                 
                 //complement short lines
@@ -120,7 +136,10 @@ public class InteractionParser extends LoreOperation {
                     dbAllele.addProperty(affects, interaction);
                 }
                 
+                progress.next("Parsing");
+                
             }
+            progress.done();
         } catch (IOException ex) {
             throw new RuntimeException("Unable to read interacion data",ex);
         } finally {

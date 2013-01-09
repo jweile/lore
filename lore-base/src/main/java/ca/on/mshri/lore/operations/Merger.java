@@ -20,6 +20,7 @@ import ca.on.mshri.lore.operations.util.Parameter;
 import ca.on.mshri.lore.operations.util.Connection;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntResource;
+import de.jweile.yogiutil.CliProgressBar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -53,15 +54,22 @@ public class Merger extends LoreOperation {
         
         Collection<Set<Individual>> mergeSets = getParameterValue(mergeSetsP);
         
+        int inCount = 0;
+        
         //##Do the actual merging##
         Logger.getLogger(Merger.class.getName())
-                            .log(Level.INFO, "Merging");
+                            .log(Level.INFO, "Merging...");
+        
+        CliProgressBar pro = new CliProgressBar(mergeSets.size());
         
         //for each set of xref objects indexed under the same keys...
         for (Set<? extends Individual> mergeSet : mergeSets) {
             
+            inCount += mergeSet.size();
+            
             //if there's only one object in the set, we don't have to do anything
             if (mergeSet.size() <= 1) {
+                pro.next();
                 continue;
             }
             
@@ -102,7 +110,13 @@ public class Merger extends LoreOperation {
             for (Individual ind : toDelete) {
                 ind.remove();
             }
+            
+            pro.next();
         }
+        
+        Logger.getLogger(Merger.class.getName())
+                .log(Level.INFO, "Consolidated "+inCount+" individuals to "+
+                mergeSets.size()+" units.");
     }
 
     @Override

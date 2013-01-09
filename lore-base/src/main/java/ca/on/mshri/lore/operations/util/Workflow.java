@@ -49,6 +49,8 @@ public class Workflow {
     
     public void run() {
         
+        Summary summary = new Summary();
+        
         //run operations
         for (LoreOperation op : ops) {
             if (op.requiresReasoner()) {
@@ -57,6 +59,8 @@ public class Workflow {
                 op.setModel(model);
             }
             op.run();
+            
+            summary.printSummary(model);
         }
         
     }

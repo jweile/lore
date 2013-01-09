@@ -42,9 +42,8 @@ public class RecordObject extends IndividualImpl {
         IndividualImpl impl = (IndividualImpl) i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
                 
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
-                      return new RecordObject(impl.asNode(), impl.getGraph());
+        if (LoreModel.hasClass(i, thisType)) {
+            return new RecordObject(impl.asNode(), impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as RecordObject!");
         }

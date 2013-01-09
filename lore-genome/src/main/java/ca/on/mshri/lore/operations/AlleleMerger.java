@@ -25,21 +25,31 @@ import ca.on.mshri.lore.operations.util.RefListParameter;
 import ca.on.mshri.lore.operations.util.ResourceReferences;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import de.jweile.yogiutil.CliProgressBar;
 import de.jweile.yogiutil.LazyInitMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * Takes a list of non-redundant genes and consolidates the associated alleles 
+ * and mutations. If a gene has two alleles with equivalent mutations, the alleles
+ * are merged (as well as the mutations).
+ * 
+ * 
+ * WARNING: This assumes that the list of genes is non-redundant, i.e. has 
+ * already been consolidated and merged as appropriate based on XRefs.
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class AlleleMerger extends LoreOperation {
     
     /**
-     * List of genes.
+     * List of non-redundant genes which possess the alleles to be merged.
      * 
      * WARNING: This assumes that the list of genes is non-redundant, i.e. has 
      * already been consolidated and merged as appropriate based on XRefs.
@@ -54,12 +64,13 @@ public class AlleleMerger extends LoreOperation {
     /**
      * Merges the alleles and associated Mutations belonging to the given set of genes.
      * 
-     * WARNING: This assumes that the list of genes is non-redundant, i.e. has 
-     * already been consolidated and merged as appropriate based on XRefs.
      */
     @Override
     public void run() {
                 
+        Logger.getLogger(AlleleMerger.class.getName())
+                .log(Level.INFO, "AlleleMerger: Indexing...");
+        
         GenomeModel model = new GenomeModel(OntModelSpec.OWL_MEM, getModel());
         
         Collection<Gene> selection = getParameterValue(selectionP).resolve(getModel());
@@ -73,32 +84,50 @@ public class AlleleMerger extends LoreOperation {
         //we also collect a list of all alleles, so we can merge them later
         List<Allele> alleles = new ArrayList<Allele>();
         
+        CliProgressBar pro = new CliProgressBar(selection.size());
+        
+        //for each gene
         for (Gene gene : selection) {
             
+            //create an index for the gene's mutations
             LazyInitMap<String,Set<Individual>> mutIndex = new LazyInitMap<String, Set<Individual>>(HashSet.class);
             
+            //for each allele of the gene
             for (Allele allele : gene.listAlleles()) {
                 
+                //save allele in the list so they can be passed to the context-based merger later
                 alleles.add(allele);
                 
+                //for each mutant of that allele (usually there's only one)
                 for (Mutation mut : allele.listMutations()) {
                     
+                    //check if it's a point mutation, if so then...
                     if (mut.getOntClass(true).getURI().equals(PointMutation.CLASS_URI)) {
                         
+                        //index this mutation for the current gene based on its aminoacid change signature
                         PointMutation pmut = PointMutation.fromIndividual(mut);
-                        mutIndex.getOrCreate(pmut.getFromAminoAcid()+pmut.getPosition()+pmut.getToAminoAcid()).add(pmut);
+                        if (pmut.getFromAminoAcid() == null || pmut.getToAminoAcid() == null || pmut.getPosition() == 0) {
+                            Logger.getLogger(AlleleMerger.class.getName())
+                                    .log(Level.WARNING, pmut.getURI()+" has broken change signature!");
+                            continue;
+                        }
+                        String signature = pmut.getFromAminoAcid()+pmut.getPosition()+pmut.getToAminoAcid();
+                        mutIndex.getOrCreate(signature).add(pmut);
                         
                     } else {
-                        //ignore for now
+                        //ignore cases of mutations other than point mutations
                     }
                 }
             }
+            
+//            print(mutIndex);
             
             for (Set<Individual> mutationSet : mutIndex.values()) {
                 if (mutationSet.size() > 1) {
                     mutationSetList.add(mutationSet);
                 }
             }
+            pro.next();
         }
         
         Merger merger = new Merger();
@@ -124,4 +153,13 @@ public class AlleleMerger extends LoreOperation {
     public boolean requiresReasoner() {
         return false;
     }
+
+//    private void print(LazyInitMap<String, Set<Individual>> mutIndex) {
+//        for (String key : mutIndex.keySet()) {
+//            System.out.println(key);
+//            for (Individual i : mutIndex.get(key)) {
+//                System.out.println(" -> "+i);
+//            }
+//        }
+//    }
 }

@@ -290,6 +290,11 @@ public class OmimFulltextParser {
             
             //add variants
             for (Variant var : record.getVariants()) {
+                
+                if (var.getId() == null || var.getMutation() == null) {
+                    continue;
+                }
+                
                 String id = record.getId()+var.getId();
                 Allele allele = Allele.createOrGet(model, model.OMIM, id);
                 allele.setGene(gene);
@@ -297,18 +302,21 @@ public class OmimFulltextParser {
                 Matcher snpMatcher = snpPattern.matcher(var.getMutation());
                 if (snpMatcher.find()) {
                     String mutSignature = snpMatcher.group();
-                    PointMutation mut = PointMutation.createOrGet(model, allele, mutSignature);
-                    allele.addMutation(mut);
-                    Matcher xrefMatcher = dbSnpPattern.matcher(var.getMutation());
-                    if (xrefMatcher.find()) {
-                        XRef xref = XRef.createOrGet(model, model.DB_SNP, xrefMatcher.group(1));
-                        mut.addProperty(model.getProperty(LoreModel.URI+"#hasXRef"), xref);
+                    try {
+                        PointMutation mut = PointMutation.createOrGet(model, allele, mutSignature);
+                        allele.addMutation(mut);
+                        Matcher xrefMatcher = dbSnpPattern.matcher(var.getMutation());
+                        if (xrefMatcher.find()) {
+                            XRef xref = XRef.createOrGet(model, model.DB_SNP, xrefMatcher.group(1));
+                            mut.addProperty(model.getProperty(LoreModel.URI+"#hasXRef"), xref);
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(OmimFulltextParser.class.getName()).log(Level.WARNING, "Invalid mutation description!\n"+ex.getMessage());
                     }
                 } 
                 
                 
                 allele2variant.put(allele.getURI(), var);
-                //TODO: link variant to diseases afterwards
             }
             
         } else if (record.getType() == Type.PHENOTYPE) {

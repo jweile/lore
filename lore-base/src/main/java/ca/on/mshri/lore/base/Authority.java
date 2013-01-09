@@ -50,10 +50,8 @@ public class Authority extends IndividualImpl {
     public static Authority fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
-                
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
-          
+                 
+        if (LoreModel.hasClass(i, thisType)) {
             return new Authority(impl.asNode(),impl.getGraph());
             
         } else {

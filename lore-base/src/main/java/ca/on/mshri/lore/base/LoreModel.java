@@ -17,6 +17,7 @@
 package ca.on.mshri.lore.base;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.ontology.impl.OntModelImpl;
@@ -128,6 +129,18 @@ public class LoreModel extends OntModelImpl {
             throw new RuntimeException("Class wrapper is missing CLASS_URI field or fromIndividual() method. Report this as a bug!",ex);
         } 
         
+    }
+    
+    public static boolean hasClass(Individual in, OntClass clazz) {
+        OntClass currClass = in.getOntClass();
+        while (currClass != null) {
+            if (currClass.equals(clazz)) {
+                return true;
+            } else {
+                currClass = currClass.getSuperClass();
+            }
+        }
+        return false;
     }
 
     

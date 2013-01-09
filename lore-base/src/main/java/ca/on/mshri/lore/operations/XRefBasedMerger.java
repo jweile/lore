@@ -24,6 +24,7 @@ import ca.on.mshri.lore.base.XRef;
 import ca.on.mshri.lore.operations.util.RefListParameter;
 import ca.on.mshri.lore.operations.util.ResourceReferences;
 import com.hp.hpl.jena.ontology.Individual;
+import de.jweile.yogiutil.CliProgressBar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Merges two or more record objects from a given collection if they share an 
@@ -70,12 +73,17 @@ public class XRefBasedMerger extends LoreOperation {
     @Override
     public void run() {
         
+        Logger.getLogger(XRefBasedMerger.class.getName())
+                .log(Level.INFO, "XRef-based merger: Indexing...");
+        
         List<RecordObject> selection = getParameterValue(selectionP).resolve(getModel());
         Authority authority = ((ResourceReferences<Authority>)getParameterValue(authorityP)).resolve(getModel()).get(0);
         boolean allMustMatch = getParameterValue(allMustMatchP);
         boolean uniqueKeys = getParameterValue(uniqueKeysP);
         
         Map<String,Set<Individual>> index = new HashMap<String, Set<Individual>>();
+        
+        CliProgressBar pro = new CliProgressBar(selection.size());
         
         //for all objects in the selection
         for (RecordObject o : selection) {
@@ -121,12 +129,13 @@ public class XRefBasedMerger extends LoreOperation {
                 index.put(key,unionSet);
             }
             
-            //merge
-            Merger merger = new Merger();
-            merger.setParameter(merger.mergeSetsP, index.values());
-            merger.run();
-            
+            pro.next();
         }
+        
+        //merge
+        Merger merger = new Merger();
+        merger.setParameter(merger.mergeSetsP, index.values());
+        merger.run();
     }
 
     private String cons(String delim, List<String> ss) {

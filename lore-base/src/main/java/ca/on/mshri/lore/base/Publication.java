@@ -38,10 +38,8 @@ public class Publication extends RecordObject {
     public static Publication fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
-                
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
-          
+                    
+        if (LoreModel.hasClass(i, thisType)) {
             return new Publication(impl.asNode(), impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as Publication!");

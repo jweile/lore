@@ -59,9 +59,13 @@ public class AlleleMergerTest extends TestCase {
         a2.setGene(g1);
         a2.addMutation(PointMutation.createOrGet(model, a2, "R5S"));
         
+        Allele a3 = Allele.createOrGet(model, model.ENTREZ, "1.3");
+        a3.setGene(g1);
+        a3.addMutation(PointMutation.createOrGet(model, a3, "R5M"));
+        
         //before
-        assertEquals(2,model.listIndividualsOfClass(Allele.class, false).size());
-        assertEquals(2,model.listIndividualsOfClass(PointMutation.class, false).size());
+        assertEquals(3,model.listIndividualsOfClass(PointMutation.class, false).size());
+        assertEquals(3,model.listIndividualsOfClass(Allele.class, false).size());
         
         AlleleMerger am = new AlleleMerger();
         
@@ -71,8 +75,8 @@ public class AlleleMergerTest extends TestCase {
         am.run();
         
         //after
-        assertEquals(1,model.listIndividualsOfClass(Allele.class, false).size());
-        assertEquals(1,model.listIndividualsOfClass(PointMutation.class, false).size());
+        assertEquals(2,model.listIndividualsOfClass(PointMutation.class, false).size());
+        assertEquals(2,model.listIndividualsOfClass(Allele.class, false).size());
         
     }
 }

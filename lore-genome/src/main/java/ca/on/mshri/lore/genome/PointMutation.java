@@ -63,6 +63,14 @@ public class PointMutation extends Mutation {
         }
     }
     
+    /**
+     * 
+     * @param model
+     * @param allele
+     * @param mutation
+     * @throws IllegalArgumentException if the mutation string is invalid
+     * @return 
+     */
     public static PointMutation createOrGet(GenomeModel model, Allele allele, String mutation) {
         
         String[] mutInfo = parseMutantDescription(mutation);

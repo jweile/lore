@@ -12,6 +12,7 @@ import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.operations.LoreOperation;
 import ca.on.mshri.lore.operations.util.URLParameter;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import de.jweile.yogiutil.CliIndeterminateProgress;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,9 @@ public class MutantDetailParser extends LoreOperation {
     
     public void run() {
         
+        Logger.getLogger(MutantDetailParser.class.getName())
+                .log(Level.INFO, "Mutant Detail Parser started.");
+        
         InputStream in = null;
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
         
@@ -48,6 +52,8 @@ public class MutantDetailParser extends LoreOperation {
             
             in = getParameterValue(srcP).openStream();
             BufferedReader b = new BufferedReader(new InputStreamReader(in));
+            
+            CliIndeterminateProgress progress = new CliIndeterminateProgress();
             
             String line; int lnum = 0;
             while ((line = b.readLine()) != null) {
@@ -74,11 +80,14 @@ public class MutantDetailParser extends LoreOperation {
                 Gene linkedGene = allele.getGene();
                 if (linkedGene == null || !linkedGene.equals(gene)) {
                     Logger.getLogger(MutantDetailParser.class.getName())
-                            .log(Level.WARNING, "Allele not linked:"+allele.getURI());
+                            .log(Level.WARNING, "Allele not linked: "+allele.getURI());
                     allele.setGene(gene);
-                }                        
+                }                
+                
+                progress.next("Parsing");
                 
             }
+            progress.done();
             
         } catch (IOException ex) {
             throw new RuntimeException("Parsing failed!",ex);
