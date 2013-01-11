@@ -17,6 +17,7 @@
 package ca.on.mshri.lore.interaction;
 
 import ca.on.mshri.lore.base.Experiment;
+import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.molecules.Molecule;
 import com.hp.hpl.jena.enhanced.EnhGraph;
@@ -46,8 +47,7 @@ public class PhysicalInteraction extends Interaction {
         IndividualImpl impl = (IndividualImpl) i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
                 
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+        if (LoreModel.hasClass(i, thisType)) {
             return new PhysicalInteraction(impl.asNode(), impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as PhysicalInteraction!");

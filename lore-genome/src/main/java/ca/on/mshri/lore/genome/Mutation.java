@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.genome;
 
+import ca.on.mshri.lore.base.LoreModel;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
@@ -39,9 +40,7 @@ public class Mutation extends IndividualImpl {
         IndividualImpl impl = (IndividualImpl)i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
                 
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
-          
+        if (LoreModel.hasClass(i, thisType)) {
             return new Mutation(impl.asNode(), impl.getGraph());
             
         } else {

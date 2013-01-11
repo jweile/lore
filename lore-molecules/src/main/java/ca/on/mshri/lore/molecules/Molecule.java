@@ -42,8 +42,7 @@ public class Molecule extends RecordObject {
         IndividualImpl impl = (IndividualImpl) i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
                 
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
+        if (LoreModel.hasClass(i, thisType)) {
             return new Molecule(impl.asNode(), impl.getGraph());
         } else {
             throw new ConversionException(i.getURI()+" cannot be cast as Molecule!");

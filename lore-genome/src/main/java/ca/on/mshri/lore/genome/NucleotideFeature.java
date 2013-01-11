@@ -17,6 +17,7 @@
 package ca.on.mshri.lore.genome;
 
 import ca.on.mshri.lore.base.Authority;
+import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
@@ -43,9 +44,7 @@ public class NucleotideFeature extends RecordObject {
         
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
                 
-        if (impl.getOntClass() != null && 
-                (impl.getOntClass().equals(thisType) || thisType.hasSubClass(impl.getOntClass(),false))) {
-          
+        if (LoreModel.hasClass(i, thisType)) {
             return new NucleotideFeature(impl.asNode(), impl.getGraph());
             
         } else {
