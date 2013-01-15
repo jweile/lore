@@ -26,6 +26,7 @@ import ca.on.mshri.lore.phenotype.Phenotype;
 import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Property;
+import de.jweile.yogiutil.CliIndeterminateProgress;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,6 +97,8 @@ public class HgmdImporter extends LoreOperation {
             in = inURL.openStream();
             BufferedReader r = new BufferedReader(new InputStreamReader(in));
             
+            CliIndeterminateProgress progress = new CliIndeterminateProgress();
+            
             String line; int lnum = 0;
             while ((line = r.readLine()) != null) {
                 lnum++;
@@ -130,7 +133,7 @@ public class HgmdImporter extends LoreOperation {
                 //make and link disease
                 Phenotype phenoEntity = phenoIndex.get(cols[disease]);
                 if (phenoEntity == null) {
-                    phenoEntity = Phenotype.createOrGet(model, hgmdPhenoAuth, cols[disease]);
+                    phenoEntity = Phenotype.createOrGet(model, hgmdPhenoAuth, (++lastPhenoId)+"");
                     phenoEntity.addLabel(cols[disease],null);
                     phenoIndex.put(cols[disease],phenoEntity);
                 }
@@ -143,15 +146,23 @@ public class HgmdImporter extends LoreOperation {
                 String[] split = cols[hgvs_protein].split("\\.");
                 if (split.length == 3) {
                     String mutDesc = split[2];
-                    mutEntity = PointMutation.createOrGet(model, alleleEntity, mutDesc);
-                    alleleEntity.addMutation(mutEntity);
-                    
+                    try {
+                        mutEntity = PointMutation.createOrGet(model, alleleEntity, mutDesc);
+                        alleleEntity.addMutation(mutEntity);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(HgmdImporter.class.getName())
+                                .log(Level.WARNING, "Illegal mutation description in line "+lnum+":"+mutDesc, ex);
+                    }
                 } else {
                     Logger.getLogger(HgmdImporter.class.getName())
-                            .log(Level.WARNING, "Cannot extract mutation description in line: "+lnum);
+                            .log(Level.WARNING, "Cannot extract mutation description in line "+lnum);
                 }
                 
+                progress.next("Parsing");
+                
             }
+            
+            progress.done();
             
         } catch (IOException ex) {
             throw new RuntimeException("Could not read from URL "+inURL,ex);
