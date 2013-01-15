@@ -26,7 +26,7 @@ import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 
 /**
- * An XRef is defined by its namespace and value, so xrefs with
+ * An XRef is defined by its namespace (=authority) and value, so xrefs with
  * euqal ns and value should have the same URI and thus not be able exist 
  * redundantly in the system.
  * 

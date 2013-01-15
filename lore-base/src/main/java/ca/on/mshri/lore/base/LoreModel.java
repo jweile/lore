@@ -28,11 +28,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Model contents:
- * <pre>
+ * <p>This is the main entry point of the lore-base module. Other modules should have 
+ * a class that extends this module, that way the OWL dependencies are automatically
+ * loaded when super() is called.</p>
  * 
+ * <p>Currently this class also contains fields for standardized authorities. This 
+ * might be moved out to another class at some point though, together with fields
+ * for commonly used properties etc.</p>
+ * 
+ * <h4>Model contents:</h4>
+ * <pre>
  * RecordObject --hasXRef-> XRef --hasValue-> String
  *                               |-hasNamespace-> Namespace
+ * Experiment --publishedIn-> Publication
  * </pre>
  * @author Jochen Weile <jochenweile@gmail.com>
  */
@@ -43,6 +51,9 @@ public class LoreModel extends OntModelImpl {
      */
     public static final String URI = "http://llama.mshri.on.ca/lore-base.owl";
     
+    /**
+     * The PubMed authority.
+     */
     public final Authority PUBMED;
     
     /**
@@ -108,6 +119,13 @@ public class LoreModel extends OntModelImpl {
 //        return RecordObject.createOrGet(this, auth, id);
 //    }
     
+    /**
+     * Retrieves all instances of the given class from the model.
+     * @param <T> The class in question.
+     * @param clazz The class in question.
+     * @param direct Whether or not to only list direct class members or also members of subclasses.
+     * @return a list of the instances.
+     */
     public <T extends Individual> List<T> listIndividualsOfClass(Class<T> clazz, boolean direct) {
         
         try {
@@ -131,7 +149,21 @@ public class LoreModel extends OntModelImpl {
         
     }
     
+    /**
+     * This is a hack to replace the functionality of Individual.hasOntClass(), because
+     * the aforementioned function only works correctly if a reasoner is enabled on the 
+     * model. Reasoners cause extreme computational overhead, so we don't want them to be
+     * turned on all the time. Hence this replacement function that tests class membership
+     * manually.
+     * @param in an individual
+     * @param clazz the class in question
+     * @return whether or not the individual is a member of the given class.
+     */
     public static boolean hasClass(Individual in, OntClass clazz) {
+        /*
+         * FIXME: To account for multiple possible superclasses in OWL, 
+         * This should be re-written as a recursive DFS algorithm.
+         */
         OntClass currClass = in.getOntClass();
         while (currClass != null) {
             if (currClass.equals(clazz)) {

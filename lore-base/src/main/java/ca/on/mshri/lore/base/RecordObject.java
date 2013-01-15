@@ -27,7 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * This is the central component of a lore model. Most individuals in a model will
+ * be RecordObjects, which are objects that have a record in a database somewhere.
+ * This is expressed through the fact RecordObjects have one or more cross-references
+ * (XRefs).
+ * 
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class RecordObject extends IndividualImpl {
@@ -38,6 +43,19 @@ public class RecordObject extends IndividualImpl {
         super(n, g);
     }
     
+    /**
+     * <p>"Casts" an individual to a RecordObject if possible.</p>
+     * 
+     * <p><i>Development Note: All OWL-class wrappers need to have this method. In principle this should
+     * be done using the as() function as in Jena. However the required 
+     * Interface-Implementation duality enforced by Jena makes that route more tedium 
+     * than it's worth. The only way I can see how to do this properly is to write
+     * a code autogenerator that creates these wrapper classes from given OWL files.</i></p>
+     * 
+     * @param i the individual to cast.
+     * @return the cast RecordObject
+     * @throws ConversionException if the individual is incompatible with RecordObject.
+     */
     public static RecordObject fromIndividual(Individual i) {
         IndividualImpl impl = (IndividualImpl) i;
         OntClass thisType = i.getModel().getResource(CLASS_URI).as(OntClass.class);
@@ -49,6 +67,10 @@ public class RecordObject extends IndividualImpl {
         }
     }
     
+    /**
+     * List all associatiated XRefs.
+     * @return 
+     */
     public List<XRef> listXRefs() {
         List<XRef> list = new ArrayList<XRef>();
         NodeIterator it = listPropertyValues(getModel().getProperty(LoreModel.URI+"#hasXRef"));
@@ -75,10 +97,20 @@ public class RecordObject extends IndividualImpl {
         return null;
     }
     
+    /**
+     * Adds an XRef to this object.
+     * @param xref 
+     */
     public void addXRef(XRef xref) {
         addProperty(getModel().getProperty(LoreModel.URI+"#hasXRef"), xref);
     }
     
+    /**
+     * Adds an XRef to this object
+     * @param ns
+     * @param value
+     * @return 
+     */
     public XRef addXRef(Authority ns, String value) {
         XRef xref = XRef.createOrGet((LoreModel)getOntModel(), ns, value);
         addXRef(xref);
@@ -86,10 +118,16 @@ public class RecordObject extends IndividualImpl {
     }
     
     /**
-     * Pseudo-constructor. 
-     * @param model
-     * @param auth
-     * @param id
+     * Pseudo-constructor. The actual constructor is protected and must not be called
+     * from the outside. This method creates a new RecordObject in the given model using
+     * the given authorty and identifier to create an XRef for the new Object. The authority
+     * and identifier also inform the URI that will be used for this object, thus calling
+     * This method again with the same parameters will return the existing object instead of 
+     * re-creating it.
+     * 
+     * @param model the model
+     * @param auth an XRef authority
+     * @param id an ID that is controlled by the given authority.
      * @return 
      */
     public static RecordObject createOrGet(LoreModel model, Authority auth, String id) {
