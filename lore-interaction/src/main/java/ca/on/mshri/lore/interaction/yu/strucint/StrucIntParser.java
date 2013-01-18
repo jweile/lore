@@ -139,23 +139,24 @@ public class StrucIntParser extends LoreOperation {
     }
 
     private ProteinDomain processDomain(InteractionModel model, Authority domAuth,  
-            String entrez, String pfam, Protein protein, int start, int end) 
-            throws InconsistencyException, NumberFormatException {
+            String entrez, String pfam, Protein protein, int start, int end) {
         
-        ProteinDomain domain = ProteinDomain.createOrGet(model, domAuth, entrez+"."+pfam);
-        if (domain.getProtein() != null) {
+        StringBuilder id = new StringBuilder();
+        id.append(entrez).append(".").append(pfam).append(":").append(start).append("-").append(end);
+        
+        ProteinDomain domain = ProteinDomain.createOrGet(model, domAuth, id.toString());
+        
+        if (domain.getProtein() != null) { 
+            //it's a pre-existing domain
             if (!domain.getProtein().equals(protein)) {
                 throw new InconsistencyException("Domain associated with multiple proteins!");
-            } else {
-                domain.addXRef(model.PFAM, pfam);
-                domain.setProtein(protein);
-                if (domain.getStart() != start) {
-                    domain.setStart(start);
-                }
-                if (domain.getEnd() != end) {
-                    domain.setEnd(end);
-                }
-            }
+            } 
+        } else {
+            //it's a new domain
+            domain.addXRef(model.PFAM, pfam);
+            domain.setProtein(protein);
+            domain.setStart(start);
+            domain.setEnd(end);
         }
         return domain;
     }

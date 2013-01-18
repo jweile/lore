@@ -17,9 +17,11 @@
 package ca.on.mshri.lore.interaction.yu.strucint;
 
 import ca.on.mshri.lore.interaction.InteractionModel;
+import ca.on.mshri.lore.molecules.ProteinDomain;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.io.File;
+import java.util.List;
 import junit.framework.TestCase;
 
 /**
@@ -56,6 +58,15 @@ public class StrucIntParserTest extends TestCase {
         );
         
         parser.run();
+        
+        
+        List<ProteinDomain> domains = model.listIndividualsOfClass(ProteinDomain.class, true);
+        for (int i = 0; i < 10; i++) {
+            ProteinDomain domain = domains.get(i);
+            String entrez = domain.getProtein().getXRefValue(model.ENTREZ);
+            String pfam = domain.getXRefValue(model.PFAM);
+            System.out.println(entrez+"\t"+pfam+"\t"+domain.getStart()+"\t"+domain.getEnd());
+        }
         
     }
 }
