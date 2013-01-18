@@ -28,7 +28,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 public class InteractionModel extends MoleculesModel {
     
     public static final String URI = "http://llama.mshri.on.ca/lore-interaction.owl";
-
+    
     public InteractionModel(OntModelSpec spec, Model model) {
         //read dependencies
         super(spec, model);

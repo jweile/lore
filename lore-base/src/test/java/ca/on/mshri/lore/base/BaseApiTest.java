@@ -67,4 +67,13 @@ public class BaseApiTest extends TestCase {
         
     }
     
+    public void testInstanceOf() throws Exception {
+        
+        LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+        
+        RecordObject r = RecordObject.createOrGet(model, model.PUBMED, "1");
+        assertTrue(LoreModel.hasClass(r, model.getOntClass(RecordObject.CLASS_URI)));
+        
+    }
+    
 }

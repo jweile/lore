@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.molecules;
 
+import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.genome.GenomeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -28,6 +29,8 @@ public class MoleculesModel extends GenomeModel {
     
     
     public static final String URI = "http://llama.mshri.on.ca/lore-molecules.owl";
+    
+    public final Authority PFAM = Authority.createOrGet(this, "PFAM");
 
     public MoleculesModel(OntModelSpec spec, Model model) {
         //read dependencies

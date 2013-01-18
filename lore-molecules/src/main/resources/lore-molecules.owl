@@ -66,6 +66,42 @@
         <rdfs:range rdf:resource="&lore-genome;Gene"/>
         <rdfs:domain rdf:resource="&lore-molecules;Protein"/>
     </owl:ObjectProperty>
+
+
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#domainOf -->
+
+    <owl:ObjectProperty rdf:about="&lore-molecules;domainOf">
+        <rdfs:range rdf:resource="&lore-molecules;Protein"/>
+        <rdfs:domain rdf:resource="&lore-molecules;ProteinDomain"/>
+    </owl:ObjectProperty>
+    
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#start -->
+
+    <owl:DatatypeProperty rdf:about="&lore-molecules;start">
+        <rdfs:domain rdf:resource="&lore-molecules;ProteinDomain"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+    
+
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#end -->
+
+    <owl:DatatypeProperty rdf:about="&lore-molecules;end">
+        <rdfs:domain rdf:resource="&lore-molecules;ProteinDomain"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+    
+
     
 
 
@@ -118,6 +154,16 @@
     <owl:Class rdf:about="&lore-molecules;RNA">
         <rdfs:subClassOf rdf:resource="&lore-molecules;Molecule"/>
     </owl:Class>
+    
+    
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#ProteinDomain -->
+
+    <owl:Class rdf:about="&lore-molecules;ProteinDomain">
+        <rdfs:subClassOf rdf:resource="&lore-base;RecordObject"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A domain within a protein</rdfs:comment>
+    </owl:Class>
+    
+    
 </rdf:RDF>
 
 

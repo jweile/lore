@@ -49,6 +49,7 @@ public class InteractionsTest extends TestCase {
         OntClass iType = model.getOntClass(InteractionModel.URI+"#SyntheticLethality");
         
         GeneticInteraction interaction = GeneticInteraction.createOrGet(model, exp, iType, g1, g2);
+        System.out.println(interaction.getURI());
         
         List<NucleotideFeature> interactors = interaction.listParticipants();
         assertEquals(2,interactors.size());

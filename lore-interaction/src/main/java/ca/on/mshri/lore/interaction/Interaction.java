@@ -27,7 +27,10 @@ import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -94,6 +97,10 @@ public class Interaction extends IndividualImpl {
     
     /**
      * Pseudo-constructor. 
+     * Warning: works under the assumption that the given type has a URI that
+     * follows the syntax <code>Namespace#ID</code>. Also assumes that the participants
+     * are Lore objects and thus have URIs following the syntax <code>urn:lore:Class#ID</code>.
+     * 
      * @param model
      * @param auth
      * @param id
@@ -102,24 +109,31 @@ public class Interaction extends IndividualImpl {
     public static Interaction createOrGet(InteractionModel model, 
             Experiment e, OntClass type, RecordObject... participants) {
         
-        OntClass thisType = model.getOntClass(CLASS_URI);
+        //sort participants to ensure reciprocity of identifiers
+        Arrays.sort(participants, new Comparator<RecordObject>() {
+            public int compare(RecordObject t, RecordObject t1) {
+                return t.getURI().compareTo(t1.getURI());
+            }
+        });
         
-        if (!type.equals(thisType) && !thisType.hasSubClass(type, false)) {
+        //check that the given type is actually a subclass
+        if (!LoreModel.isSubClassOf(type, model.getOntClass(CLASS_URI))) {
             throw new ConversionException(type+" is not a subclass of "+CLASS_URI);
         }
         
-        //FIXME: need to truncate participant URIs to avoid URN syntax violation
-        StringBuilder b = new StringBuilder("urn:lore:Interaction#(");
+        String typeTag = type.getURI().split("#")[1];
+        
+        StringBuilder b = new StringBuilder("urn:lore:").append(typeTag).append("#(");
         for (RecordObject o : participants) {
-            b.append(o.getURI())
-                    .append("--");
+            b.append(o.getURI().substring(9).replace('#', ':'))
+                    .append("-");
         }
-        b.deleteCharAt(b.length()-2);
+        b.deleteCharAt(b.length()-1);
         b.append(")");
-        if (e != null) {
-        b.append("$");
-        b.append(e.getURI());
-        }
+//        if (e != null) {
+//        b.append("$");
+//        b.append(e.getURI());
+//        }
        
         Interaction out = fromIndividual(type
                             .createIndividual(b.toString()));

@@ -159,21 +159,42 @@ public class LoreModel extends OntModelImpl {
      * @param clazz the class in question
      * @return whether or not the individual is a member of the given class.
      */
-    public static boolean hasClass(Individual in, OntClass clazz) {
-        /*
-         * FIXME: To account for multiple possible superclasses in OWL, 
-         * This should be re-written as a recursive DFS algorithm.
-         */
+//    public static boolean hasClass(Individual in, OntClass clazz) {
+//        /*
+//         * FIXME: To account for multiple possible superclasses in OWL, 
+//         * This should be re-written as a recursive DFS algorithm.
+//         */
+//        OntClass currClass = in.getOntClass();
+//        while (currClass != null) {
+//            if (currClass.equals(clazz)) {
+//                return true;
+//            } else {
+//                currClass = currClass.getSuperClass();
+//            }
+//        }
+//        return false;
+//    }
+    
+    public static boolean hasClass(Individual in, OntClass clazz) { 
         OntClass currClass = in.getOntClass();
-        while (currClass != null) {
-            if (currClass.equals(clazz)) {
-                return true;
-            } else {
-                currClass = currClass.getSuperClass();
-            }
-        }
-        return false;
+        return isSubClassOf(currClass, clazz);
+        
     }
 
+    
+    public static boolean isSubClassOf(OntClass subClass, OntClass clazz) {
+        
+        if (subClass.equals(clazz)) {
+            return true;
+        } else {
+            ExtendedIterator<OntClass> it = subClass.listSuperClasses(true);
+            while (it.hasNext()) {
+                if (isSubClassOf(it.next(), clazz)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
     
 }

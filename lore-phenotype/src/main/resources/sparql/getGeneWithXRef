@@ -1,0 +1,16 @@
+PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
+PREFIX base: <http://llama.mshri.on.ca/lore-base.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX auth: <urn:lore:Authority#>
+
+#Find all pairs of genes from species s that share an xref
+
+SELECT ?gene
+WHERE
+{
+    ?gene rdf:type genome:Gene .
+    ?gene base:hasXRef ?xref .
+    ?xref base:hasAuthority <%s> .
+    ?xref base:hasValue "%s"^^xsd:string .
+}
