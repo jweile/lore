@@ -49,7 +49,7 @@ public abstract class TabDelimParser extends LoreOperation {
                 lnum++;
                 
                 //skip header
-                if (lnum < skip) {
+                if (lnum <= skip) {
                     progress.next("Parsing");
                     continue;
                 }

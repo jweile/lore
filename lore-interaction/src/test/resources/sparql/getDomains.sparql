@@ -1,0 +1,8 @@
+PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
+PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
+
+SELECT ?domain 
+WHERE {
+    ?domain mol:domainOf <%s>;
+            ia:involvedIn <%s>.
+}

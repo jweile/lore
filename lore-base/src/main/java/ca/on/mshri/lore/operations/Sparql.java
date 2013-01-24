@@ -116,11 +116,23 @@ public class Sparql {
             
             //in case we're executing from inside our IDE
             File dir = new File("src/main/resources/sparql/");
-            for (File file : dir.listFiles()) {
-                try {
-                    loadQueryFromFile(file.getAbsolutePath(), new FileInputStream(file));
-                } catch (FileNotFoundException ex) {
-                    //can't happen, unless it got deleted after the list() command.
+            if (dir.exists()) {
+                for (File file : dir.listFiles()) {
+                    try {
+                        loadQueryFromFile(file.getAbsolutePath(), new FileInputStream(file));
+                    } catch (FileNotFoundException ex) {
+                        //can't happen, unless it got deleted after the list() command.
+                    }
+                }
+            }
+            dir = new File("src/test/resources/sparql/");
+            if (dir.exists()) {
+                for (File file : dir.listFiles()) {
+                    try {
+                        loadQueryFromFile(file.getAbsolutePath(), new FileInputStream(file));
+                    } catch (FileNotFoundException ex) {
+                        //can't happen, unless it got deleted after the list() command.
+                    }
                 }
             }
         }

@@ -9,14 +9,11 @@ import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.interaction.InteractionModel;
-import ca.on.mshri.lore.operations.LoreOperation;
+import ca.on.mshri.lore.operations.util.TabDelimParser;
 import ca.on.mshri.lore.operations.util.URLParameter;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import de.jweile.yogiutil.CliIndeterminateProgress;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,85 +21,81 @@ import java.util.logging.Logger;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class MutantDetailParser extends LoreOperation {
+public class MutantDetailParser extends TabDelimParser {
     
     public URLParameter srcP = new URLParameter("src");
     
-//    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
+    //columns
+    private static final int mutId = 0;
+    private static final int symbol = 1;
+    private static final int entrez = 3;
+    private static final int hgmd = 4;
+    private static final int pos = 5;
+    private static final int fromCodon = 7;
+    private static final int toCodon = 8;
     
+    //fields
+    private InteractionModel iaModel;
+    private Authority ccsbMut;
+    
+    /**
+     * Run parser
+     */
     public void run() {
         
         Logger.getLogger(MutantDetailParser.class.getName())
                 .log(Level.INFO, "Mutant Detail Parser started.");
         
-        InputStream in = null;
-        InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        //get source
+        URL url = getParameterValue(srcP);
+        if (url == null) {
+            throw new IllegalArgumentException("Parameter src is required!");
+        }
         
-        int mutId = 0;
-        int symbol = 1;
-        int entrez = 3;
-        int hgmd = 4;
-        int pos = 5;
-        int fromCodon = 7;
-        int toCodon = 8;
+        //init fields
+        iaModel = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        ccsbMut = Authority.createOrGet(iaModel, "CCSB-Mutant");
         
-        Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
-        
+        /*
+         * start parsing, 
+         * skip 1st row, 
+         * ensure each row has 9 columns
+         */
         try {
-            
-            in = getParameterValue(srcP).openStream();
-            BufferedReader b = new BufferedReader(new InputStreamReader(in));
-            
-            CliIndeterminateProgress progress = new CliIndeterminateProgress();
-            
-            String line; int lnum = 0;
-            while ((line = b.readLine()) != null) {
-                lnum++;
-                
-                if (lnum == 1) {
-                    continue;
-                }
-                
-                String[] cols = line.split("\t");
-                if (cols.length < toCodon+1) {
-                    continue;
-                }
-                
-                String mutDesc = cols[fromCodon]+cols[pos]+cols[toCodon];
-                
-                Gene gene = Gene.createOrGet(model, model.ENTREZ, cols[entrez]);
-                gene.addLabel(cols[symbol], null);
-                
-                Allele allele = Allele.createOrGet(model, ccsbMut, cols[mutId]);
-                PointMutation mut = PointMutation.createOrGet(model, allele, mutDesc);
-                allele.addMutation(mut);
-                
-                Gene linkedGene = allele.getGene();
-                if (linkedGene == null || !linkedGene.equals(gene)) {
-                    Logger.getLogger(MutantDetailParser.class.getName())
-                            .log(Level.WARNING, "Allele not linked: "+allele.getURI());
-                    allele.setGene(gene);
-                }                
-                
-                progress.next("Parsing");
-                
-            }
-            progress.done();
-            
+            parseTabDelim(url.openStream(), 1, 9);
         } catch (IOException ex) {
-            throw new RuntimeException("Parsing failed!",ex);
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(MutantDetailParser.class.getName())
-                        .log(Level.WARNING, "Unable to close stream", ex);
-            }
+            throw new RuntimeException("Unable to open "+url, ex);
         }
     }
 
+
+    /**
+     * Called by parseTabDelim() for each row in the table.
+     * 
+     * @param cols an array containing the values of each column for this row.
+     */
+    @Override
+    protected void processRow(String[] cols) {
+        
+        String mutDesc = cols[fromCodon]+cols[pos]+cols[toCodon];
+
+        Gene gene = Gene.createOrGet(iaModel, iaModel.ENTREZ, cols[entrez]);
+        gene.addLabel(cols[symbol], null);
+
+        Allele allele = Allele.createOrGet(iaModel, ccsbMut, cols[mutId]);
+        PointMutation mut = PointMutation.createOrGet(iaModel, allele, mutDesc);
+        allele.addMutation(mut);
+
+        Gene linkedGene = allele.getGene();
+        if (linkedGene == null || !linkedGene.equals(gene)) {
+            Logger.getLogger(MutantDetailParser.class.getName())
+                    .log(Level.WARNING, "Allele not linked: "+allele.getURI());
+            allele.setGene(gene);
+        }  
+        
+    }
+    
+    
     @Override
     public boolean requiresReasoner() {
         return false;

@@ -23,17 +23,14 @@ import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
-import ca.on.mshri.lore.operations.LoreOperation;
 import ca.on.mshri.lore.operations.util.Parameter;
+import ca.on.mshri.lore.operations.util.TabDelimParser;
 import ca.on.mshri.lore.operations.util.URLParameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Property;
-import de.jweile.yogiutil.CliIndeterminateProgress;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,10 +39,8 @@ import java.util.logging.Logger;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class InteractionParser extends LoreOperation {
-    
-//    public Parameter<InteractionModel> modelP = Parameter.make("model", InteractionModel.class);
-    
+public class InteractionParser extends TabDelimParser {
+        
     public URLParameter srcP = new URLParameter("src");
     
     public Parameter<String> expP = Parameter.make("exp", String.class);
@@ -55,105 +50,82 @@ public class InteractionParser extends LoreOperation {
     private static final int dbId = 4;
     private static final int adId = 6;
     private static final int gro = 12;
+    
+    //fields
+    private InteractionModel iaModel;
+    private Experiment exp;
+    private Authority ccsbMut;
+    private OntClass physIntType;
+    private Property pos;
+    private Property neg;
         
     public void run() {
         
         Logger.getLogger(InteractionParser.class.getName())
                 .log(Level.INFO, "Interaction parser started");
         
-        InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        //init fields
+        iaModel = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        exp = Experiment.createOrGet(iaModel, getParameterValue(expP));
+        ccsbMut = Authority.createOrGet(iaModel, "CCSB-Mutant");
+        physIntType = iaModel.getOntClass(PhysicalInteraction.CLASS_URI);
+        pos = iaModel.getProperty(InteractionModel.URI+"#affectsPositively");
+        neg = iaModel.getProperty(InteractionModel.URI+"#affectsNegatively");
         
-        Experiment exp = Experiment.createOrGet(model, getParameterValue(expP));
+        //get input source
+        URL url = getParameterValue(srcP);
+        if (url == null) {
+            throw new IllegalArgumentException("Parameter src is required!");
+        }
         
-        Authority ccsbMut = Authority.createOrGet(model, "CCSB-Mutant");
-//        Experiment exp = Experiment.createOrGet(model, "CCSB-Edgotyping-1.0");
-        OntClass physIntType = model.getOntClass(PhysicalInteraction.CLASS_URI);
-        
-        Property pos = model.getProperty(InteractionModel.URI+"#affectsPositively");
-        Property neg = model.getProperty(InteractionModel.URI+"#affectsNegatively");
-        
-        InputStream in = null;
-        
+        //start parsing
         try {
-            in = getParameterValue(srcP).openStream();
-            BufferedReader r = new BufferedReader(new InputStreamReader(in));
-            
-            CliIndeterminateProgress progress = new CliIndeterminateProgress();
-            
-            //read file
-            String line; int lnum = 0;
-            while ((line = r.readLine()) != null) {
-                lnum++;
-                
-                //skip header line
-                if (lnum < 2) {
-                    continue;
-                }
-                
-                //split line into columns
-                String[] cols = line.split("\t");
-                
-                //skip broken lines
-                if (cols.length < adId+1) {
-                    Logger.getLogger(InteractionParser.class.getName())
-                            .log(Level.WARNING, "Corrupt row: "+lnum);
-                    continue;
-                }
-                
-                //get model components
-                Gene dbGene = Gene.createOrGet(model, model.ENTREZ, cols[dbId]);
-                Protein dbProtein = Protein.createOrGet(model, model.ENTREZ, cols[dbId]);
-                if (dbProtein.getEncodingGene() == null || !dbProtein.getEncodingGene().equals(dbGene)) {
-                    dbProtein.setEncodingGene(dbGene);
-                }
-                
-                Gene adGene = Gene.createOrGet(model, model.ENTREZ, cols[adId]);
-                Protein adProtein = Protein.createOrGet(model, model.ENTREZ, cols[adId]);
-                if (adProtein.getEncodingGene() == null || !adProtein.getEncodingGene().equals(adGene)) {
-                    adProtein.setEncodingGene(adGene);
-                }
-                
-                PhysicalInteraction interaction = PhysicalInteraction.createOrGet(model, exp, physIntType, dbProtein, adProtein);
-                
-                Allele dbAllele = Allele.createOrGet(model, ccsbMut, 
-                        cols[mut].equals("0") ? 
-                        cols[dbId]+"."+cols[mut] : 
-                        cols[mut]
-                );
-                if (dbAllele.getGene() == null || !dbAllele.getGene().equals(dbGene)) {
-                    dbAllele.setGene(dbGene);
-                }
-                
-                
-                //complement short lines
-                String key = (cols.length < gro+1) ? "" : cols[gro];
-                
-                Growth growth = Growth.fromKey(key);
-                
-                //register allele with interaction
-                if (growth != Growth.UNKNOWN) {
-                    Property affects = growth != Growth.NEG ? pos : neg;
-                    dbAllele.addProperty(affects, interaction);
-                }
-                
-                progress.next("Parsing");
-                
-            }
-            progress.done();
+            parseTabDelim(url.openStream(), 2, 7);
         } catch (IOException ex) {
-            throw new RuntimeException("Unable to read interacion data",ex);
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(InteractionParser.class.getName())
-                        .log(Level.WARNING, "Unable to close stream", ex);
-            }
+            throw new RuntimeException("Unable to open "+url, ex);
         }
         
         
+    }
+
+    @Override
+    protected void processRow(String[] cols) {
+        
+        //get model components
+        Gene dbGene = Gene.createOrGet(iaModel, iaModel.ENTREZ, cols[dbId]);
+        Protein dbProtein = Protein.createOrGet(iaModel, iaModel.ENTREZ, cols[dbId]);
+        if (dbProtein.getEncodingGene() == null || !dbProtein.getEncodingGene().equals(dbGene)) {
+            dbProtein.setEncodingGene(dbGene);
+        }
+
+        Gene adGene = Gene.createOrGet(iaModel, iaModel.ENTREZ, cols[adId]);
+        Protein adProtein = Protein.createOrGet(iaModel, iaModel.ENTREZ, cols[adId]);
+        if (adProtein.getEncodingGene() == null || !adProtein.getEncodingGene().equals(adGene)) {
+            adProtein.setEncodingGene(adGene);
+        }
+
+        PhysicalInteraction interaction = PhysicalInteraction.createOrGet(iaModel, exp, physIntType, dbProtein, adProtein);
+
+        Allele dbAllele = Allele.createOrGet(iaModel, ccsbMut, 
+                cols[mut].equals("0") ? 
+                cols[dbId]+"."+cols[mut] : 
+                cols[mut]
+        );
+        if (dbAllele.getGene() == null || !dbAllele.getGene().equals(dbGene)) {
+            dbAllele.setGene(dbGene);
+        }
+
+
+        //complement short lines
+        String key = (cols.length < gro+1) ? "" : cols[gro];
+
+        Growth growth = Growth.fromKey(key);
+
+        //register allele with interaction
+        if (growth != Growth.UNKNOWN) {
+            Property affects = growth != Growth.NEG ? pos : neg;
+            dbAllele.addProperty(affects, interaction);
+        }
     }
     
     private static enum Growth {

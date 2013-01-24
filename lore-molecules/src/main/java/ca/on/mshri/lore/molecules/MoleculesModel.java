@@ -31,6 +31,7 @@ public class MoleculesModel extends GenomeModel {
     public static final String URI = "http://llama.mshri.on.ca/lore-molecules.owl";
     
     public final Authority PFAM = Authority.createOrGet(this, "PFAM");
+    public final Authority UNIPROT = Authority.createOrGet(this, "UNIPROT");
 
     public MoleculesModel(OntModelSpec spec, Model model) {
         //read dependencies
