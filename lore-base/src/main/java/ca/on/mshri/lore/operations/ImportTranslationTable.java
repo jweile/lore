@@ -58,6 +58,8 @@ public class ImportTranslationTable extends TabDelimParser {
      */
     public final Parameter<String> authoritesP = Parameter.make("authorities", String.class);
     
+    public final Parameter<Integer> skipP = Parameter.make("skip", Integer.class, 0);
+    
     //fields
     private OntClass clazz;
     private List<Authority> authorities;
@@ -97,9 +99,11 @@ public class ImportTranslationTable extends TabDelimParser {
             authorities.add(Authority.createOrGet(getModel(), authS.trim()));
         }
         
+        int skip = getParameterValue(skipP);
+        
         //start parsing
         try {
-            parseTabDelim(src.openStream(), 0, authorities.size());
+            parseTabDelim(src.openStream(), skip, authorities.size());
         } catch (IOException ex) {
             throw new RuntimeException("Unable to read "+src, ex);
         }

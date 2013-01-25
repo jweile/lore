@@ -55,6 +55,7 @@ public class ImportTranslationTableTest extends TestCase {
         itt.setParameter(itt.srcP, file.toURI().toURL());
         itt.setParameter(itt.authoritesP, "EntrezGene,UNIPROT");
         itt.setParameter(itt.classP, itt.classP.validate(RecordObject.CLASS_URI));
+        itt.setParameter(itt.skipP, 4);
         
         itt.run();
         
