@@ -52,7 +52,8 @@ public class SeqDistAnalysis extends LoreOperation {
     @Override
     public void run() {
         
-        Logger.getLogger(SeqDistAnalysis.class.getName()).log(Level.INFO, "Sequence distance analysis started.");
+        Logger.getLogger(SeqDistAnalysis.class.getName())
+                .log(Level.INFO, "Sequence distance analysis started.");
         
         StringBuilder out = new StringBuilder();
         
@@ -96,7 +97,7 @@ public class SeqDistAnalysis extends LoreOperation {
                     //test whether they have diseases in common.
                     boolean commonDisease = haveCommonMember(diseases_i, diseases_j);
                     
-                    out.append(distance).append('\t').append(commonDisease ? 1 : 0);
+                    out.append(distance).append('\t').append(commonDisease ? 1 : 0).append("\n");
                     
                 }
             }
