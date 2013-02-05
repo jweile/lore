@@ -56,7 +56,7 @@
 
     <owl:ObjectProperty rdf:about="http://llama.mshri.on.ca/lore-base.owl#hasAuthority">
         <rdfs:range rdf:resource="http://llama.mshri.on.ca/lore-base.owl#Authority"/>
-        <rdfs:domain rdf:resource="http://llama.mshri.on.ca/lore-base.owl#RecordObject"/>
+        <rdfs:domain rdf:resource="http://llama.mshri.on.ca/lore-base.owl#XRef"/>
     </owl:ObjectProperty>
     
 

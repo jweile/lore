@@ -43,11 +43,25 @@ import java.util.logging.Logger;
  */
 public class SeqDistAnalysis extends LoreOperation {
 
+    /**
+     * Parameter "outfile": Indicates the file to which the output is written.
+     */
     public final Parameter<String> outfileP = Parameter.make("outfile",String.class, "seqDist.tsv");
     
+    /**
+     * The "PointMutation" OWL class
+     */
     private OntClass pMutClass;
+
+    /**
+     * The OWL properties "affectsPositively" and "affectsNegatively",
+     * which connect alleles to their affected interactions.
+     */
     private Property affectsPositively, affectsNegatively;
     
+    /**
+     * Runs the analysis on the current dataset.
+     */
     @Override
     public void run() {
         
@@ -63,43 +77,57 @@ public class SeqDistAnalysis extends LoreOperation {
         Logger.getLogger(SeqDistAnalysis.class.getName())
                 .log(Level.INFO, "Analyzing edgotype profiles...");
                 
+        //get list of all genes
         List<Gene> genes = getModel().listIndividualsOfClass(Gene.class, false);
         
         CliProgressBar pb = new CliProgressBar(genes.size());
         
         for (Gene gene : genes) {
             
+            //get alleles of current gene
             List<Allele> alleles = gene.listAlleles();
             
-            //test all pairs of alleles
+            //form all possible pairs of alleles for the current gene
             for (int i = 1; i < alleles.size(); i++) {
                 
+                //pair partner #1
                 Allele a_i = alleles.get(i);
+                //get the position of the mutation within this allele
                 Integer pos_i = mutationPosition(a_i);
-                
+                //compute the edgotype profile for the current allele
                 Set<String> profile_i = edgeticProfile(a_i);
                 
+                //skip alleles for which neither information was accessible
                 if (pos_i == null || profile_i.isEmpty()) {
                     continue;
                 }
                 
+                //iterate over partner #2
                 for (int j = 0; j < i; j++) {
                     
+                    //pair partner #2
                     Allele a_j = alleles.get(j);
+                    //get the position of the mutation within this allele
                     Integer pos_j = mutationPosition(a_j);
+                    //compute the edgotype profile for the current allele
                     Set<String> profile_j = edgeticProfile(a_j);
                     
+                    //skip alleles for which neither information was accessible
                     if (pos_j == null || profile_j.isEmpty()) {
                         continue;
                     }
                     
-                    //compute distance
+                    //compute sequence distance between the two mutations
                     int distance = Math.abs(pos_i - pos_j);
                     
-                    //get similarity between profiles
+                    //get similarity between the two edgotype profiles
                     double similarity = jaccard(profile_i, profile_j);
-//                    
-                    out.append(distance).append('\t').append(similarity).append("\n");
+                    
+                    //output of results
+                    out.append(distance)
+                        .append('\t')
+                        .append(similarity)
+                        .append("\n");
                     
                 }
             }
@@ -107,34 +135,68 @@ public class SeqDistAnalysis extends LoreOperation {
             pb.next();
         }
         
+        //write output to file
         write(out.toString(), getParameterValue(outfileP));
-        
         
     }
         
-    
+    /**
+     * Retrives the position of the mutation within the given allele.
+     */
     private Integer mutationPosition(Allele allele) {
+
         List<Mutation> muts = allele.listMutations();
         if (muts != null && !muts.isEmpty()) {
+
             Mutation mut = muts.get(0);
             if (LoreModel.hasClass(mut, pMutClass)) {
+
                 PointMutation pMut = PointMutation.fromIndividual(mut);
                 return pMut.getPosition();
             }
         }
+
         return null;
     }
 
+    /**
+     * Retrives the edgotype profile of the given allele.
+     * This is represented as a set of strings which indicate positive or negative effects
+     * on the different interactions in which the encoded gene enages.
+     */
+    private Set<String> edgeticProfile(Allele a_i) {
+        
+        Set<String> list = new HashSet<String>();
+        
+        NodeIterator it = a_i.listPropertyValues(affectsPositively);
+        while (it.hasNext()) {
+            list.add("pos:" + it.next().asResource().getURI());
+        }
+        
+        it = a_i.listPropertyValues(affectsNegatively);
+        while (it.hasNext()) {
+            list.add("neg:" + it.next().asResource().getURI());
+        }
+        
+        return list;
+    }
     
+    /**
+     * This operation does not require reasoner support.
+     */
     @Override
     public boolean requiresReasoner() {
         return false;
     }
 
 
+    /**
+     * Writes the given contents to a new file with the given file name.
+     */
     private void write(String contents, String file) {
         
-        Logger.getLogger(SeqDistAnalysis.class.getName()).log(Level.INFO, "Writing results to file.");
+        Logger.getLogger(SeqDistAnalysis.class.getName())
+            .log(Level.INFO, "Writing results to file.");
         
         BufferedWriter w = null;
         try {
@@ -154,23 +216,10 @@ public class SeqDistAnalysis extends LoreOperation {
         }
     }
 
-    private Set<String> edgeticProfile(Allele a_i) {
-        
-        Set<String> list = new HashSet<String>();
-        
-        NodeIterator it = a_i.listPropertyValues(affectsPositively);
-        while (it.hasNext()) {
-            list.add("pos:" + it.next().asResource().getURI());
-        }
-        
-        it = a_i.listPropertyValues(affectsNegatively);
-        while (it.hasNext()) {
-            list.add("neg:" + it.next().asResource().getURI());
-        }
-        
-        return list;
-    }
 
+    /**
+     * Computes the Jaccard coefficent for overlap between two sets.
+     */
     private <T> double jaccard(Set<T> a, Set<T> b) {
         Set<T> union = new HashSet<T>(a);
         union.addAll(b);

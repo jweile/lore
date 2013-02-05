@@ -20,6 +20,7 @@ import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.Experiment;
 import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
+import ca.on.mshri.lore.genome.PointMutation;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
@@ -39,32 +40,45 @@ import java.util.logging.Logger;
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class InteractionParser extends TabDelimParser {
+public class InteractionParserV2 extends TabDelimParser {
         
     public URLParameter srcP = new URLParameter("src");
     
     public Parameter<String> expP = Parameter.make("exp", String.class);
     
     //column indices
-    private static final int mut = 1;
-    private static final int dbOrfId = 3;
-    private static final int dbEntrezId = 4;
-    private static final int adOrfId = 5;
-    private static final int adEntrezId = 6;
-    private static final int gro = 12;
+    private static final int pwtest = 0;
+    private static final int dbOrfId = 1;
+    private static final int dbSymbol = 2;
+    private static final int dbEntrezId = 3;
+    private static final int mutId = 4;
+    private static final int mutAAPos = 5;
+    private static final int hgmdAcc = 6;
+    private static final int degree = 7;
+    private static final int adOrfId = 8;
+    private static final int adSymbol = 9;
+    private static final int adEntrezId  = 10;
+    private static final int orfPair = 11;
+    private static final int entrezPair = 12;
+    private static final int score = 13;
+    private static final int ltGrowth = 14;
+    private static final int edgotype = 15;
+    private static final int hgmdDisease = 16;
+
     
     //fields
     private InteractionModel iaModel;
     private Experiment exp;
     private Authority ccsbMut;
     private Authority ccsbOrf;
+    private Authority hgmd;
     private OntClass physIntType;
     private Property pos;
     private Property neg;
         
     public void run() {
         
-        Logger.getLogger(InteractionParser.class.getName())
+        Logger.getLogger(InteractionParserV2.class.getName())
                 .log(Level.INFO, "Interaction parser started");
         
         //init fields
@@ -72,6 +86,7 @@ public class InteractionParser extends TabDelimParser {
         exp = Experiment.createOrGet(iaModel, getParameterValue(expP));
         ccsbMut = Authority.createOrGet(iaModel, "CCSB-Mutant");
         ccsbOrf = Authority.createOrGet(iaModel, "CCSB-ORF");
+        hgmd = Authority.createOrGet(iaModel, "HGMD");
         physIntType = iaModel.getOntClass(PhysicalInteraction.CLASS_URI);
         pos = iaModel.getProperty(InteractionModel.URI+"#affectsPositively");
         neg = iaModel.getProperty(InteractionModel.URI+"#affectsNegatively");
@@ -95,37 +110,36 @@ public class InteractionParser extends TabDelimParser {
     @Override
     protected void processRow(String[] cols) {
         
-        //get model components
-        Gene dbGene = Gene.createOrGet(iaModel, iaModel.ENTREZ, cols[dbEntrezId]);
-        Protein dbProtein = Protein.createOrGet(iaModel, ccsbOrf, cols[dbOrfId]);
-        dbProtein.addXRef(iaModel.ENTREZ, cols[dbEntrezId]);
-        if (dbProtein.getEncodingGene() == null || !dbProtein.getEncodingGene().equals(dbGene)) {
-            dbProtein.setEncodingGene(dbGene);
-        }
+        Gene dbGene = getOrMakeGene(cols, dbEntrezId, dbSymbol);
+        Protein dbProtein = getOrMakeProtein(cols, dbGene, dbEntrezId, dbSymbol, dbOrfId);
 
-        Gene adGene = Gene.createOrGet(iaModel, iaModel.ENTREZ, cols[adEntrezId]);
-        Protein adProtein = Protein.createOrGet(iaModel, ccsbOrf, cols[adOrfId]);
-        adProtein.addXRef(iaModel.ENTREZ, cols[adEntrezId]);
-        if (adProtein.getEncodingGene() == null || !adProtein.getEncodingGene().equals(adGene)) {
-            adProtein.setEncodingGene(adGene);
-        }
+        Gene adGene = getOrMakeGene(cols, adEntrezId, adSymbol);
+        Protein adProtein = getOrMakeProtein(cols, adGene, adEntrezId, adSymbol, adOrfId);
+
 
         PhysicalInteraction interaction = PhysicalInteraction.createOrGet(iaModel, exp, physIntType, dbProtein, adProtein);
 
         Allele dbAllele = Allele.createOrGet(iaModel, ccsbMut, 
-                cols[mut].equals("0") ? 
-                cols[dbEntrezId]+"."+cols[mut] : 
-                cols[mut]
+                cols[mutId].equals("0") ? 
+                cols[dbOrfId]+"."+cols[mutId] : 
+                cols[mutId]
         );
         if (dbAllele.getGene() == null || !dbAllele.getGene().equals(dbGene)) {
             dbAllele.setGene(dbGene);
         }
+        if (dbAllele.getXRefValue(hgmd) == null) {
+            dbAllele.addXRef(hgmd, cols[hgmdAcc]);
+        }
+        if (dbAllele.listMutations().isEmpty() && !cols[mutAAPos].equals("WT")) {
+            PointMutation pmut = PointMutation.createOrGet(iaModel, dbAllele, cols[mutAAPos]);
+            dbAllele.addMutation(pmut);
+        }
 
 
         //complement short lines
-        String key = (cols.length < gro+1) ? "" : cols[gro];
+//        String key = (cols.length < score+1) ? "" : cols[score];
 
-        Growth growth = Growth.fromKey(key);
+        Growth growth = Growth.fromKey(cols[score]);
 
         //register allele with interaction
         if (growth != Growth.UNKNOWN) {
@@ -133,8 +147,32 @@ public class InteractionParser extends TabDelimParser {
             dbAllele.addProperty(affects, interaction);
         }
     }
+
+    private Gene getOrMakeGene(String[] cols, int entrezIndex, int symbolIndex) {
+        //get model components
+        Gene gene = Gene.createOrGet(iaModel, iaModel.ENTREZ, cols[entrezIndex]);
+        if (gene.getXRefValue(iaModel.HGNC) == null) {
+            gene.addXRef(iaModel.HGNC, cols[symbolIndex]);
+        }
+        return gene;
+    }
+
+    private Protein getOrMakeProtein(String[] cols, Gene gene, int entrezIndex, int symbolIndex, int orfIndex) {
+        Protein protein = Protein.createOrGet(iaModel, ccsbOrf, cols[orfIndex]);
+        if (protein.getXRefValue(iaModel.HGNC) == null) {
+            protein.addXRef(iaModel.HGNC, cols[symbolIndex]);
+        }
+        if (protein.getXRefValue(iaModel.ENTREZ) == null) {
+            protein.addXRef(iaModel.ENTREZ, cols[entrezIndex]);
+        }
+        if (protein.getEncodingGene() == null || !protein.getEncodingGene().equals(gene)) {
+            protein.setEncodingGene(gene);
+        }
+        return protein;
+    }
     
     private static enum Growth {
+        //y, 0, y-,  y+,    aa
         POS,NEG,WEAK,STRONG,UNKNOWN;
         
         public static Growth fromKey(String key) {

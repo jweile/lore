@@ -37,6 +37,11 @@
     <!-- http://llama.mshri.on.ca/lore-interaction.owl#hasParticipant -->
 
     <owl:ObjectProperty rdf:about="&lore-interaction;hasParticipant"/>
+
+
+    <!-- http://llama.mshri.on.ca/lore-interaction.owl#involvedIn -->
+
+    <owl:ObjectProperty rdf:about="&lore-interaction;involvedIn"/>
     
 
 
