@@ -122,9 +122,15 @@ public class I3DParser extends TabDelimParser {
         b.append(begin).append("-").append(end);
         
         ProteinDomain d = ProteinDomain.createOrGet(iaModel, domAuth, b.toString());
-        d.setProtein(p1);
-        d.setStart(begin);
-        d.setEnd(Integer.parseInt(cols[seq_end]));
+        if (d.getProtein() == null || !d.getProtein().equals(p1)) {
+            d.setProtein(p1);
+        }
+        if (d.getStart() == null || !d.getStart().equals(begin)) {
+            d.setStart(begin);
+        }
+        if (d.getEnd() == null || !d.getEnd().equals(end)) {
+            d.setEnd(end);
+        }
         
         return d;
     }
