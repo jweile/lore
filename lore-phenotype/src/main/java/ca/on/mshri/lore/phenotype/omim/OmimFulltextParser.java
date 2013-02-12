@@ -1,6 +1,18 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2012 Department of Molecular Genetics, University of Toronto
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ca.on.mshri.lore.phenotype.omim;
 
@@ -35,14 +47,21 @@ import java.util.regex.Pattern;
  */
 public class OmimFulltextParser {
     
-    
+    /**
+     * indexes phenotypes under their various names.
+     */
     private Map<String,Phenotype> phenotypeIndex = new HashMap<String, Phenotype>();
     
     /**
-     * links allele URIs to variants
+     * links allele URIs to variant objects corresponding to that allele.
      */
     private Map<String,Variant> allele2variant = new HashMap<String, Variant>();
         
+    /**
+     * Starts the parser.
+     * @param model the model
+     * @param in inputstream for the omim fulltext file.
+     */
     public void parse(PhenotypeModel model, InputStream in) {
         
         Record currRecord = null;
@@ -252,7 +271,7 @@ public class OmimFulltextParser {
                     } 
                     else {
                         if (insideList) {
-                            //if you we encounter an empty line we have read past the disease list
+                            //if we encounter an empty line, we have already read beyond the disease list
                             if (line.trim().length() == 0) {
                                 //stop reading
                                 insideList = false;
@@ -271,7 +290,28 @@ public class OmimFulltextParser {
                     }
                 }
             }
+            
         }
+    }
+    
+    private static String[] postprocessName(String s) {
+        String[] split = s.split(";");
+        
+        for (int i = 0; i < split.length; i++) {
+            split[i] = split[i].replace(", INCLUDED", "").trim();
+        }
+        
+        return split;
+    }
+    
+    private static String extractInheritance(String name) {
+        String[] split = name.split(",");
+        for (String part : split) {
+            if (part.matches("DOMINANT|RECESSIVE|AUTOSOMAL|X-LINKED|Y-LINKED")) {
+                return part.trim();
+            }
+        }
+        return null;
     }
 
     private static final Pattern snpPattern = Pattern.compile("\\w{3}\\d+\\w{3}");
@@ -390,6 +430,8 @@ public class OmimFulltextParser {
         
         private boolean deprecated = false;
         
+        private List<String> inheritanceModes;
+        
 
         public String getId() {
             return id;
@@ -418,7 +460,23 @@ public class OmimFulltextParser {
             if (names == null) {
                 names = new ArrayList<String>();
             }
-            names.add(s);
+            for (String subname : postprocessName(s)) {
+                String inheritance = extractInheritance(subname);
+                if (inheritance != null) {
+                    if (inheritanceModes == null) {
+                        inheritanceModes = new ArrayList<String>();
+                    }
+                    inheritanceModes.add(inheritance);
+                }
+                names.add(s);
+            }
+        }
+        
+        public List<String> getInheritance() {
+            if (inheritanceModes == null) {
+                return Collections.EMPTY_LIST;
+            }
+            return inheritanceModes;
         }
         
         public List<Variant> getVariants() {
@@ -490,7 +548,14 @@ public class OmimFulltextParser {
         }
 
         public void setDiseaseNames(List<String> diseaseNames) {
-            this.diseaseNames = diseaseNames;
+            List<String> extendedList = new ArrayList<String>();
+            //clean up disease names first
+            for (String name : diseaseNames) {
+                for (String subname : postprocessName(name)) {
+                    extendedList.add(subname);
+                }
+            }
+            this.diseaseNames = extendedList;
         }
 
         public String getMutation() {

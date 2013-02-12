@@ -18,6 +18,7 @@
         <module>lore-interaction</module>
         <module>lore-molecules</module>
     <module>lore-cli</module>
+    <module>lore-edgotype</module>
   </modules>
 
     <properties>

@@ -18,6 +18,7 @@ package ca.on.mshri.lore.interaction.edgotype;
 
 import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.Experiment;
+import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.PointMutation;
@@ -29,6 +30,7 @@ import ca.on.mshri.lore.operations.util.TabDelimParser;
 import ca.on.mshri.lore.operations.util.URLParameter;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import java.io.IOException;
 import java.net.URL;
@@ -134,6 +136,8 @@ public class InteractionParserV2 extends TabDelimParser {
         //if DB gene or AD gene already have a different ORF, then skip this row
         if (isDuplicate(cols, dbEntrezId, dbOrfId) 
                 || isDuplicate(cols, adEntrezId, adOrfId)) {
+            Logger.getLogger(InteractionParserV2.class.getName())
+                    .log(Level.WARNING, "Skipping allelic ORF");
             return;
         }
         
@@ -174,8 +178,21 @@ public class InteractionParserV2 extends TabDelimParser {
         //Connect allele to interaction regarding positive or negative influece
         Growth growth = Growth.fromKey(cols[score]);
         if (growth != Growth.UNKNOWN) {
-            Property affects = growth != Growth.NEG ? pos : neg;
-            dbAllele.addProperty(affects, interaction);
+            if (growth != Growth.NEG) {
+                if (dbAllele.hasProperty(neg, interaction)) {
+                    Logger.getLogger(InteractionParserV2.class.getName())
+                            .log(Level.WARNING, dbAllele+" has contradictory effects on "+interaction);
+                } else if (!dbAllele.hasProperty(pos, interaction)) {
+                    dbAllele.addProperty(pos, interaction);
+                }
+            } else {
+                if (dbAllele.hasProperty(pos, interaction)) {
+                    Logger.getLogger(InteractionParserV2.class.getName())
+                            .log(Level.WARNING, dbAllele+" has contradictory effects on "+interaction);
+                } else if (!dbAllele.hasProperty(neg, interaction)) {
+                    dbAllele.addProperty(neg, interaction);
+                }
+            }
         }
     }
 
@@ -242,7 +259,7 @@ public class InteractionParserV2 extends TabDelimParser {
             return true;
         }
     }
-    
+
     /**
      * Enum for representing different experimental results
      */

@@ -18,6 +18,7 @@ package ca.on.mshri.lore.phenotype.omim;
 
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.operations.LoreOperation;
+import ca.on.mshri.lore.operations.util.Parameter;
 import ca.on.mshri.lore.phenotype.Phenotype;
 import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -38,23 +39,55 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Imports the contents of the OMIM database into the current model.
+ * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
 public class OmimImporter extends LoreOperation {
     
+    /**
+     * Whether or not to import deprecated DB entries.
+     */
+    Parameter<Boolean> useDeprecatedP = Parameter.make("useDeprecated", Boolean.class, false);
+    
+    /**
+     * Whether or not to automatically link alleles to diseases using
+     * inexact name matching if necessary.
+     */
+    Parameter<Boolean> inferAlleleAssociationsP = Parameter.make("inferAlleleAssociations", Boolean.class, true);
+    
+    /**
+     * definitions of the source URLs.
+     */
     Properties resources;
     
+    /**
+     * maps OMIM IDs to gene objects
+     */
     Map<String,Gene> genes = new HashMap<String, Gene>();
     
+    /**
+     * maps OMIM IDs to phenotype objects (diseases)
+     */
     Map<String,Phenotype> phenos = new HashMap<String, Phenotype>();
 
+    /**
+     * Constructor. Doesn't do anything but loading properties.
+     */
     public OmimImporter() {
         
         loadProperties();
         
     }
     
+    /**
+     * Run the importer operation. First parses the mim2gene file to establish
+     * mappings between OMIM genes and entrez gene ids. Then reads the morbidmap
+     * file to get gene - disease associations. Finally, parses the fulltext
+     * omim dump to extract alleles and their disease associations. Finally
+     * calls an inexact text matcher to get a best guess at allele - disease
+     * associations.
+     */
     @Override
     public void run() {
                 
@@ -72,6 +105,11 @@ public class OmimImporter extends LoreOperation {
         
     }
 
+    /**
+     * parse the mim2gene file
+     * @param model the lore model
+     * @param in the input stream for the mim2gene file
+     */
     void parseMim2Gene(PhenotypeModel model, InputStream in) {
                 
         //column indices

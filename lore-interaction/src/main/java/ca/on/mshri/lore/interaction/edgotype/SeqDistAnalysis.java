@@ -164,21 +164,21 @@ public class SeqDistAnalysis extends LoreOperation {
      * This is represented as a set of strings which indicate positive or negative effects
      * on the different interactions in which the encoded gene enages.
      */
-    private Set<String> edgeticProfile(Allele a_i) {
+    private Set<String> edgeticProfile(Allele allele) {
         
-        Set<String> list = new HashSet<String>();
+        Set<String> set = new HashSet<String>();
         
-        NodeIterator it = a_i.listPropertyValues(affectsPositively);
+        NodeIterator it = allele.listPropertyValues(affectsPositively);
         while (it.hasNext()) {
-            list.add("pos:" + it.next().asResource().getURI());
+            set.add("pos:" + it.next().asResource().getURI());
         }
         
-        it = a_i.listPropertyValues(affectsNegatively);
+        it = allele.listPropertyValues(affectsNegatively);
         while (it.hasNext()) {
-            list.add("neg:" + it.next().asResource().getURI());
+            set.add("neg:" + it.next().asResource().getURI());
         }
         
-        return list;
+        return set;
     }
     
     /**
