@@ -56,6 +56,8 @@ public class OmimFulltextParser {
      * links allele URIs to variant objects corresponding to that allele.
      */
     private Map<String,Variant> allele2variant = new HashMap<String, Variant>();
+    
+    private Property inheritance;
         
     /**
      * Starts the parser.
@@ -63,6 +65,8 @@ public class OmimFulltextParser {
      * @param in inputstream for the omim fulltext file.
      */
     public void parse(PhenotypeModel model, InputStream in) {
+        
+        inheritance = model.getProperty(PhenotypeModel.URI+"#inheritanceMode");
         
         Record currRecord = null;
         StringBuilder currField = null;
@@ -304,10 +308,13 @@ public class OmimFulltextParser {
         return split;
     }
     
+    private static final Pattern inhPattern = Pattern.compile("DOMINANT|RECESSIVE|AUTOSOMAL|X-LINKED|Y-LINKED");
+    
     private static String extractInheritance(String name) {
         String[] split = name.split(",");
         for (String part : split) {
-            if (part.matches("DOMINANT|RECESSIVE|AUTOSOMAL|X-LINKED|Y-LINKED")) {
+            Matcher matcher = inhPattern.matcher(part);
+            if (matcher.find()) {
                 return part.trim();
             }
         }
@@ -369,6 +376,11 @@ public class OmimFulltextParser {
                 
                 //index under each name
                 phenotypeIndex.put(name, pheno);
+            }
+            
+            //add inheritance modes
+            for (String inh : record.getInheritance()) {
+                pheno.addProperty(inheritance, inh);
             }
             
             
@@ -468,7 +480,7 @@ public class OmimFulltextParser {
                     }
                     inheritanceModes.add(inheritance);
                 }
-                names.add(s);
+                names.add(subname);
             }
         }
         

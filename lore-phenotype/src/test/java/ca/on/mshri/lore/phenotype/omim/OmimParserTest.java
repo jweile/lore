@@ -20,9 +20,13 @@ import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.Mutation;
 import ca.on.mshri.lore.genome.PointMutation;
+import ca.on.mshri.lore.phenotype.Phenotype;
 import ca.on.mshri.lore.phenotype.PhenotypeModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import junit.framework.TestCase;
@@ -76,6 +80,8 @@ public class OmimParserTest extends TestCase {
         parser.parse(model, in);
         parser.linkAlleles(model);
         
+        System.out.println("\n\nListing genes and their alleles\n");
+        
         for (Gene gene: model.listIndividualsOfClass(Gene.class, false)) {
             System.out.println(gene.getLabel(null));
             for (Allele allele : gene.listAlleles()) {
@@ -88,6 +94,17 @@ public class OmimParserTest extends TestCase {
                 }
             }
         }
+        
+        System.out.println("\n\nListing diseases\n");
+        
+        Property inheritanceMode = model.getProperty(PhenotypeModel.URI+"#inheritanceMode");
+        
+        for (Phenotype pheno : model.listIndividualsOfClass(Phenotype.class, true)) {
+            String name = name(pheno);
+            RDFNode inhNode = pheno.getPropertyValue(inheritanceMode);
+            String inheritance = inhNode != null ? inhNode.asLiteral().getString() : "null";
+            System.out.println(name+" ("+inheritance+")");
+        }
     }
 //    
 //    public void testAll() throws Exception {
@@ -96,4 +113,18 @@ public class OmimParserTest extends TestCase {
 //        parser.parse(model);
 //        
 //    }
+
+    private String name(Phenotype pheno) {
+        int l_max = 0;
+        String bestName = null;
+        ExtendedIterator<RDFNode> it = pheno.listLabels(null);
+        while (it.hasNext()) {
+            String name = it.next().asLiteral().getString();
+            if (name.length() > l_max) {
+                l_max = name.length();
+                bestName = name;
+            }
+        }
+        return bestName;
+    }
 }
