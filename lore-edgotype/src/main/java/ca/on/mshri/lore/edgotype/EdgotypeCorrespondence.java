@@ -15,6 +15,8 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import de.jweile.yogiutil.LazyInitMap;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,18 +50,23 @@ public class EdgotypeCorrespondence extends LoreOperation {
             List<Allele> alleles = gene.listAlleles();
             //eliminate genes without alleles
             if (alleles.isEmpty()) {
-                continue geneloop;
+                continue;
             }
             
             //index alleles by edgotype
             for (Allele allele : alleles) {
                 String edgotype = edgotype(allele, gene);
+                //skip allels without diseases or edgotypes
+                if (edgotype.equals("[]") || diseases(allele).isEmpty()) {
+                    continue;
+                }
                 edgotypeIndex.getOrCreate(edgotype).add(allele);
             }
             
-            //eliminate genes with only empty edgotype
-            if (edgotypeIndex.size() == 1 && edgotypeIndex.containsKey("[]")) {
-                continue geneloop;
+            
+            //skip cases with less than 2 edgotypes
+            if (edgotypeIndex.size() < 2) {
+                continue;
             }
             
             //alleles with same edgotype must have similar diseases
@@ -91,16 +98,28 @@ public class EdgotypeCorrespondence extends LoreOperation {
             //if we get to here we have fulfilled all criteria
             String entrez = gene.getXRefValue(phenoModel.ENTREZ);
             String symbol = gene.getXRefValue(phenoModel.HGNC);
-            System.out.println(symbol+" ("+entrez+")");
+            System.out.println(symbol+" (Entrez:"+entrez+")");
             
-            for (Allele allele : gene.listAlleles()) {
-                String hgmdId = allele.getXRefValue(phenoModel.HGMD);
-                String mutDesc = getMutationInfo(allele);
-                System.out.println("  - "+hgmdId+" ("+mutDesc+")");
-                
-                System.out.println("    * "+diseases(allele).toString());
-                System.out.println("    + "+edgotype(allele, gene));
+            for (String edgotype : edgotypeIndex.keySet()) {
+                System.out.println("  -> Edgotype: "+edgotype);
+                for (Allele allele : edgotypeIndex.get(edgotype)) {
+                    String omim = allele.getXRefValue(phenoModel.OMIM);
+                    String alleleId = omim == null ? "HGMD:"+allele.getXRefValue(phenoModel.HGMD) : "OMIM:"+omim;
+                    System.out.println("    -> Allele: "+alleleId);
+                    System.out.println("      -> Diseases: "+formatDiseases(diseases(allele)));
+                }
             }
+            
+//            for (Allele allele : gene.listAlleles()) {
+//                String omim = allele.getXRefValue(phenoModel.OMIM);
+//                String alleleId = omim == null ? "HGMD:"+allele.getXRefValue(phenoModel.HGMD) : "OMIM:"+omim;
+//            
+//                String mutDesc = getMutationInfo(allele);
+//                System.out.println("  - "+alleleId+" ("+mutDesc+")");
+//                
+//                System.out.println("    * "+formatDiseases(diseases(allele)));
+//                System.out.println("    + "+edgotype(allele, gene));
+//            }
             
         }
 
@@ -234,6 +253,41 @@ public class EdgotypeCorrespondence extends LoreOperation {
         } else {
             return ids.toString();
         }
+    }
+
+    private String formatDiseases(Set<Phenotype> diseases) {
+        
+        if (diseases.isEmpty()) {
+            return "N/A";
+        }
+        
+        StringBuilder b = new StringBuilder();
+        
+        for (Phenotype disease : diseases) {
+            String bestLabel = null;
+            int maxLength = 0;
+            ExtendedIterator<RDFNode> it = disease.listLabels(null);
+            while (it.hasNext()) {
+                String label = it.next().asLiteral().getString();
+                if (label.length() > maxLength) {
+                    maxLength = label.length();
+                    bestLabel = label;
+                }
+            }
+            
+            String omim = disease.getXRefValue(phenoModel.OMIM);
+            String id = omim == null ? "HGMD:"+disease.getXRefValue(phenoModel.HGMD) : "OMIM:"+omim;
+            
+            b.append(bestLabel)
+                    .append(" (")
+                    .append(id)
+                    .append("), ");
+            
+        }
+        
+        b.delete(b.length() -2, b.length());
+        
+        return b.toString();
     }
 
     
