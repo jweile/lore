@@ -20,6 +20,7 @@ import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.genome.Gene;
+import ca.on.mshri.lore.genome.GenomeModel;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
@@ -28,7 +29,10 @@ import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,6 +84,20 @@ public class Protein extends Molecule {
         addProperty(enc, gene);
     }
     
+    public List<Structure3D> listStructures() {
+        NodeIterator it = listPropertyValues(getModel().getProperty(MoleculesModel.URI+"#hasStructure"));
+        List<Structure3D> out = new ArrayList<Structure3D>();
+        while (it.hasNext()) {
+            out.add(Structure3D.fromIndividual(it.next().as(Individual.class)));
+        }
+        return out;
+    }
+    
+    public void addStructure(Structure3D gene) {
+        Property enc = getModel().getProperty(MoleculesModel.URI+"#hasStructure");
+        addProperty(enc, gene);
+    }
+    
     /**
      * Pseudo-constructor. 
      * @param model
@@ -92,5 +110,32 @@ public class Protein extends Molecule {
                 .createIndividual("urn:lore:Protein#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
         return out;
+    }
+
+    public String getSequence() {
+        
+        NodeIterator it = listPropertyValues(getModel().getProperty(GenomeModel.URI+"#sequence"));
+        String out = null;
+        while (it.hasNext()) {
+            if (out == null) {
+                out = it.next().asLiteral().getString();
+            } else {
+                //TODO: this might cause problems?
+                throw new InconsistencyException("Protein "+getURI()+" should only have one sequence!");
+            }
+        }
+        return out;
+    }
+    
+    public void setSequence(String seq) {
+        
+        Property enc = getModel().getProperty(GenomeModel.URI+"#sequence");
+        RDFNode existing = getPropertyValue(enc);
+        if (existing != null) {
+            Logger.getLogger(Protein.class.getName())
+                    .log(Level.WARNING, "Overwriting existing sequence!");
+            removeAll(enc);
+        }
+        addProperty(enc, seq);
     }
 }

@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.genome;
 
+import ca.on.mshri.lore.genome.util.GeneticCode;
 import ca.on.mshri.lore.base.LoreModel;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;

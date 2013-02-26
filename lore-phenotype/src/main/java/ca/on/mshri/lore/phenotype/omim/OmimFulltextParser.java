@@ -308,14 +308,17 @@ public class OmimFulltextParser {
         return split;
     }
     
-    private static final Pattern inhPattern = Pattern.compile("DOMINANT|RECESSIVE|AUTOSOMAL|X-LINKED|Y-LINKED");
+    private static final Pattern inhPattern = Pattern.compile(
+            "autosomal dominant|autosomal recessive|autosomal|"
+            + "x-linked dominant|x-linked recessive|x-linked|"
+            + "y-linked|dominant|recessive");
     
     private static String extractInheritance(String name) {
         String[] split = name.split(",");
         for (String part : split) {
-            Matcher matcher = inhPattern.matcher(part);
+            Matcher matcher = inhPattern.matcher(part.toLowerCase());
             if (matcher.find()) {
-                return part.trim();
+                return matcher.group();
             }
         }
         return null;

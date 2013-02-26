@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.genome;
+package ca.on.mshri.lore.genome.util;
 
+import ca.on.mshri.lore.genome.PointMutation;
 import de.jweile.yogiutil.LazyInitMap;
 import de.jweile.yogiutil.Pair;
 import java.io.BufferedReader;
@@ -75,7 +76,7 @@ public class GeneticCode {
         }
     }
 
-    static GeneticCode getInstance() {
+    public static GeneticCode getInstance() {
         if (instance == null) {
             instance = new GeneticCode();
         }

@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.genome;
 
+import ca.on.mshri.lore.genome.util.GeneticCode;
 import junit.framework.TestCase;
 
 /**

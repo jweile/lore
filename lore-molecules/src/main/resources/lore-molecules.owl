@@ -75,6 +75,14 @@
         <rdfs:domain rdf:resource="&lore-molecules;ProteinDomain"/>
     </owl:ObjectProperty>
     
+    
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#hasStructure -->
+
+    <owl:ObjectProperty rdf:about="&lore-molecules;hasStructure">
+        <rdfs:range rdf:resource="&lore-molecules;Structure3D"/>
+        <rdfs:domain rdf:resource="&lore-molecules;RecordObject"/>
+    </owl:ObjectProperty>
+    
 
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -102,6 +110,20 @@
     </owl:DatatypeProperty>
     
 
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#source -->
+
+    <owl:DatatypeProperty rdf:about="&lore-molecules;end">
+        <rdfs:domain rdf:resource="&lore-molecules;Structure3D"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#offset -->
+
+    <owl:DatatypeProperty rdf:about="&lore-molecules;offset">
+        <rdfs:domain rdf:resource="&lore-molecules;Structure3D"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
     
 
 
@@ -114,6 +136,12 @@
      -->
 
     
+    <!-- http://llama.mshri.on.ca/lore-molecules.owl#Structure3D -->
+
+    <owl:Class rdf:about="&lore-molecules;Structure3D">
+        <rdfs:subClassOf rdf:resource="&lore-base;RecordObject"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A protein 3D structure</rdfs:comment>
+    </owl:Class>
 
 
     <!-- http://llama.mshri.on.ca/lore-molecules.owl#Complex -->
