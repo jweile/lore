@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.molecules.util;
+package ca.on.mshri.lore.molecules;
 
 import ca.on.mshri.lore.base.Authority;
-import ca.on.mshri.lore.molecules.MoleculesModel;
-import ca.on.mshri.lore.molecules.Protein;
-import ca.on.mshri.lore.molecules.Structure3D;
+import ca.on.mshri.lore.molecules.Structure3D.SeqMap;
 import ca.on.mshri.lore.molecules.util.Structure;
 import ca.on.mshri.lore.molecules.util.Structure.Aminoacid;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -57,11 +56,11 @@ public class Structure3DTest extends TestCase {
         Protein protein = Protein.createOrGet(model, model.UNIPROT, "O00151");
         
         Structure3D struc = Structure3D.createOrGet(model, pdbAuth, "1x62");
-        protein.addStructure(struc);
+        Structure3D.addStructureToObject(struc,protein);
         URL source = new File("src/test/resources/O00151-EXP-1x62_A.pdb").toURI().toURL();
         struc.setSource(source);
         
-        for (Structure3D s3d : protein.listStructures()) {
+        for (Structure3D s3d : Structure3D.listStructuresOfObject(protein)) {
             Structure structure = struc.getStructureObject();
             for (String chainId : structure.getChainIDs()) {
                 List<Aminoacid> chain = structure.getChain(chainId);
@@ -69,5 +68,16 @@ public class Structure3DTest extends TestCase {
             }
         }
         
+    }
+    
+    public void testSeqMap() throws Exception {
+        SeqMap m = new SeqMap();
+        int[] test = new int[] {-1,-1,0,1,2,3,-1};
+        m.put("test",test);
+        
+        String ser = m.serialize();
+        SeqMap m2 = SeqMap.deserialize(ser);
+        
+        assertTrue(Arrays.equals(m.get("test"), m2.get("test")));
     }
 }

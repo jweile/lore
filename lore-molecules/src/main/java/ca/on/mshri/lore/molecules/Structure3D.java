@@ -33,6 +33,11 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,28 +101,42 @@ public class Structure3D extends RecordObject {
         }
     }
     
-    public void setOffset(int src) {
-        Property offset = getModel().getProperty(MoleculesModel.URI+"#offset");
-        RDFNode existing = getPropertyValue(offset);
+    public void setSeqMap(SeqMap map) {
+        Property smProp = getModel().getProperty(MoleculesModel.URI+"#seqmap");
+        RDFNode existing = getPropertyValue(smProp);
         if (existing != null) {
             Logger.getLogger(Structure3D.class.getName())
-                    .log(Level.WARNING, "Overwriting existing offset!");
-            removeAll(offset);
+                    .log(Level.WARNING, "Overwriting existing SeqMap!");
+            removeAll(smProp);
         }
-        addProperty(offset, src);
+        addProperty(smProp, map.serialize());
     }
     
-    public Integer getOffset() {
-        NodeIterator it = listPropertyValues(getModel().getProperty(MoleculesModel.URI+"#offset"));
-        Integer out = null;
+    public SeqMap getSeqMap() {
+        NodeIterator it = listPropertyValues(getModel().getProperty(MoleculesModel.URI+"#seqmap"));
+        String out = null;
         while (it.hasNext()) {
             if (out == null) {
-                out = it.next().asLiteral().getInt();
+                out = it.next().asLiteral().getString();
             } else {
-                throw new InconsistencyException("Structure3D "+getURI()+" should only have one offset!");
+                throw new InconsistencyException("Structure3D "+getURI()+" should only have one SeqMap!");
             }
         }
+        return SeqMap.deserialize(out);
+    }
+    
+    public static List<Structure3D> listStructuresOfObject(Individual obj) {
+        NodeIterator it = obj.listPropertyValues(obj.getModel().getProperty(MoleculesModel.URI+"#hasStructure"));
+        List<Structure3D> out = new ArrayList<Structure3D>();
+        while (it.hasNext()) {
+            out.add(Structure3D.fromIndividual(it.next().as(Individual.class)));
+        }
         return out;
+    }
+    
+    public static void addStructureToObject(Structure3D struc, Individual obj) {
+        Property enc = obj.getModel().getProperty(MoleculesModel.URI+"#hasStructure");
+        obj.addProperty(enc, struc);
     }
     
     
@@ -133,5 +152,71 @@ public class Structure3D extends RecordObject {
                 .createIndividual("urn:lore:Structure3D#"+auth.getAuthorityId()+":"+id));
         out.addXRef(auth, id);
         return out;
+    }
+    
+    public static class SeqMap {
+        
+        private Map<String,int[]> map = new HashMap<String,int[]>();
+        
+        public void put(String key, int[] m) {
+            map.put(key,m);
+        }
+        
+        public int[] get(String key) {
+            return map.get(key);
+        }
+        
+        public Set<String> getKeys() {
+            return map.keySet();
+        }
+        
+        /**
+         * serializes to the following form.
+         * <pre>
+         * "O1321:-1,-1,0,1,2,-1;P1234:-1,-1,0,1,2,-1"
+         * </pre>
+         * @return 
+         */
+        String serialize() {
+            StringBuilder b = new StringBuilder();
+            
+            for (String key : map.keySet()) {
+                b.append(key).append(':');
+                for (int i : map.get(key)) {
+                    b.append(i).append(',');
+                }
+                //remove last comma
+                b.deleteCharAt(b.length()-1);
+                b.append(';');
+            }
+            //remove last semicolon if not empty
+            if (b.length() > 0) {
+                b.deleteCharAt(b.length()-1);
+            }
+            
+            return b.toString();
+        }
+        
+        static SeqMap deserialize(String str) {
+            SeqMap sm = new SeqMap();
+            
+            for (String entry :str.split(";")) {
+                
+                String[] keyVal = entry.split(":");
+                assert(keyVal.length == 2);
+                
+                String key = keyVal[0];
+                
+                String[] valList = keyVal[1].split(",");
+                int[] val = new int[valList.length];
+                for (int i = 0; i < val.length; i++) {
+                    val[i] = Integer.parseInt(valList[i]);
+                }
+                
+                sm.put(key,val);
+            }
+            
+            return sm;
+        }
     }
 }

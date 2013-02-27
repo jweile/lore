@@ -54,17 +54,7 @@ public class FetchUniprotSeqs extends LoreOperation {
         
         for (Protein protein : proteins) {
             
-            String uniprotId = protein.getXRefValue(model.UNIPROT);
-            if (uniprotId == null) {
-                pb.next();
-                continue;
-            }
-            
-            String seq = fetchSeq("http://www.uniprot.org/uniprot/"+uniprotId+".fasta");
-            
-            if (seq != null && seq.length() > 0) {
-                protein.setSequence(seq);
-            }
+            fetchSequenceForProtein(protein, model);
             
             pb.next();
         }
@@ -118,6 +108,19 @@ public class FetchUniprotSeqs extends LoreOperation {
         }
         
         return seq.toString();
+    }
+
+    public void fetchSequenceForProtein(Protein protein, MoleculesModel model) {
+        
+        String uniprotId = protein.getXRefValue(model.UNIPROT);
+        
+        if (uniprotId != null && protein.getSequence() == null) {
+            
+            String seq = fetchSeq("http://www.uniprot.org/uniprot/"+uniprotId+".fasta");
+            if (seq != null && seq.length() > 0) {
+                protein.setSequence(seq);
+            }
+        }
     }
     
 }

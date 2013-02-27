@@ -22,13 +22,19 @@ import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
 import ca.on.mshri.lore.molecules.ProteinDomain;
+import ca.on.mshri.lore.molecules.Structure3D;
+import ca.on.mshri.lore.molecules.Structure3D.SeqMap;
 import ca.on.mshri.lore.operations.Sparql;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.io.File;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
 import junit.framework.TestCase;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -43,6 +49,12 @@ public class I3DParserTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        
+        File logFile = new File("target/surefire/I3DParserTest.log");
+        FileHandler fh = new FileHandler(logFile.getAbsolutePath());
+        fh.setLevel(Level.ALL);
+        fh.setFormatter(new SimpleFormatter());
+        java.util.logging.Logger.getLogger("").addHandler(fh);
     }
     
     @Override
@@ -55,45 +67,69 @@ public class I3DParserTest extends TestCase {
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
         
         File inFile = new File("src/test/resources/interactions.dat");
+        File pdbDir = new File("src/test/resources/pdb/");
         
         I3DParser parser = new I3DParser();
         parser.setModel(model);
         parser.setParameter(parser.srcP, inFile.toURI().toURL());
         parser.setParameter(parser.experimentP, "Interactome3D-CCSB:PW1:PW2");
+        parser.setParameter(parser.pdbLocP, pdbDir.getAbsolutePath());
         
         parser.run();
         
-        Sparql sparql = Sparql.getInstance(I3DParser.class.getProtectionDomain().getCodeSource());
         
-        for (PhysicalInteraction interaction : model.listIndividualsOfClass(PhysicalInteraction.class, false)) {
+        for(Protein protein : model.listIndividualsOfClass(Protein.class, true)) {
             
-            System.out.println(interaction);
-            
-            for (RecordObject o : interaction.listParticipants()) {
-                
-                Protein protein = Protein.fromIndividual(o);
-                
-                System.out.println("  -> "+protein);
-                
-                List<Individual> domains = sparql.queryIndividuals(
-                        model, 
-                        "getDomains", 
-                        "domain", 
-                        protein.getURI(), 
-                        interaction.getURI()
-                );
-                
-                for (Individual domainInd : domains) {
-                    ProteinDomain domain = ProteinDomain.fromIndividual(domainInd);
-                    System.out.println("    ->"+domain);
-                    
-                    System.out.println("      -> "+domain.getStart()+" : "+domain.getEnd());
-                }
+            for (Structure3D s3d : Structure3D.listStructuresOfObject(protein)) {
+                print(s3d.getSeqMap());
             }
             
         }
         
+        
+//        Sparql sparql = Sparql.getInstance(I3DParser.class.getProtectionDomain().getCodeSource());
+//        
+//        for (PhysicalInteraction interaction : model.listIndividualsOfClass(PhysicalInteraction.class, false)) {
+//            
+//            System.out.println(interaction);
+//            
+//            for (RecordObject o : interaction.listParticipants()) {
+//                
+//                Protein protein = Protein.fromIndividual(o);
+//                
+//                System.out.println("  -> "+protein);
+//                
+//                List<Individual> domains = sparql.queryIndividuals(
+//                        model, 
+//                        "getDomains", 
+//                        "domain", 
+//                        protein.getURI(), 
+//                        interaction.getURI()
+//                );
+//                
+//                for (Individual domainInd : domains) {
+//                    ProteinDomain domain = ProteinDomain.fromIndividual(domainInd);
+//                    System.out.println("    ->"+domain);
+//                    
+//                    System.out.println("      -> "+domain.getStart()+" : "+domain.getEnd());
+//                }
+//            }
+//            
+//        }
+//        
         System.out.flush();
         
+    }
+
+    private void print(SeqMap seqMap) {
+        for (String key : seqMap.getKeys()) {
+            System.out.println(key);
+            for (int i : seqMap.get(key)) {
+                String num = i+"";
+                for (int j = 0; j < 3-num.length(); j++) System.out.print(" ");
+                System.out.print(num);
+            }
+            System.out.println();
+        }
     }
 }

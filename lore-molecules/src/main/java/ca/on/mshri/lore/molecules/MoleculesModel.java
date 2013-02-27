@@ -32,6 +32,7 @@ public class MoleculesModel extends GenomeModel {
     
     public final Authority PFAM = Authority.createOrGet(this, "PFAM");
     public final Authority UNIPROT = Authority.createOrGet(this, "UNIPROT");
+    public final Authority PDB = Authority.createOrGet(this, "PDB");
 
     public MoleculesModel(OntModelSpec spec, Model model) {
         //read dependencies

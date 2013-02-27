@@ -31,8 +31,6 @@ import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,19 +82,6 @@ public class Protein extends Molecule {
         addProperty(enc, gene);
     }
     
-    public List<Structure3D> listStructures() {
-        NodeIterator it = listPropertyValues(getModel().getProperty(MoleculesModel.URI+"#hasStructure"));
-        List<Structure3D> out = new ArrayList<Structure3D>();
-        while (it.hasNext()) {
-            out.add(Structure3D.fromIndividual(it.next().as(Individual.class)));
-        }
-        return out;
-    }
-    
-    public void addStructure(Structure3D gene) {
-        Property enc = getModel().getProperty(MoleculesModel.URI+"#hasStructure");
-        addProperty(enc, gene);
-    }
     
     /**
      * Pseudo-constructor. 

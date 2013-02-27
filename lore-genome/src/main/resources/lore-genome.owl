@@ -23,7 +23,23 @@
         <owl:imports rdf:resource="http://llama.mshri.on.ca/lore-base.owl"/>
     </owl:Ontology>
     
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
 
+    
+
+    <!-- http://llama.mshri.on.ca/lore-genome.owl#sequence -->
+
+    <owl:DatatypeProperty rdf:about="&lore-genome;sequence">
+        <rdfs:domain rdf:resource="&lore-base;RecordObject"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
 
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////

@@ -120,9 +120,9 @@
     
     <!-- http://llama.mshri.on.ca/lore-molecules.owl#offset -->
 
-    <owl:DatatypeProperty rdf:about="&lore-molecules;offset">
+    <owl:DatatypeProperty rdf:about="&lore-molecules;seqmap">
         <rdfs:domain rdf:resource="&lore-molecules;Structure3D"/>
-        <rdfs:range rdf:resource="&xsd;integer"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
