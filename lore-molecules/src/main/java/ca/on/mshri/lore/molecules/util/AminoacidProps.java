@@ -57,6 +57,9 @@ public class AminoacidProps {
             while ((line = r.readLine()) != null) {
                 
                 String[] cols = line.split("\t");
+                for (int i = 0; i < cols.length; i++) {
+                    cols[i] = cols[i].trim();
+                }
                 
                 bySingle.put(cols[single].charAt(0), cols);
                 byTriple.put(cols[triple].toUpperCase(), cols);
@@ -109,10 +112,10 @@ public class AminoacidProps {
     }
     
     public double getHydropathy(char s) {
-        return Double.parseDouble(bySingle.get(s)[hydropathy]);
+        return Double.valueOf(bySingle.get(s)[hydropathy]);
     }
     
     public double getHydropathy(String t) {
-        return Double.parseDouble(byTriple.get(t.toUpperCase())[name]);
+        return Double.valueOf(byTriple.get(t.toUpperCase())[hydropathy]);
     }
 }

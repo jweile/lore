@@ -63,6 +63,20 @@
       <version>2.0.1</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.biojava</groupId>
+      <artifactId>biojava3-alignment</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+    
   </dependencies>
+  
+  <repositories>
+    <repository>
+      <id>biojava-maven-repo</id>
+      <name>BioJava repository</name>
+      <url>http://www.biojava.org/download/maven/</url>			
+    </repository>
+  </repositories>
   
 </project>

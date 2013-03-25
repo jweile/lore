@@ -21,6 +21,7 @@ import ca.on.mshri.lore.base.InconsistencyException;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.genome.GenomeModel;
+import ca.on.mshri.lore.operations.Sparql;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
@@ -31,6 +32,8 @@ import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +85,17 @@ public class Protein extends Molecule {
         addProperty(enc, gene);
     }
     
+    public static List<Protein> listEncodedProteins(Gene gene) {
+        
+        Sparql sparql = Sparql.getInstance(Protein.class.getProtectionDomain().getCodeSource());
+        List<Individual> is = sparql.queryIndividuals(gene.getModel(), "listProteins", "protein", gene.getURI());
+        
+        List<Protein> ps = new ArrayList<Protein>();
+        for (Individual i : is) {
+            ps.add(Protein.fromIndividual(i));
+        }
+        return ps;
+    }
     
     /**
      * Pseudo-constructor. 

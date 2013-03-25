@@ -38,6 +38,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biojava3.alignment.Alignments;
+import org.biojava3.alignment.Alignments.PairwiseSequenceAlignerType;
+import org.biojava3.alignment.SimpleGapPenalty;
+import org.biojava3.alignment.SimpleSubstitutionMatrix;
+import org.biojava3.alignment.template.SequencePair;
+import org.biojava3.alignment.template.SubstitutionMatrix;
+import org.biojava3.core.sequence.ProteinSequence;
+import org.biojava3.core.sequence.compound.AminoAcidCompound;
 
 /**
  *
@@ -195,6 +203,23 @@ public class I3DParser extends TabDelimParser {
     @Override
     public boolean requiresReasoner() {
         return false;
+    }
+    
+    private void buildSeqMap2(Structure struc, Protein p, String uniprot, String chain) {
+        
+        ProteinSequence protSeq = new ProteinSequence(p.getSequence());
+        ProteinSequence strucSeq = new ProteinSequence(struc.getChainSequence(chain));
+        
+        SubstitutionMatrix<AminoAcidCompound> matrix = new SimpleSubstitutionMatrix<AminoAcidCompound>();
+        SequencePair<ProteinSequence, AminoAcidCompound> pair = Alignments.getPairwiseAlignment(protSeq, strucSeq,
+                PairwiseSequenceAlignerType.LOCAL, new SimpleGapPenalty(), matrix);
+        
+        int[] a2b = new int[protSeq.getLength()];
+        for (int i = 0; i < a2b.length; i++) {
+            a2b[i] = pair.getIndexInTargetForQueryAt(i);
+        }
+        
+        //TODO: continue here
     }
 
     private void buildSeqMap(Structure3D s3d, Protein p1, String uniprot1, String chain1, 

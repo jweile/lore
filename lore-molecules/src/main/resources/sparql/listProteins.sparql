@@ -1,0 +1,6 @@
+PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
+
+SELECT ?protein
+WHERE {
+    ?protein mol:encodedBy <%s>.
+} 

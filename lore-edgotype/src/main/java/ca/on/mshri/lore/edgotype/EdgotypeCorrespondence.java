@@ -25,6 +25,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
+/**
+ * Finds a list of genes for which there is a correspondence between
+ * edgotypes and disease annotations for all its alleles.
+ * 
+ * @author Jochen Weile <jochenweile@gmail.com>com
+ */
 public class EdgotypeCorrespondence extends LoreOperation {
 
     private Property affectsPositively, affectsNegatively, isAssociatedWith, encBy;

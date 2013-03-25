@@ -14,27 +14,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.molecules.operations;
+package ca.on.mshri.lore.molecules;
 
-import ca.on.mshri.lore.molecules.MoleculesModel;
-import ca.on.mshri.lore.molecules.Protein;
+import ca.on.mshri.lore.genome.Gene;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import java.util.List;
 import junit.framework.TestCase;
 
 /**
  *
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class FetchUniprotSeqsTest extends TestCase {
+public class ProteinTest extends TestCase {
     
-    public FetchUniprotSeqsTest(String testName) {
+    private MoleculesModel m;
+    private Protein p;
+    private Gene g;
+    
+    public ProteinTest(String testName) {
         super(testName);
+        m = new MoleculesModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+        p = Protein.createOrGet(m, m.UNIPROT, "A12345");
+        g = Gene.createOrGet(m, m.ENTREZ, "1234");
+        p.setEncodingGene(g);
     }
+    
     
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        
     }
     
     @Override
@@ -42,22 +52,14 @@ public class FetchUniprotSeqsTest extends TestCase {
         super.tearDown();
     }
     
-    public void test() throws Exception {
-//        
-//        MoleculesModel model = new MoleculesModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
-//        
-//        Protein protein = Protein.createOrGet(model, model.UNIPROT, "O00151");
-//        
-//        FetchUniprotSeqs op = new FetchUniprotSeqs();
-//        op.setModel(model);
-//        op.setParameter(op.selectionP, op.selectionP.validate(protein.getURI()));
-//        op.run();
-//        
-//        String sequence = protein.getSequence();
-//        assertNotNull(sequence);
-//        assertTrue(sequence.length() > 0);
-//        
-//        System.out.println(sequence);
-//        
+    public void testGetEncodingGene() throws Exception {
+        assertNotNull(p.getEncodingGene());
+    }
+    
+    public void testListEncodedProteins() throws Exception {
+        List<Protein> l = Protein.listEncodedProteins(g);
+        assertNotNull(l);
+        assertEquals(1, l.size());
+        assertEquals(p, l.get(0));
     }
 }
