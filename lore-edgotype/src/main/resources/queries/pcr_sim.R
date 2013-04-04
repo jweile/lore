@@ -167,3 +167,17 @@ paraplot(amounts, "Yield", col=heat.colors(50))
 # par(op)
 dev.off()
 
+
+
+
+#Direchlet problem: How many mutants must we generate to cover how many location?
+locations <- rep(0,1000)
+max=4000
+occupied <- NULL
+for (loc in runif(n=max,min=1,max=1000)) {
+	locations[loc] <- locations[loc] +1
+	occupied <- c(occupied,sum(locations > 0))
+}
+pdf("mutants_dirichlet.pdf")
+plot(1:max,occupied,type="l",xlab="#mutants",ylab="#unique mutants")
+dev.off()
