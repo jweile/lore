@@ -1,0 +1,30 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX base: <http://llama.mshri.on.ca/lore-base.owl#>
+PREFIX pheno: <http://llama.mshri.on.ca/lore-phenotype.owl#>
+PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
+PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
+PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
+
+SELECT ?allele ?omim ?inheritance (COUNT(DISTINCT ?posIA) AS ?numMaintain) (COUNT(DISTINCT ?negIA) AS ?numInterrupt)
+WHERE {
+	?allele pheno:isAssociatedWith ?disease;
+			^genome:hasAllele ?gene.
+	?protein mol:encodedBy ?gene.
+
+	?gene base:hasXRef ?geneXRef.
+	?geneXRef base:hasAuthority <urn:lore:Authority#EntrezGene>;
+			  base:hasValue ?entrez.
+
+	?disease base:hasXRef ?diseaseXRef.
+	?diseaseXRef base:hasAuthority <urn:lore:Authority#OMIM>;
+				base:hasValue ?omim.
+
+	?disease pheno:inheritanceMode ?inheritance.
+
+	OPTIONAL {?allele ia:affectsPositively ?posIA.}
+	OPTIONAL {?allele ia:affectsNegatively ?negIA.}
+
+}
+GROUP BY ?allele ?omim ?inheritance

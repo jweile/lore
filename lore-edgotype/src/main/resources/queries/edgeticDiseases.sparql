@@ -1,0 +1,36 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX base: <http://llama.mshri.on.ca/lore-base.owl#>
+PREFIX pheno: <http://llama.mshri.on.ca/lore-phenotype.owl#>
+PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
+PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
+PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
+
+# Find alleles for which disease association patterns correspond to 
+# interaction disruption patterns. Let's start with finding interaction->allele->disease
+
+SELECT DISTINCT ?disease ?geneName ?mutation ?effect ?interactorName
+WHERE {
+
+	?allele pheno:isAssociatedWith ?disease.
+	?allele ^genome:hasAllele ?gene.
+
+	?gene base:hasXRef ?geneXRef.
+	?geneXRef base:hasAuthority <urn:lore:Authority#EntrezGene>.
+	?geneXRef base:hasValue ?geneName.
+
+	?protein mol:encodedBy ?gene.
+
+	?allele genome:hasMutation ?mutation.
+
+	?allele ?effect ?interaction.
+	?interaction rdf:type ia:PhysicalInteraction.
+	?interaction ia:hasParticipant ?interactor.
+	FILTER (?interactor != ?protein)
+
+	?interactor base:hasXRef ?interactorXRef.
+	?interactorXRef base:hasAuthority <urn:lore:Authority#EntrezGene>.
+	?interactorXRef base:hasValue ?interactorName.
+} 
+ORDER BY ?gene

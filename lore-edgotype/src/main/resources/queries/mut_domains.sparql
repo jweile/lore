@@ -1,0 +1,33 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX base: <http://llama.mshri.on.ca/lore-base.owl#>
+PREFIX pheno: <http://llama.mshri.on.ca/lore-phenotype.owl#>
+PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
+PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
+PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
+
+
+SELECT ?entrez ?mutation ?effect ?iaEntrez ?position ?start ?end
+WHERE {
+	?allele ?effect ?interaction.
+	?interaction rdf:type ia:PhysicalInteraction.
+	?allele genome:hasMutation/genome:position ?position;
+	        ^genome:hasAllele/^mol:encodedBy ?protein.
+	?domain mol:domainOf ?protein;
+			ia:involvedIn ?interaction;
+			mol:start ?start;
+			mol:end ?end.
+
+	?allele ^genome:hasAllele/base:hasXRef ?xref.
+	?xref base:hasAuthority <urn:lore:Authority#EntrezGene>;
+			base:hasValue ?entrez.
+
+	OPTIONAL {?allele genome:hasMutation ?mutation.}
+
+	?interaction ia:hasParticipant ?interactor.
+	FILTER (?interactor != ?protein)
+	?interactor base:hasXRef ?iaXref.
+	?iaXref base:hasAuthority <urn:lore:Authority#EntrezGene>;
+			base:hasValue ?iaEntrez.
+} 

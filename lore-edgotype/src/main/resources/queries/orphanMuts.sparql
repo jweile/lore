@@ -1,0 +1,10 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
+
+SELECT ?allele (COUNT(*) AS ?muts) 
+WHERE {
+	?allele genome:hasMutation ?mut.
+	?mut rdf:type genome:PointMutation.
+} 
+GROUP BY ?allele
+LIMIT 20
