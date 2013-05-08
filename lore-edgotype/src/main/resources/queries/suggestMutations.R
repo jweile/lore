@@ -44,7 +44,9 @@ char.at <- function(str,i) substr(str,i,i)
 
 library(bitops)
 
-#Needleman-Wunsch algorithm
+##
+# Needleman-Wunsch algorithm
+#
 new.alignment <- function(s1, s2) {
 
 	c1 <- to.char.array(s1)
@@ -86,14 +88,15 @@ new.alignment <- function(s1, s2) {
 	}
 
 	getMutations <- function() {
-		i <- nchar(s1)
-		j <- nchar(s2)
 
 		rep <- 1
 		del <- 2
 		ins <- 4
 
 		muts <- vector()
+
+		i <- nchar(s1)
+		j <- nchar(s2)
 
 		while (i > 1 && j > 1) {
 			if (bitAnd(trace[i,j], rep) > 0) {
@@ -109,7 +112,7 @@ new.alignment <- function(s1, s2) {
 				muts[length(muts)+1] <- paste("+",i, sep="")
 				j <- j-1
 			} else {
-				error("uninitialized trace at ",i,j)
+				stop("uninitialized trace at ",i,j)
 			}
 		}
 		if (c1[1] != c2[1]) {
@@ -127,8 +130,10 @@ new.alignment <- function(s1, s2) {
 
 }
 
-
-init.translator <- function(ctable.file="codontable.txt") {
+##
+# Creates a new translator object for translating Nucleotide strings to Amino acid strings.
+#
+init.translator <- function(ctable.file="input/codontable.txt") {
 
 	##
 	# Creates a new codon table object
@@ -178,10 +183,22 @@ init.translator <- function(ctable.file="codontable.txt") {
 	# translates a given nucleotide sequence
 	translate <- function(ncSeq) {
 
-		paste(sapply(
+		aa <- paste(sapply(
 			seq(1,nchar(ncSeq),3),
-			function(i) codons$getSingleForCodon(substr(ncSeq,i,i+2))
+			function(i) {
+				a <- codons$getSingleForCodon(substr(ncSeq,i,i+2))
+				if(is.null(a)) "" else a
+			}
 		), collapse="")
+
+		aaseq <- to.char.array(aa)
+
+		if (any(aaseq == "*")) {
+			cutoff <- min(which(aaseq == "*"))
+			paste(aaseq[1:cutoff], collapse="")
+		} else {
+			aa
+		}
 	}
 
 	list(translate=translate)	
@@ -257,17 +274,23 @@ mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1, mut.rate=1/2000)
 		)
 	}
 
-	dna
+	names(dna) <- NULL
+
+	dna[-(1:init.amount)]
 
 }
 
 
 template <- "ATGGCTGACCAACTGACTGAAGAGCAGATTGCAGAATTCAAAGAAGCTTTTTCACTATTTGACAAAGATGGTGATGGAACTATAACAACAAAGGAATTGGGAACTGTAATGAGATCTCTTGGGCAGAATCCCACAGAAGCAGAGTTACAGGACATGATTAATGAAGTAGATGCTGATGGTAATGGCACAATTGACTTCCCTGAATTTCTGACAATGATGGCAAGAAAAATGAAAGACACAGACAGTGAAGAAGAAATTAGAGAAGCATTCCGTGTGTTTGATAAGGATGGCAATGGCTATATTAGTGCTGCAGAACTTCGCCATGTGATGACAAACCTTGGAGAGAAGTTAACAGATGAAGAAGTTGATGAAATGATCAGGGAAGCAGATATTGATGGTGATGGTCAAGTAAACTATGAAGAGTTTGTACAAATGATGACAGCAAAGTGA"
-dna <- mutagenesis(template)
-dna <- dna[-(1:100)]
+templ.protein <- translator$translate(template)
 
-num.muts <- sapply(dna, function(mutant) {
-	al <- new.alignment(mutant, template)
+dna <- mutagenesis(template, init.amount=20, etr=4)
+
+proteins <- sapply(dna, translator$translate)
+
+
+num.muts <- sapply(proteins[1:100], function(mutant) {
+	al <- new.alignment(templ.protein, mutant)
 	al$getDistance()
 })
 
