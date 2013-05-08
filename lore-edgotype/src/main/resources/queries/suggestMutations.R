@@ -40,6 +40,92 @@ readFASTA <- function(con, idIndex) {
 
 #Function to turn string into character array
 to.char.array <- function (str) sapply(1:nchar(str), function(i) substr(str,i,i))
+char.at <- function(str,i) substr(str,i,i)
+
+library(bitops)
+
+#Needleman-Wunsch algorithm
+new.alignment <- function(s1, s2) {
+
+	c1 <- to.char.array(s1)
+	c2 <- to.char.array(s2)
+
+	#init score matrix
+	mat <- matrix(nrow=nchar(s1), ncol=nchar(s2))
+	mat[1,] <- 1:nchar(s2) - (c1[1] == c2[1])
+	mat[,1] <- 1:nchar(s1) - (c1[1] == c2[1])
+
+	#init trace matrix
+	trace <- matrix(0, nrow=nchar(s1), ncol=nchar(s2))
+	trace[1,] <- 4
+	trace[,1] <- 2
+
+	#compute alignment matrix
+	for (i in 2:nchar(s1)) {
+		for (j in 2:nchar(s2)) {
+			options <- c(
+				rep = mat[i-1,j-1] + (c1[i] != c2[j]),
+				del = mat[i-1,j] + 1,
+				ins = mat[i,j-1] + 1
+			)
+			mat[i,j] <- min(options)
+
+			tr.bitmasks <- 2^(which(options == min(options))-1)
+			for (mask in tr.bitmasks) {
+				trace[i,j] <- bitOr(trace[i,j],mask)
+			}
+		}
+	}
+
+	getMatrix <- function() {
+		mat
+	}
+
+	getDistance <- function() {
+		mat[nchar(s1),nchar(s2)]
+	}
+
+	getMutations <- function() {
+		i <- nchar(s1)
+		j <- nchar(s2)
+
+		rep <- 1
+		del <- 2
+		ins <- 4
+
+		muts <- vector()
+
+		while (i > 1 && j > 1) {
+			if (bitAnd(trace[i,j], rep) > 0) {
+				if (c1[i] != c2[j]) {
+					muts[length(muts)+1] <- paste(c1[i],i,c2[j], sep="")
+				}
+				i <- i-1
+				j <- j-1
+			} else if (bitAnd(trace[i,j], del)) {
+				muts[length(muts)+1] <- paste("-",i, sep="")
+				i <- i-1
+			} else if (bitAnd(trace[i,j], ins)) {
+				muts[length(muts)+1] <- paste("+",i, sep="")
+				j <- j-1
+			} else {
+				error("uninitialized trace at ",i,j)
+			}
+		}
+		if (c1[1] != c2[1]) {
+			muts[length(muts)+1] <- paste(c1[i],i,c2[j], sep="")
+		}
+
+		muts
+	}
+
+	list(
+		getMatrix=getMatrix,
+		getDistance=getDistance,
+		getMutations=getMutations
+	)
+
+}
 
 
 init.translator <- function(ctable.file="codontable.txt") {
@@ -126,7 +212,7 @@ translator <- init.translator()
 ##
 # Simulates mutagenic PCR experiment on a given amount of DNA molecules with 
 # given sequence for the number of given PCR cycles, with the given enzyme/template ratio (etr)
-mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1/10, mut.rate=1/2000) {
+mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1, mut.rate=1/2000) {
 
 	#Build transition matrix according to MutazymeII manual
 	mut <- cbind(
@@ -163,14 +249,26 @@ mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1/10, mut.rate=1/20
 
 	dna <- rep(seq, init.amount)
 
-	for (c in cycles) {
-		dna <- c(dna, sapply(sample(dna, min(length(dna),enzyme.amount)), function(curr.template) {
-			paste(sapply(to.char.array(seq), mutate),collapse="")
-		}))
+	for (c in 1:cycles) {
+		dna <- c(dna, 
+			sapply(sample(dna, min(length(dna),enzyme.amount)), function(curr.template) {
+				paste(sapply(to.char.array(seq), mutate),collapse="")
+			})
+		)
 	}
 
 	dna
 
 }
+
+
+template <- "ATGGCTGACCAACTGACTGAAGAGCAGATTGCAGAATTCAAAGAAGCTTTTTCACTATTTGACAAAGATGGTGATGGAACTATAACAACAAAGGAATTGGGAACTGTAATGAGATCTCTTGGGCAGAATCCCACAGAAGCAGAGTTACAGGACATGATTAATGAAGTAGATGCTGATGGTAATGGCACAATTGACTTCCCTGAATTTCTGACAATGATGGCAAGAAAAATGAAAGACACAGACAGTGAAGAAGAAATTAGAGAAGCATTCCGTGTGTTTGATAAGGATGGCAATGGCTATATTAGTGCTGCAGAACTTCGCCATGTGATGACAAACCTTGGAGAGAAGTTAACAGATGAAGAAGTTGATGAAATGATCAGGGAAGCAGATATTGATGGTGATGGTCAAGTAAACTATGAAGAGTTTGTACAAATGATGACAGCAAAGTGA"
+dna <- mutagenesis(template)
+dna <- dna[-(1:100)]
+
+num.muts <- sapply(dna, function(mutant) {
+	al <- new.alignment(mutant, template)
+	al$getDistance()
+})
 
 
