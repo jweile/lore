@@ -269,7 +269,7 @@ mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1, mut.rate=1/2000)
 	for (c in 1:cycles) {
 		dna <- c(dna, 
 			sapply(sample(dna, min(length(dna),enzyme.amount)), function(curr.template) {
-				paste(sapply(to.char.array(seq), mutate),collapse="")
+				paste(sapply(to.char.array(curr.template), mutate),collapse="")
 			})
 		)
 	}
@@ -280,6 +280,40 @@ mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1, mut.rate=1/2000)
 
 }
 
+classify.muts <- function(template, mutants) {
+	sapply(mutants, function(mut) {
+		if (nchar(template) != nchar(mut)) {
+			"truncation"
+		} else {
+			sum(sapply(1:nchar(template), function(i) char.at(template,i) != char.at(mut,i)))
+		}
+	})
+}
+
+find.snps <- function(template, mut, align.cutoff=5) {
+	if (nchar(template) == nchar(mut)) {
+
+		snps <- unlist(sapply(1:nchar(template), function(i) {
+			if (char.at(template,i) == char.at(mut,i)) NULL else paste(char.at(template,i),i,char.at(mut,i),sep="")
+		}))
+
+		# if (length(snps) > align.cutoff) {
+		# 	al <- new.alignment(template, mut)
+		# 	al$getMutations()
+		# } else {
+		# 	snps
+		# }
+
+		snps
+
+	} else {
+
+		al <- new.alignment(template, mut)
+		al$getMutations()
+
+	}
+}
+
 
 template <- "ATGGCTGACCAACTGACTGAAGAGCAGATTGCAGAATTCAAAGAAGCTTTTTCACTATTTGACAAAGATGGTGATGGAACTATAACAACAAAGGAATTGGGAACTGTAATGAGATCTCTTGGGCAGAATCCCACAGAAGCAGAGTTACAGGACATGATTAATGAAGTAGATGCTGATGGTAATGGCACAATTGACTTCCCTGAATTTCTGACAATGATGGCAAGAAAAATGAAAGACACAGACAGTGAAGAAGAAATTAGAGAAGCATTCCGTGTGTTTGATAAGGATGGCAATGGCTATATTAGTGCTGCAGAACTTCGCCATGTGATGACAAACCTTGGAGAGAAGTTAACAGATGAAGAAGTTGATGAAATGATCAGGGAAGCAGATATTGATGGTGATGGTCAAGTAAACTATGAAGAGTTTGTACAAATGATGACAGCAAAGTGA"
 templ.protein <- translator$translate(template)
@@ -288,10 +322,19 @@ dna <- mutagenesis(template, init.amount=20, etr=4)
 
 proteins <- sapply(dna, translator$translate)
 
-
-num.muts <- sapply(proteins[1:100], function(mutant) {
-	al <- new.alignment(templ.protein, mutant)
-	al$getDistance()
+num.prot.muts <- classify.muts(templ.protein, proteins)
+num.dna.muts <- sapply(dna, function(mut) {
+	length(find.snps(template,mut))
 })
+
+op <- par(mfrow=c(1,2))
+barplot(table(num.dna.muts),xlab="Mutations",ylab="Frequency",main="DNA level")
+barplot(table(num.prot.muts),xlab="Mutations",ylab="Frequency",main="Protein level")
+par(op)
+
+# num.muts <- sapply(proteins[1:100], function(mutant) {
+# 	al <- new.alignment(templ.protein, mutant)
+# 	al$getDistance()
+# })
 
 
