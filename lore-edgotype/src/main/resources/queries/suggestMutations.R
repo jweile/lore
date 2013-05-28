@@ -223,118 +223,234 @@ translator <- init.translator()
 
 # }
 
-
-
-
-##
-# Simulates mutagenic PCR experiment on a given amount of DNA molecules with 
-# given sequence for the number of given PCR cycles, with the given enzyme/template ratio (etr)
-mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1, mut.rate=1/2000) {
-
-	#Build transition matrix according to MutazymeII manual
-	mut <- cbind(
-		rbind(
-			A=c(A=0,C=.047,G=.175,T=.285),
-			C=c(A=.141,C=0,G=.041,T=.255),
-			G=c(A=.255,C=.041,G=0,T=.141),
-			T=c(A=.285,C=.175,G=.047,T=0)
-		) * .5,
-		DEL=rep(.048,4)/4,
-		INS=rep(.008,4)/4
-	) * 4 * mut.rate
-	for (i in 1:4) {
-		mut[i,i] <- 1-sum(mut[i,])
-	}
-	#Transform to cumulative matrix
-	cmut <- cbind(mut[,1],sapply(2:ncol(mut), function(i) apply(mut[,1:i],1,sum)))
-	dimnames(cmut) <- dimnames(mut)
-
-	#potentially mutates the given nucleotide
-	mutate <- function(nucleotide) {
-		r <- runif(1,0,1)
-		mutation <- names(which.min(which(r < cmut[nucleotide,])))
-		if (mutation == "DEL") {
-			""
-		} else if (mutation == "INS") {
-			paste(nucleotide, sample(c('A','C','G','T'),1), sep="")
-		} else {
-			mutation
-		}
-	}
+pcr.sim <- function(sequence, cycles=10, init.amount=100, etr=1, mut.rate=1/2000) {
 
 	enzyme.amount <- round(init.amount * etr)
 
-	dna <- rep(seq, init.amount)
+	#calculate sampling bias based on Mutazyme II bias and sequence bias
+	pol.bias <- c(A=0.2675, C=0.2325, G=0.2325, T=0.2675)
+	seq.bias <- table(to.char.array(sequence)) / nchar(sequence)
+	bias <- pol.bias * seq.bias / sum(pol.bias * seq.bias)
+	cbias <- c(bias[1],sapply(2:4, function(i) sum(bias[1:i])))
+	names(cbias) <- names(bias)
 
+	#make index of nucleotide positions
+	nuc.positions <- sapply(c('A','C','G','T'), function(nuc) which(to.char.array(sequence) == nuc))
+
+	#mutation transition matrix based on Mutazyme II
+	mut <- cbind(
+		rbind(
+			A=c(A=0,   C=.047,G=.175,T=.285),
+			C=c(A=.141,C=0,   G=.041,T=.255),
+			G=c(A=.255,C=.041,G=0,   T=.141),
+			T=c(A=.285,C=.175,G=.047,T=0   )
+		) * .5,
+		DEL=rep(.048,4)/4,
+		INS=rep(.008,4)/4
+	) * 4
+	mut <- mut / apply(mut,1,sum)
+	cmut <- cbind(mut[,1],sapply(2:ncol(mut), function(i) apply(mut[,1:i],1,sum)))
+	dimnames(cmut) <- dimnames(mut)
+
+	#seed molecule pool with templates
+	pool <- list()
+	for (i in 1:init.amount) pool[[i]] <- list()
+
+	#perform PCR cycles
 	for (c in 1:cycles) {
-		dna <- c(dna, 
-			sapply(sample(dna, min(length(dna),enzyme.amount)), function(curr.template) {
-				paste(sapply(to.char.array(curr.template), mutate),collapse="")
+
+		num.reactions <- min(length(pool),enzyme.amount)
+		templates <- sample(pool, num.reactions)
+		num.muts <- rpois(num.reactions, nchar(sequence) * mut.rate)
+
+		new.mutations <- sapply(num.muts, function(num.mut) {
+
+			if (num.mut == 0) {
+				return(list())
+			}
+
+			# use bias table to figure out how many of each nucleotide to pick for mutating
+			to.sample <- table(sapply(1:num.mut, function(i) {
+				names(which.min(which(runif(1,0,1) < cbias)))
+			}))
+
+			#pick positions to mutate
+			to.mutate <- sapply(names(to.sample), function(nuc) {
+				sample(nuc.positions[[nuc]], to.sample[nuc])
 			})
-		)
+
+			#implement mutations
+			unlist(sapply(names(to.mutate), function(nuc) {
+				sapply(to.mutate[[nuc]], function(pos) {
+					#sample mutation
+					to.nuc <- names(which.min(which(runif(1,0,1) < cmut[nuc,])))
+
+					if (to.nuc == "DEL" || to.nuc == "INS") {
+						return("nonsense")
+					} else {
+
+						codon.number <- floor(pos / 3) + 1
+						codon.start <- 3*codon.number - 2
+						from.codon <- substr(sequence,codon.start,codon.start+2)
+						
+						change.pos <- pos - codon.start + 1
+						to.codon <- from.codon
+						substr(to.codon,change.pos,change.pos) <- to.nuc
+
+						from.aa <- translator$translate(from.codon)
+						to.aa <- translator$translate(to.codon)
+
+						if (from.aa == to.aa) {
+							return("silent")
+						} else if (to.aa == "*") {
+							return("truncation")
+						} else {
+							return(paste(from.aa,codon.number,to.aa,sep=""))
+						}
+					}
+				})
+			}))
+
+		})
+		names(new.mutations) <- NULL
+	
+		#add mutagenized copies to pool
+		pool[(length(pool)+1):(length(pool)+num.reactions)] <- sapply(1:num.reactions, function(i) {
+			c(templates[[i]], new.mutations[[i]])
+		})
+
 	}
 
-	names(dna) <- NULL
-
-	dna[-(1:init.amount)]
-
-}
-
-classify.muts <- function(template, mutants) {
-	sapply(mutants, function(mut) {
-		if (nchar(template) != nchar(mut)) {
-			"truncation"
-		} else {
-			sum(sapply(1:nchar(template), function(i) char.at(template,i) != char.at(mut,i)))
-		}
-	})
-}
-
-find.snps <- function(template, mut, align.cutoff=5) {
-	if (nchar(template) == nchar(mut)) {
-
-		snps <- unlist(sapply(1:nchar(template), function(i) {
-			if (char.at(template,i) == char.at(mut,i)) NULL else paste(char.at(template,i),i,char.at(mut,i),sep="")
-		}))
-
-		# if (length(snps) > align.cutoff) {
-		# 	al <- new.alignment(template, mut)
-		# 	al$getMutations()
-		# } else {
-		# 	snps
-		# }
-
-		snps
-
-	} else {
-
-		al <- new.alignment(template, mut)
-		al$getMutations()
-
-	}
+	pool[-(1:init.amount)]
 }
 
 
 template <- "ATGGCTGACCAACTGACTGAAGAGCAGATTGCAGAATTCAAAGAAGCTTTTTCACTATTTGACAAAGATGGTGATGGAACTATAACAACAAAGGAATTGGGAACTGTAATGAGATCTCTTGGGCAGAATCCCACAGAAGCAGAGTTACAGGACATGATTAATGAAGTAGATGCTGATGGTAATGGCACAATTGACTTCCCTGAATTTCTGACAATGATGGCAAGAAAAATGAAAGACACAGACAGTGAAGAAGAAATTAGAGAAGCATTCCGTGTGTTTGATAAGGATGGCAATGGCTATATTAGTGCTGCAGAACTTCGCCATGTGATGACAAACCTTGGAGAGAAGTTAACAGATGAAGAAGTTGATGAAATGATCAGGGAAGCAGATATTGATGGTGATGGTCAAGTAAACTATGAAGAGTTTGTACAAATGATGACAGCAAAGTGA"
-templ.protein <- translator$translate(template)
 
-dna <- mutagenesis(template, init.amount=20, etr=4)
+pcr.result <- pcr.sim(template)
+pcr.stats <- table(sapply(pcr.result, function(mutations) {
+	if (any(mutations == "truncation")) {
+		"truncation"
+	} else if (any(mutations == "nonsense")) {
+		"nonsense"
+	} else {
+		sum(mutations != "silent")
+	}
+}))
 
-proteins <- sapply(dna, translator$translate)
 
-num.prot.muts <- classify.muts(templ.protein, proteins)
-num.dna.muts <- sapply(dna, function(mut) {
-	length(find.snps(template,mut))
-})
 
-op <- par(mfrow=c(1,2))
-barplot(table(num.dna.muts),xlab="Mutations",ylab="Frequency",main="DNA level")
-barplot(table(num.prot.muts),xlab="Mutations",ylab="Frequency",main="Protein level")
-par(op)
 
-# num.muts <- sapply(proteins[1:100], function(mutant) {
-# 	al <- new.alignment(templ.protein, mutant)
-# 	al$getDistance()
+
+# ##
+# # Simulates mutagenic PCR experiment on a given amount of DNA molecules with 
+# # given sequence for the number of given PCR cycles, with the given enzyme/template ratio (etr)
+# mutagenesis <- function(seq, cycles=10, init.amount=100, etr=1, mut.rate=1/2000) {
+
+# 	#Build transition matrix according to MutazymeII manual
+# 	mut <- cbind(
+# 		rbind(
+# 			A=c(A=0,C=.047,G=.175,T=.285),
+# 			C=c(A=.141,C=0,G=.041,T=.255),
+# 			G=c(A=.255,C=.041,G=0,T=.141),
+# 			T=c(A=.285,C=.175,G=.047,T=0)
+# 		) * .5,
+# 		DEL=rep(.048,4)/4,
+# 		INS=rep(.008,4)/4
+# 	) * 4 * mut.rate
+# 	for (i in 1:4) {
+# 		mut[i,i] <- 1-sum(mut[i,])
+# 	}
+# 	#Transform to cumulative matrix
+# 	cmut <- cbind(mut[,1],sapply(2:ncol(mut), function(i) apply(mut[,1:i],1,sum)))
+# 	dimnames(cmut) <- dimnames(mut)
+
+# 	#potentially mutates the given nucleotide
+# 	mutate <- function(nucleotide) {
+# 		r <- runif(1,0,1)
+# 		mutation <- names(which.min(which(r < cmut[nucleotide,])))
+# 		if (mutation == "DEL") {
+# 			""
+# 		} else if (mutation == "INS") {
+# 			paste(nucleotide, sample(c('A','C','G','T'),1), sep="")
+# 		} else {
+# 			mutation
+# 		}
+# 	}
+
+# 	enzyme.amount <- round(init.amount * etr)
+
+# 	dna <- rep(seq, init.amount)
+
+# 	for (c in 1:cycles) {
+# 		dna <- c(dna, 
+# 			sapply(sample(dna, min(length(dna),enzyme.amount)), function(curr.template) {
+# 				paste(sapply(to.char.array(curr.template), mutate),collapse="")
+# 			})
+# 		)
+# 	}
+
+# 	names(dna) <- NULL
+
+# 	dna[-(1:init.amount)]
+
+# }
+
+# classify.muts <- function(template, mutants) {
+# 	sapply(mutants, function(mut) {
+# 		if (nchar(template) != nchar(mut)) {
+# 			"truncation"
+# 		} else {
+# 			sum(sapply(1:nchar(template), function(i) char.at(template,i) != char.at(mut,i)))
+# 		}
+# 	})
+# }
+
+# find.snps <- function(template, mut, align.cutoff=5) {
+# 	if (nchar(template) == nchar(mut)) {
+
+# 		snps <- unlist(sapply(1:nchar(template), function(i) {
+# 			if (char.at(template,i) == char.at(mut,i)) NULL else paste(char.at(template,i),i,char.at(mut,i),sep="")
+# 		}))
+
+# 		# if (length(snps) > align.cutoff) {
+# 		# 	al <- new.alignment(template, mut)
+# 		# 	al$getMutations()
+# 		# } else {
+# 		# 	snps
+# 		# }
+
+# 		snps
+
+# 	} else {
+
+# 		al <- new.alignment(template, mut)
+# 		al$getMutations()
+
+# 	}
+# }
+
+
+# template <- "ATGGCTGACCAACTGACTGAAGAGCAGATTGCAGAATTCAAAGAAGCTTTTTCACTATTTGACAAAGATGGTGATGGAACTATAACAACAAAGGAATTGGGAACTGTAATGAGATCTCTTGGGCAGAATCCCACAGAAGCAGAGTTACAGGACATGATTAATGAAGTAGATGCTGATGGTAATGGCACAATTGACTTCCCTGAATTTCTGACAATGATGGCAAGAAAAATGAAAGACACAGACAGTGAAGAAGAAATTAGAGAAGCATTCCGTGTGTTTGATAAGGATGGCAATGGCTATATTAGTGCTGCAGAACTTCGCCATGTGATGACAAACCTTGGAGAGAAGTTAACAGATGAAGAAGTTGATGAAATGATCAGGGAAGCAGATATTGATGGTGATGGTCAAGTAAACTATGAAGAGTTTGTACAAATGATGACAGCAAAGTGA"
+# templ.protein <- translator$translate(template)
+
+# dna <- mutagenesis(template, init.amount=20, etr=4)
+
+# proteins <- sapply(dna, translator$translate)
+
+# num.prot.muts <- classify.muts(templ.protein, proteins)
+# num.dna.muts <- sapply(dna, function(mut) {
+# 	length(find.snps(template,mut))
 # })
+
+# op <- par(mfrow=c(1,2))
+# barplot(table(num.dna.muts),xlab="Mutations",ylab="Frequency",main="DNA level")
+# barplot(table(num.prot.muts),xlab="Mutations",ylab="Frequency",main="Protein level")
+# par(op)
+
+# # num.muts <- sapply(proteins[1:100], function(mutant) {
+# # 	al <- new.alignment(templ.protein, mutant)
+# # 	al$getDistance()
+# # })
 
 
