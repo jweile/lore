@@ -183,6 +183,8 @@ init.translator <- function(ctable.file="input/codontable.txt") {
 	# translates a given nucleotide sequence
 	translate <- function(ncSeq) {
 
+		if (nchar(ncSeq) == 0) stop("translate: empty string! ",ncSeq)
+
 		aa <- paste(sapply(
 			seq(1,nchar(ncSeq),3),
 			function(i) {
@@ -289,7 +291,7 @@ pcr.sim <- function(sequence, cycles=10, init.amount=100, etr=1, mut.rate=1/2000
 						return("nonsense")
 					} else {
 
-						codon.number <- floor(pos / 3) + 1
+						codon.number <- floor((pos-1) / 3) + 1
 						codon.start <- 3*codon.number - 2
 						from.codon <- substr(sequence,codon.start,codon.start+2)
 						
@@ -340,6 +342,210 @@ pcr.stats <- table(sapply(pcr.result, function(mutations) {
 
 
 
+
+cycle.vals <- 1:40
+ratio.vals <- 2^seq(-3,4,.2)
+
+efficiency.matrix <- NULL
+yield.matrix <- NULL
+singleness.matrix <- NULL
+for (cycles in cycle.vals) {
+#	cat(cycles,"\n")
+	eff.row <- NULL
+	yield.row <- NULL
+	sing.row <- NULL
+	for (etr in ratio.vals) {
+		pcr.result <- pcr.sim(template,cycles=cycles,etr=etr)
+
+		yield <- sum(sapply(pcr.result, function(mutations) {
+			if (any(mutations == "truncation" | mutations == "nonsense")) {
+				FALSE
+			} else {
+				sum(mutations != "silent") > 0
+			}
+		})) 
+		efficiency <- yield / length(pcr.result)
+		singleness <- sum(sapply(pcr.result, function(mutations) {
+			sum((mutations != "truncation") & (mutations != "truncation") & (mutations != "truncation")) == 1
+		})) / length(pcr.result)
+
+		eff.row[length(eff.row)+1] <- efficiency
+		yield.row[length(yield.row)+1] <- yield
+		sing.row[length(sing.row)+1] <- singleness
+	}
+	efficiency.matrix <- rbind(efficiency.matrix, eff.row)
+	yield.matrix <- rbind(yield.matrix, yield.row)
+	singleness.matrix <- rbind(singleness.matrix, sing.row)
+	cat(cycles,"\n")
+}
+rownames(efficiency.matrix) <- as.character(cycle.vals)
+colnames(efficiency.matrix) <- as.character(ratio.vals)
+rownames(yield.matrix) <- as.character(cycle.vals)
+colnames(yield.matrix) <- as.character(ratio.vals)
+rownames(singleness.matrix) <- as.character(cycle.vals)
+colnames(singleness.matrix) <- as.character(ratio.vals)
+
+
+
+hmap <- function(data, main, col=heat.colors(50)) {
+	mar.orig <- (par.orig <- par(c("mar", "las", "mfrow")))$mar
+    on.exit(par(par.orig))
+    w <- (3 + mar.orig[2]) * par("csi") * 2.54
+    layout(matrix(c(2, 1), ncol = 2), widths = c(1, lcm(w)))
+    par(las = 1)
+    mar <- mar.orig
+    mar[4] <- mar[2]
+    mar[2] <- 1
+    par(mar = mar) 
+
+    zlim <- range(data)
+    levels <- seq(zlim[1], zlim[2], length = length(col))
+    plot.new()
+    plot.window(xlim = c(0, 1), ylim = range(levels), xaxs = "i", yaxs = "i")
+    rect(0, levels[-length(levels)], 1, levels[-1], col = col,  density = NA)
+    axis(4)
+    box()
+    mar <- mar.orig
+    mar[4] <- 0
+    par(mar = mar)
+
+    par(las=0)
+	image(
+		data,
+		axes=FALSE,
+		xlab="#Cycles",
+		ylab="Enzyme/Template ratio",
+		main=main,
+		col=col
+	)
+	axis(1, at=seq(0,1,length.out=length(rownames(data))), labels=rownames(data))
+	axis(2, at=seq(0,1,length.out=length(colnames(data))), labels=colnames(data))
+
+}
+
+hmap(efficiency.matrix, "Efficiency")
+hmap(yield.matrix, "Yield")
+hmap(log2(yield.matrix+1), "Log Yield")
+hmap(singleness.matrix,"Share of singles")
+
+
+#Colony picking
+
+pcr.result <- pcr.sim(template)
+
+mut.distr <- function(mutations) table(sapply(mutations, function(mutations) {
+	if (any(mutations == "truncation")) {
+		"truncation"
+	} else if (any(mutations == "nonsense")) {
+		"nonsense"
+	} else {
+		sum(mutations != "silent")
+	}
+}))
+
+
+sample.size <- 2*96
+
+categories <- names(mut.distr(pcr.result))
+stats <- apply(t(sapply(
+		sapply(1:1000,function(x) {
+			mut.distr(sample(pcr.result, sample.size, replace=TRUE))
+		}), 
+		function(tab) tab[categories]
+	)),
+	c(1,2), function(element) if (is.na(element)) 0 else element
+)
+colnames(stats) <- categories
+
+op<-par(las=3)
+boxplot(stats, col="orange",main=paste("Picked",sample.size), xlab="mutants", ylab="frequency")
+par(op)
+
+
+#Reachable amino acids
+
+
+sample.size <- 10*96
+
+protein <- translator$translate(template)
+codon.at <- function(dna, i) substr(dna,3*i-2, 3*i)
+
+change.matrix <- matrix(NA,
+	nrow=21,
+	ncol=nchar(protein),
+	dimnames=list(
+		c('A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y','*'),
+		1:nchar(protein)
+	)
+)
+for (i in 1:nchar(protein)) {
+	codon <- codon.at(template,i)
+	for (pos in 1:3) {
+		for (nc in c('A','C','G','T')) {
+			mut.codon <- codon
+			substr(mut.codon,pos,pos) <- nc
+			aa <- translator$translate(mut.codon)
+			change.matrix[aa,i] <- 0
+		}
+	}
+	change.matrix[char.at(protein,i),i] <- -1
+}
+
+pcr.sample <- sample(pcr.result, sample.size, replace=TRUE)
+pcr.sample.sacs <- unlist(pcr.sample[sapply(pcr.sample, {
+	function(x) length(x) > 0 && !any(x == "truncation" | x == "nonsense")
+})])
+
+for (sac in pcr.sample.sacs) {
+
+	if (sac == "silent") next
+
+	pos <- as.numeric(substr(sac,2,nchar(sac)-1))
+	aa <- substr(sac,nchar(sac),nchar(sac))
+	change.matrix[aa,pos] <- change.matrix[aa,pos] + 1
+}
+
+maxVal <- max(apply(change.matrix,1,function(x) max(na.omit(x))))
+colors <- colorRampPalette(c("white", "orange"))(maxVal+1)
+
+op <- par(fg="gray",las=1)
+plot(0,
+	type='n',
+	axes=FALSE,
+	xlim=c(0,nchar(protein)), 
+	ylim=c(0,21),
+	xlab="Position",
+	ylab="Amino acid",
+	main=paste("SAC coverage for",sample.size,"colonies")
+)
+for (x in 1:nchar(protein)) {
+	for (y in 1:21) {
+		if (!is.na(change.matrix[y,x])) {
+			if (change.matrix[y,x] > 0) {
+				rect(x-1,22-y,x,21-y,col=colors[change.matrix[y,x]+1], lty="dotted")
+			} else if (change.matrix[y,x] == -1) {
+				rect(x-1,22-y,x,21-y,col="gray")
+			} else {
+				rect(x-1,22-y,x,21-y, lty="dotted")
+			}
+		}
+	}
+}
+axis(1, at=(1:nchar(protein))-.5, labels=1:nchar(protein))
+axis(2, at=(1:21)-.5, labels=rev(rownames(change.matrix)) )
+par(op)
+
+
+
+coverage <- (apply(change.matrix,2,function(x) sum(na.omit(x) > 0)) 
+	/ apply(change.matrix,2,function(x) sum(!is.na(x))))
+barplot(coverage,
+	main=paste("SAC coverage for",sample.size,"colonies"), 
+	xlab="Position",
+	ylab="Coverage of possible mutations", 
+	ylim=c(0,1),
+	border=NA
+)
 
 
 # ##
