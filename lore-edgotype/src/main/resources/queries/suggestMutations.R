@@ -1,9 +1,9 @@
 #!/usr/bin/Rscript
 
-args <- commandArgs(TRUE)
+# args <- commandArgs(TRUE)
 
-infile <- args[1]
-con  <- file(infile, open = "r")
+# infile <- args[1]
+# con  <- file(infile, open = "r")
 
 ###
 # Reads the contents of a FASTA file, returning a list object that
@@ -318,6 +318,7 @@ pcr.sim <- function(sequence, cycles=10, init.amount=100, etr=1, mut.rate=1/2000
 
 	}
 
+	#return pool without original templates
 	pool[-(1:init.amount)]
 }
 
@@ -499,100 +500,227 @@ par(op)
 
 #translate DNA template to obtain protein sequence
 protein <- translator$translate(template)
-# a function that returns the i'th codon from the template
-codon.at <- function(dna, i) substr(dna,3*i-2, 3*i)
 
-#initialize a matrix covering all sequence positions times all possible amino acids
-change.matrix <- matrix(NA,
-	nrow=21,
-	ncol=nchar(protein),
-	dimnames=list(
-		c('A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y','*'),
-		1:nchar(protein)
+
+
+
+plotMutCoverage <- function(mutations, all=FALSE) {
+
+	muts <- unlist(mutations[sapply(mutations, {
+		function(x) length(x) > 0 && !any(x == "truncation" | x == "nonsense")
+	})])
+
+	# a function that returns the i'th codon from the template
+	codon.at <- function(dna, i) substr(dna,3*i-2, 3*i)
+
+	#initialize a matrix covering all sequence positions times all possible amino acids
+	change.matrix <- matrix(NA,
+		nrow=21,
+		ncol=nchar(protein),
+		dimnames=list(
+			c('A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y','*'),
+			1:nchar(protein)
+		)
 	)
-)
-# Mark the fields corresponding to the original aminoacids in the matrix, as well as all potentially reachable mutations
-for (i in 1:nchar(protein)) {
-	codon <- codon.at(template,i)
-	for (pos in 1:3) {
-		for (nc in c('A','C','G','T')) {
-			mut.codon <- codon
-			substr(mut.codon,pos,pos) <- nc
-			aa <- translator$translate(mut.codon)
-			change.matrix[aa,i] <- 0
+	# Mark the fields corresponding to the original aminoacids in the matrix, as well as all potentially reachable mutations
+	for (i in 1:nchar(protein)) {
+		codon <- codon.at(template,i)
+		for (pos in 1:3) {
+			for (nc in c('A','C','G','T')) {
+				mut.codon <- codon
+				substr(mut.codon,pos,pos) <- nc
+				aa <- translator$translate(mut.codon)
+				change.matrix[aa,i] <- 0
+			}
 		}
+		change.matrix[char.at(protein,i),i] <- -1
 	}
-	change.matrix[char.at(protein,i),i] <- -1
-}
 
-# Simulate colony picking and obtain list of mutations in those colonies
-pcr.sample <- sample(pcr.result, sample.size, replace=TRUE)
-pcr.sample.sacs <- unlist(pcr.sample[sapply(pcr.sample, {
-	function(x) length(x) > 0 && !any(x == "truncation" | x == "nonsense")
-})])
 
-# Mark mutations in the matrix
-for (sac in pcr.sample.sacs) {
+	# Mark mutations in the matrix
+	for (sac in muts) {
 
-	if (sac == "silent") next
+		if (sac == "silent") next
 
-	pos <- as.numeric(substr(sac,2,nchar(sac)-1))
-	aa <- substr(sac,nchar(sac),nchar(sac))
-	change.matrix[aa,pos] <- change.matrix[aa,pos] + 1
-}
+		pos <- as.numeric(substr(sac,2,nchar(sac)-1))
+		aa <- substr(sac,nchar(sac),nchar(sac))
 
-# Compute a color gradient to represent the mutation counts
-maxVal <- max(apply(change.matrix,1,function(x) max(na.omit(x))))
-colors <- colorRampPalette(c("white", "orange"))(maxVal+1)
+		if (is.na(change.matrix[aa,pos])) change.matrix[aa,pos] <- 0
+		change.matrix[aa,pos] <- change.matrix[aa,pos] + 1
+	}
 
-### Draw the diagram
-# set drawing color to gray and use horizontal axis labels
-op <- par(fg="gray",las=1)
-# create an empty plot
-plot(0,
-	type='n',
-	axes=FALSE,
-	xlim=c(0,nchar(protein)), 
-	ylim=c(0,21),
-	xlab="Position",
-	ylab="Amino acid",
-	main=paste("SAC coverage for",sample.size,"colonies")
-)
-# iterate over each matrix entry and draw the contents on the plot
-for (x in 1:nchar(protein)) {
-	for (y in 1:21) {
-		if (!is.na(change.matrix[y,x])) {
-			if (change.matrix[y,x] > 0) {
-				#observed mutations are drawn in a color shade corresponding to their count
-				rect(x-1,22-y,x,21-y,col=colors[change.matrix[y,x]+1], lty="dotted")
-			} else if (change.matrix[y,x] == -1) {
-				#original amino acids are marked in gray
-				rect(x-1,22-y,x,21-y,col="gray")
-			} else {
-				#reachable aminoacids are marked with dotted outline
-				rect(x-1,22-y,x,21-y, lty="dotted")
+
+	op <- par(mfrow=c(2,1),mar=c(0,4.1,4.1,2.1))	
+	# compute how many of the reachable mutations are observed for each position
+	if (!all) {
+		coverage <- (apply(change.matrix,2,function(x) sum(na.omit(x) > 0)) 
+			/ apply(change.matrix,2,function(x) sum(!is.na(x))))
+	} else {
+		coverage <- apply(change.matrix,2,function(x) sum(na.omit(x) > 0)) / 20
+	}
+	# draw a bar plot for the above coverage
+	barplot(coverage,
+		main=paste("SAC coverage for",sample.size,"colonies"), 
+		xlab="Position",
+		ylab="Coverage of possible mutations", 
+		ylim=c(0,1),
+		border=NA,
+		names.arg=NA,
+		col="darkolivegreen3"
+	)
+	# axis(2,at=seq(0,1,.2), labels=seq(0,1,.2))
+
+
+	# Compute a color gradient to represent the mutation counts
+	maxVal <- max(apply(change.matrix,1,function(x) max(na.omit(x))))
+	colors <- colorRampPalette(c("white", "orange"))(maxVal+1)
+
+	### Draw the diagram
+	# set drawing color to gray and use horizontal axis labels
+	op <- c(op,par(fg="gray",las=1))
+	par(mar=c(5.1,4.1,0,2.1))
+	# create an empty plot
+	plot(0,
+		type='n',
+		axes=FALSE,
+		xlim=c(0,nchar(protein)), 
+		ylim=c(0,21),
+		xlab="Position",
+		ylab="Amino acid"
+	)
+	# iterate over each matrix entry and draw the contents on the plot
+	for (x in 1:nchar(protein)) {
+		for (y in 1:21) {
+			if (!is.na(change.matrix[y,x])) {
+				if (change.matrix[y,x] > 0) {
+					#observed mutations are drawn in a color shade corresponding to their count
+					if (all) {
+						rect(x-1,22-y,x,21-y,col=colors[change.matrix[y,x]+1], lty="blank")
+					} else {
+						rect(x-1,22-y,x,21-y,col=colors[change.matrix[y,x]+1], lty="dotted")
+					}
+				} else if (change.matrix[y,x] == -1) {
+					#original amino acids are marked in gray
+					rect(x-1,22-y,x,21-y,col="gray")
+				} else if (!all) {
+					#reachable aminoacids are marked with dotted outline
+					rect(x-1,22-y,x,21-y, lty="dotted")
+				}
 			}
 		}
 	}
+	# draw axes
+	axis(1, at=c(1,seq(5,nchar(protein),5))-.5, labels=c(1,seq(5,nchar(protein),5)))
+	axis(2, at=(1:21)-.5, labels=rev(rownames(change.matrix)) )
+
+	par(op)
 }
-# draw axes
-axis(1, at=(1:nchar(protein))-.5, labels=1:nchar(protein))
-axis(2, at=(1:21)-.5, labels=rev(rownames(change.matrix)) )
-par(op)
 
 
-##
-# General mutation coverage for each position
-#
+# Simulate colony picking and obtain list of mutations in those colonies
+pcr.sample <- sample(pcr.result, sample.size, replace=TRUE)
+plotMutCoverage(pcr.sample)
 
-# compute how many of the reachable mutations are observed for each position
-coverage <- (apply(change.matrix,2,function(x) sum(na.omit(x) > 0)) 
-	/ apply(change.matrix,2,function(x) sum(!is.na(x))))
-# draw a bar plot for the above coverage
-barplot(coverage,
-	main=paste("SAC coverage for",sample.size,"colonies"), 
-	xlab="Position",
-	ylab="Coverage of possible mutations", 
-	ylim=c(0,1),
-	border=NA
-)
+
+# # a function that returns the i'th codon from the template
+# codon.at <- function(dna, i) substr(dna,3*i-2, 3*i)
+
+# #initialize a matrix covering all sequence positions times all possible amino acids
+# change.matrix <- matrix(NA,
+# 	nrow=21,
+# 	ncol=nchar(protein),
+# 	dimnames=list(
+# 		c('A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y','*'),
+# 		1:nchar(protein)
+# 	)
+# )
+# # Mark the fields corresponding to the original aminoacids in the matrix, as well as all potentially reachable mutations
+# for (i in 1:nchar(protein)) {
+# 	codon <- codon.at(template,i)
+# 	for (pos in 1:3) {
+# 		for (nc in c('A','C','G','T')) {
+# 			mut.codon <- codon
+# 			substr(mut.codon,pos,pos) <- nc
+# 			aa <- translator$translate(mut.codon)
+# 			change.matrix[aa,i] <- 0
+# 		}
+# 	}
+# 	change.matrix[char.at(protein,i),i] <- -1
+# }
+
+# # Simulate colony picking and obtain list of mutations in those colonies
+# pcr.sample <- sample(pcr.result, sample.size, replace=TRUE)
+# pcr.sample.sacs <- unlist(pcr.sample[sapply(pcr.sample, {
+# 	function(x) length(x) > 0 && !any(x == "truncation" | x == "nonsense")
+# })])
+
+# # Mark mutations in the matrix
+# for (sac in pcr.sample.sacs) {
+
+# 	if (sac == "silent") next
+
+# 	pos <- as.numeric(substr(sac,2,nchar(sac)-1))
+# 	aa <- substr(sac,nchar(sac),nchar(sac))
+# 	change.matrix[aa,pos] <- change.matrix[aa,pos] + 1
+# }
+
+# # Compute a color gradient to represent the mutation counts
+# maxVal <- max(apply(change.matrix,1,function(x) max(na.omit(x))))
+# colors <- colorRampPalette(c("white", "orange"))(maxVal+1)
+
+# ### Draw the diagram
+# # set drawing color to gray and use horizontal axis labels
+# op <- par(fg="gray",las=1)
+# # create an empty plot
+# plot(0,
+# 	type='n',
+# 	axes=FALSE,
+# 	xlim=c(0,nchar(protein)), 
+# 	ylim=c(0,21),
+# 	xlab="Position",
+# 	ylab="Amino acid",
+# 	main=paste("SAC coverage for",sample.size,"colonies")
+# )
+# # iterate over each matrix entry and draw the contents on the plot
+# for (x in 1:nchar(protein)) {
+# 	for (y in 1:21) {
+# 		if (!is.na(change.matrix[y,x])) {
+# 			if (change.matrix[y,x] > 0) {
+# 				#observed mutations are drawn in a color shade corresponding to their count
+# 				rect(x-1,22-y,x,21-y,col=colors[change.matrix[y,x]+1], lty="dotted")
+# 			} else if (change.matrix[y,x] == -1) {
+# 				#original amino acids are marked in gray
+# 				rect(x-1,22-y,x,21-y,col="gray")
+# 			} else {
+# 				#reachable aminoacids are marked with dotted outline
+# 				rect(x-1,22-y,x,21-y, lty="dotted")
+# 			}
+# 		}
+# 	}
+# }
+# # draw axes
+# axis(1, at=(1:nchar(protein))-.5, labels=1:nchar(protein))
+# axis(2, at=(1:21)-.5, labels=rev(rownames(change.matrix)) )
+# par(op)
+
+
+# ##
+# # General mutation coverage for each position
+# #
+
+# # compute how many of the reachable mutations are observed for each position
+# coverage <- (apply(change.matrix,2,function(x) sum(na.omit(x) > 0)) 
+# 	/ apply(change.matrix,2,function(x) sum(!is.na(x))))
+# # draw a bar plot for the above coverage
+# barplot(coverage,
+# 	main=paste("SAC coverage for",sample.size,"colonies"), 
+# 	xlab="Position",
+# 	ylab="Coverage of possible mutations", 
+# 	ylim=c(0,1),
+# 	border=NA
+# )
+
+
+
+
+

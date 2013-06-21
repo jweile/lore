@@ -157,8 +157,14 @@ for (hub in names(db.plates)) {
 }
 
 
+#read in Song's complementation data
+compl.raw <- read.delim("input/mut_candidates/functional_complementation.txt",stringsAsFactors=F,header=F)[,1]
+compl.genes <- sapply(strsplit(compl.raw,"_"),function(x) x[1])
 
 
+#check if in AD list
+compl.overl <- names(hub.interactions)[sapply(names(hub.interactions), function(x) any(compl.genes == x))]
+db.plates(compl.overl)
 
 # # hubs.entrez <- read.delim("hubs.tsv")
 

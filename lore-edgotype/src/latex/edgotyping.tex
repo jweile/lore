@@ -1,0 +1,75 @@
+\documentclass[12pt]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+
+\setlength{\oddsidemargin}{20pt}
+\setlength{\textwidth}{420pt}
+\setlength{\topmargin}{0pt}
+\setlength{\textheight}{580pt}
+
+\setlength{\parskip}{3ex plus 2ex minus 2ex}
+\setlength{\parindent}{0ex}
+
+
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+
+
+\title{Saturation mutagenesis using microchip based gene synthesis for exhaustive edgotyping}
+\author{
+	Jochen Weile
+		\thanks{Department of Molecular Genetics, University of Toronto}
+		\thanks{Donnelly Centre for Cellular and Biomolecular Research, University of Toronto} 
+		\thanks{Samuel Lunenfeld Research Institute, Mount Sinai Hospital, Toronto}
+	\and Marta Verby
+		\samethanks[3]
+	\and Fan Yang
+		\samethanks[1] \samethanks[3]
+	\and Song Sun
+		\samethanks[3]
+	\and Frederick P Roth 
+		\samethanks[1] \samethanks[2] \samethanks[3]
+}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Background} % (fold)
+\label{sec:background}
+
+The Edgotyping Initiative has begun to establish ``edgotypes'' for common disease-causing mutations. Edgotypes are intermediate phenotypes that manifest in the re-wiring of an organism's protein-protein interactome, where specific interactions may be disrupted by a mutation. We distinguish three general types of mutations with respect to their edgotypes. ``Pseudo-WT'' mutations maintain all existing interactions of the gene's product. ``Pseudo-Null'' mutations interrupt the complete set of interactions of the gene's product. Finally, ``edgetic'' mutations interrupt only a specific subset of its interactions.
+
+Disease-causing mutations involving single amino acid changes (SACs) were selected from the Human Gene Mutation Database (HGMD)~\cite{stenson_human_2003} and implemented in ORFs from the ORFeome collection v7.1~\cite{rual_human_2004} to form the human SACome collection. These mutant ORFs were tested in two high-throughput yeast-2-hybrid screens~\cite{yu_high-quality_2008}. The first screen tested all alleles for interaction partners that tested positive in the most recent CCSB-HI2012 screen (unpublished). A second screen was performed for all SACome alleles against the complete ORFeome 1.1 library, whose positives yet remain to be verified.
+
+
+% section methods (end)
+
+\section{Methods} % (fold)
+\label{sec:methods}
+
+\subsection{Mutagenic PCR} % (fold)
+\label{sub:mutagenic_pcr}
+
+% subsection mutagenic_pcr (end)
+
+\subsection{Chip-based gene synthesis} % (fold)
+\label{sub:chip_based_gene_synthesis}
+
+The PCR-based random mutagenesis method described can only generate amino acid replacements through the mutation of single nucleotids. At each position, the set of achievable amino acid changes is thus restricted by the nature of the genetic code. Generating mutations beyond these confines requires changing two or even all three of the nucleotides that make up a specific codon and thus requires a more controlled mutagenesis approach. Given the large number of variants to cover, site-directed mutagenesis~\cite{carter_site-directed_1986} would become too labour- and cost-intensive. A feasible alterntive is chip-based gene sythesis, which has seen much progress recently~\cite{kosuri_scalable_2010} and have previously been used to generate synonymous variants~\cite{quan_parallel_2011}.
+
+% subsection chip_based_gene_synthesis (end)
+
+% section methods (end)
+
+\bibliographystyle{ieeetr}
+\bibliography{edgotyping}
+
+\end{document}
+
