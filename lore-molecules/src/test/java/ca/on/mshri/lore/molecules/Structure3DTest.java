@@ -63,6 +63,7 @@ public class Structure3DTest extends TestCase {
         for (Structure3D s3d : Structure3D.listStructuresOfObject(protein)) {
             Structure structure = struc.getStructureObject();
             for (String chainId : structure.getChainIDs()) {
+                System.out.println(chainId);
                 List<Aminoacid> chain = structure.getChain(chainId);
                 System.out.println(chain.get(0).getCentroid());
             }
@@ -72,12 +73,15 @@ public class Structure3DTest extends TestCase {
     
     public void testSeqMap() throws Exception {
         SeqMap m = new SeqMap();
-        int[] test = new int[] {-1,-1,0,1,2,3,-1};
-        m.put("test",test);
+        m.addMapping("a","test",1,2,3);
         
         String ser = m.serialize();
         SeqMap m2 = SeqMap.deserialize(ser);
         
-        assertTrue(Arrays.equals(m.get("test"), m2.get("test")));
+        assertEquals("a", m2.getQueryId(0));
+        assertEquals("test", m2.getTargetId(0));
+        assertEquals(1, m2.getQueryStart(0));
+        assertEquals(2, m2.getTargetStart(0));
+        assertEquals(3, m2.getMappingLength(0));
     }
 }

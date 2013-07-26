@@ -19,6 +19,8 @@ package ca.on.mshri.lore.molecules.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +60,39 @@ public class Structure {
 
     public void addChain(String id, List<Aminoacid> polypeptide) {
         chains.put(id, polypeptide);
+    }
+    
+    public void computeInterface() {
+        
+        //distance in angstrom
+        double threshold = 5.0;
+        
+        if (chains.size() != 2) {
+            return;
+        }
+        
+        Set<Integer> interfacing1 = new HashSet<Integer>();
+        Set<Integer> interfacing2 = new HashSet<Integer>();
+        
+        Iterator<String> chainIt = chains.keySet().iterator();
+        String chain1 = chainIt.next();
+        String chain2 = chainIt.next();
+        
+        int i = 0, j = 0;
+        for (Aminoacid aa1 : getChain(chain1)) {
+            Vector3D pos1 = aa1.getCentroid();
+            for (Aminoacid aa2 : getChain(chain2)) {
+                Vector3D pos2 = aa2.getCentroid();
+                
+                double dist = Vector3D.euclidianDistance(pos1, pos2);
+                if (dist < threshold) {
+                    interfacing1.add(i);
+                    interfacing2.add(j);
+                }
+                j++;
+            }
+            i++;
+        }
     }
     
     

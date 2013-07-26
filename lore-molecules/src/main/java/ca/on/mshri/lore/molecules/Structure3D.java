@@ -31,13 +31,13 @@ import com.hp.hpl.jena.ontology.impl.IndividualImpl;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import de.jweile.yogiutil.IntTable;
+import de.jweile.yogiutil.Pair;
+import de.jweile.yogiutil.Table;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -156,38 +156,67 @@ public class Structure3D extends RecordObject {
     
     public static class SeqMap {
         
-        private Map<String,int[]> map = new HashMap<String,int[]>();
+        private Table<String> ids = Table.newTable(2, String.class);
+        private IntTable mapValues = new IntTable(3);
         
-        public void put(String key, int[] m) {
-            map.put(key,m);
+        private static final int queryI = 0;
+        private static final int targetI = 1;
+        private static final int queryStartI = 0;
+        private static final int targetStartI = 1;
+        private static final int lengthI = 2;
+        
+        public SeqMap() {
+            
         }
         
-        public int[] get(String key) {
-            return map.get(key);
+        public int getNumMappings() {
+            return ids.getNumRows();
         }
         
-        public Set<String> getKeys() {
-            return map.keySet();
+        public void addMapping(String query, String target, int queryStart, int targetStart, int length) {
+            ids.addRow(new String[]{query,target});
+            mapValues.addRow(new int[]{queryStart,targetStart,length});
+        }
+        
+        public String getQueryId(int i) {
+            return ids.getCell(i, queryI);
+        }
+        
+        public String getTargetId(int i) {
+            return ids.getCell(i,targetI);
+        }
+        
+        public int getQueryStart(int i) {
+            return mapValues.getCell(i, queryStartI);
+        }
+        
+        public int getTargetStart(int i) {
+            return mapValues.getCell(i, targetStartI);
+        }
+        
+        public int getMappingLength(int i) {
+            return mapValues.getCell(i, lengthI);
         }
         
         /**
-         * serializes to the following form.
+         * serializes to the following form:
          * <pre>
-         * "O1321:-1,-1,0,1,2,-1;P1234:-1,-1,0,1,2,-1"
+         * "A,P0015,6,44,100;B,Q0152,2,0,142"
          * </pre>
+         * That is, values of the mapping separated by commas,
+         * multiple mappings separated by semicolons.
+         * 
          * @return 
          */
         String serialize() {
             StringBuilder b = new StringBuilder();
             
-            for (String key : map.keySet()) {
-                b.append(key).append(':');
-                for (int i : map.get(key)) {
-                    b.append(i).append(',');
-                }
-                //remove last comma
-                b.deleteCharAt(b.length()-1);
-                b.append(';');
+            for (int i = 0; i < ids.getNumRows(); i++) {
+                b.append(getQueryId(i)).append(",");
+                b.append(getTargetId(i)).append(",");
+                b.append(getQueryStart(i)).append(",");
+                b.append(getTargetStart(i)).append(",");
+                b.append(getMappingLength(i)).append(";");
             }
             //remove last semicolon if not empty
             if (b.length() > 0) {
@@ -202,21 +231,20 @@ public class Structure3D extends RecordObject {
             
             for (String entry :str.split(";")) {
                 
-                String[] keyVal = entry.split(":");
-                assert(keyVal.length == 2);
+                String[] fields = entry.split(",");
+                assert(fields.length == 5);
                 
-                String key = keyVal[0];
+                String query = fields[0];
+                String target = fields[1];
+                int qStart = Integer.parseInt(fields[2]);
+                int tStart = Integer.parseInt(fields[3]);
+                int length = Integer.parseInt(fields[4]);
+                sm.addMapping(query, target, qStart, tStart, length);
                 
-                String[] valList = keyVal[1].split(",");
-                int[] val = new int[valList.length];
-                for (int i = 0; i < val.length; i++) {
-                    val[i] = Integer.parseInt(valList[i]);
-                }
-                
-                sm.put(key,val);
             }
             
             return sm;
         }
+
     }
 }
