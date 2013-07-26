@@ -16,25 +16,19 @@
  */
 package ca.on.mshri.lore.interaction.interactome3d;
 
-import ca.on.mshri.lore.base.RecordObject;
-import ca.on.mshri.lore.interaction.Interaction;
 import ca.on.mshri.lore.interaction.InteractionModel;
 import ca.on.mshri.lore.interaction.PhysicalInteraction;
 import ca.on.mshri.lore.molecules.Protein;
-import ca.on.mshri.lore.molecules.ProteinDomain;
 import ca.on.mshri.lore.molecules.Structure3D;
 import ca.on.mshri.lore.molecules.Structure3D.SeqMap;
-import ca.on.mshri.lore.operations.Sparql;
-import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.io.File;
-import java.util.List;
+import java.io.PrintStream;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -86,6 +80,12 @@ public class I3DParserTest extends TestCase {
             
         }
         
+        for (PhysicalInteraction ia : model.listIndividualsOfClass(PhysicalInteraction.class, false)) {
+            for (Structure3D s3d : Structure3D.listStructuresOfObject(ia)) {
+                print(s3d.getSeqMap());
+                System.out.println();
+            }
+        }
         
 //        Sparql sparql = Sparql.getInstance(I3DParser.class.getProtectionDomain().getCodeSource());
 //        
@@ -122,14 +122,48 @@ public class I3DParserTest extends TestCase {
     }
 
     private void print(SeqMap seqMap) {
-        for (String key : seqMap.getKeys()) {
-            System.out.println(key);
-            for (int i : seqMap.get(key)) {
-                String num = i+"";
-                for (int j = 0; j < 3-num.length(); j++) System.out.print(" ");
-                System.out.print(num);
-            }
-            System.out.println();
+        for (int i = 0; i < seqMap.getNumMappings(); i++) {
+            PrintStream o = System.out;
+            o.print(seqMap.getQueryId(i));
+            o.print('\t');
+            o.print(seqMap.getTargetId(i));
+            o.print('\t');
+            o.print(seqMap.getQueryStart(i));
+            o.print('\t');
+            o.print(seqMap.getTargetStart(i));
+            o.print('\t');
+            o.println(seqMap.getMappingLength(i));
+            
         }
     }
+    
+    
+//    public void testBioJavaAlignment() throws Exception {
+//        
+//        ProteinSequence querySeq = new ProteinSequence(
+//            "GSSGSSGSIGNAQKLPMCDKCGTGIVGVFVKLRDRHRHPECYVCTDCGTNLKQKGHFFVEDQIYCEKHARERVSGPSSG"
+//        );
+//        ProteinSequence targetSeq = new ProteinSequence(
+//            "MTTQQIDLQGPGPWGFRLVGGKDFEQPLAISRVTPGSKAALANLCIGDVITAIDGENTSNMTHLEAQNRIKGCTDNLTL"
+//            + "TVARSEHKVWSPLVTEEGKRHPYKMNLASEPQEVLHIGSAHNRSAMPFTASPASSTTARVITNQYNNPAGLYSSENI"
+//            + "SNFNNALESKTAASGVEANSRPLDHAQPPSSLVIDKESEVYKMLQEKQELNEPPKQSTSFLVLQEILESEEKGDPNK"
+//            + "PSGFRSVKAPVTKVAASIGNAQKLPMCDKCGTGIVGVFVKLRDRHRHPECYVCTDCGTNLKQKGHFFVEDQIYCEKH"
+//            + "ARERVTPPEGYEVVTVFPK"
+//        );
+//        
+//        SubstitutionMatrix<AminoAcidCompound> blosum62 = new SimpleSubstitutionMatrix<AminoAcidCompound>();
+//        SequencePair<ProteinSequence, AminoAcidCompound> pair = Alignments.getPairwiseAlignment(querySeq, targetSeq,
+//                Alignments.PairwiseSequenceAlignerType.LOCAL, new SimpleGapPenalty(), blosum62);
+//        
+//        int[] startIdx = pair.getIndicesAt(1);
+//        String match = new StringBuilder()
+//                .append(startIdx[0]).append("@")
+//                .append(startIdx[1]).append("#")
+//                .append(pair.getLength())
+//                .toString();
+//        
+//        System.out.println(match);
+//        
+//        
+//    }
 }

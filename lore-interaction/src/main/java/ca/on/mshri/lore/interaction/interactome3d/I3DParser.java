@@ -152,12 +152,19 @@ public class I3DParser extends TabDelimParser {
             Structure3D.addStructureToObject(structure, interaction);
                 
             try {
+                
                 structure.setSource(pdbFile.toURI().toURL());
-                buildSeqMap(structure, p1, cols[prot1], cols[chain1], p2, cols[prot2], cols[chain2]);
+                SeqMap sm = buildSeqMap(
+                        structure.getStructureObject(), 
+                        p1, cols[prot1], cols[chain1], 
+                        p2, cols[prot2], cols[chain2]
+                );
+                structure.setSeqMap(sm);
+                
             } catch (MalformedURLException ex) {
-                Logger.getLogger(I3DParser.class.getName())
-                        .log(Level.SEVERE, "Malformed URL for file.", ex);
+                throw new RuntimeException("Malformed URL for file! Report this as a bug!");
             }
+            
         } else {
             Logger.getLogger(I3DParser.class.getName())
                     .log(Level.WARNING, "PDB file not found: "+pdbFile);
@@ -205,44 +212,31 @@ public class I3DParser extends TabDelimParser {
         return false;
     }
     
-    private void buildSeqMap2(Structure struc, Protein p, String uniprot, String chain) {
+    private SeqMap buildSeqMap(Structure struc, Protein p1, String uniprot1, String chain1, 
+            Protein p2, String uniprot2, String chain2) {
         
-        ProteinSequence protSeq = new ProteinSequence(p.getSequence());
-        ProteinSequence strucSeq = new ProteinSequence(struc.getChainSequence(chain));
+        SeqMap sm = new SeqMap();
         
-        SubstitutionMatrix<AminoAcidCompound> matrix = new SimpleSubstitutionMatrix<AminoAcidCompound>();
-        SequencePair<ProteinSequence, AminoAcidCompound> pair = Alignments.getPairwiseAlignment(protSeq, strucSeq,
-                PairwiseSequenceAlignerType.LOCAL, new SimpleGapPenalty(), matrix);
+        addToSeqMap(sm, struc, p1, uniprot1, chain1);
+        addToSeqMap(sm, struc, p2, uniprot2, chain2);
         
-        int[] a2b = new int[protSeq.getLength()];
-        for (int i = 0; i < a2b.length; i++) {
-            a2b[i] = pair.getIndexInTargetForQueryAt(i);
-        }
+        return sm;
         
-        //TODO: continue here
     }
 
-    private void buildSeqMap(Structure3D s3d, Protein p1, String uniprot1, String chain1, 
-                                Protein p2, String uniprot2, String chain2) {
+
+    private void addToSeqMap(SeqMap sm, Structure struc, Protein p, String uniprot, String chain) {
         
-        SeqMap map = new SeqMap();
         
-        Structure struc = s3d.getStructureObject();
+        ProteinSequence strucSeq = new ProteinSequence(struc.getChainSequence(chain));
+        ProteinSequence protSeq = new ProteinSequence(p.getSequence());
         
-        String protSeq1 = p1.getSequence();
-        String strucSeq1 = struc.getChainSequence(chain1);
-        LocalAlignment align1 = new LocalAlignment(protSeq1, strucSeq1);
-        Logger.getLogger(I3DParser.class.getName())
-                .log(Level.FINE, "Alignment of "+uniprot1+":\n"+align1.getAlignment());
-        map.put(uniprot1+"|"+chain1, align1.getA2B());
+        SubstitutionMatrix<AminoAcidCompound> blosum62 = new SimpleSubstitutionMatrix<AminoAcidCompound>();
+        SequencePair<ProteinSequence, AminoAcidCompound> pair = Alignments.getPairwiseAlignment(strucSeq,protSeq,
+                PairwiseSequenceAlignerType.LOCAL, new SimpleGapPenalty(), blosum62);
         
-        String protSeq2 = p2.getSequence();
-        String strucSeq2 = struc.getChainSequence(chain2);
-        LocalAlignment align2 = new LocalAlignment(protSeq2, strucSeq2);
-        Logger.getLogger(I3DParser.class.getName())
-                .log(Level.FINE, "Alignment of "+uniprot2+":\n"+align2.getAlignment());
-        map.put(uniprot2+"|"+chain2, align2.getA2B());
+        int[] startIdx = pair.getIndicesAt(1);
+        sm.addMapping(chain, uniprot, startIdx[0], startIdx[1], pair.getLength());
         
-        s3d.setSeqMap(map);
     }
 }
