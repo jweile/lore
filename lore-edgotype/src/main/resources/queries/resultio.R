@@ -22,14 +22,14 @@ init.result.io <- function(tag) {
 	# name: name of the plot to draw
 	# f: function performing the drawing operations
 	# custom.par: list of drawing parameters to use
-	draw <- function(name, f, custom.par=NULL) {
-		pdf(paste(out.dir,name,".pdf",sep=""))
+	draw <- function(name, f, custom.par=NULL, w=1,h=1) {
+		pdf(paste(out.dir,name,".pdf",sep=""),width=7*w,height=7*h)
 		op <- if (!is.null(custom.par)) par(custom.par) else NULL
 		f()
 		if (!is.null(op)) par(op)
 		dev.off()
 
-		svg(paste(out.dir,name,".svg",sep=""))
+		svg(paste(out.dir,name,".svg",sep=""),width=7*w,height=7*h)
 		op <- if (!is.null(custom.par)) par(custom.par) else NULL
 		f()
 		if (!is.null(op)) par(op)

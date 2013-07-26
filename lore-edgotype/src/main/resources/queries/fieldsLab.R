@@ -101,7 +101,7 @@ tryCatch({
 
 	}
 
-	cat("\nFinished! :)")
+	cat("\nFinished! :)\n")
 	
 },
 error = function(ex) {
@@ -109,13 +109,13 @@ error = function(ex) {
 },
 finally = {
 	if (exists("con.fwd") && isOpen(con.fwd)) {
-		close(con)
+		close(con.fwd)
 	}
 	if (exists("con.rev") && isOpen(con.rev)) {
-		close(con)
+		close(con.rev)
 	}
 	if (exists("con.out") && isOpen(con.out)) {
-		close(con)
+		close(con.out)
 	}
 })
 
