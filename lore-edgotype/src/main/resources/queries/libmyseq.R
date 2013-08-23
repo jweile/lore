@@ -58,6 +58,16 @@ subseq <- function(s,from,to) {
 }
 
 
+writeFASTA <- function(con,seqs) {
+	for (i in 1:length(seqs)) {
+		writeLines(c(
+			paste(">",names(seqs)[i]),
+			seqs[[i]]
+		),con)
+	}
+}
+
+
 writeFASTQ <- function(con, seqs) {
 
 	#function for decoding phred quality scores
@@ -460,7 +470,7 @@ plotMutCoverage <- function(change.matrix, sequence, translator, all=FALSE, main
 
 
 ##
-# PCR simulation function
+# Mutagenic PCR simulation function
 # sequence = original DNA sequence, should start with a start codon and end with a stop codon
 # cycles = number of PCR cycles to simulate. Should be > 1, but too large numbers will affect runtime and memory usage exponentially
 # init.amount = Initial amount of template molecules to use in the simulation

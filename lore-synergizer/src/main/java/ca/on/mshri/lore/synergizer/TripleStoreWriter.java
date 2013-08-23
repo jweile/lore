@@ -20,6 +20,8 @@ import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
 import ca.on.mshri.lore.base.Species;
+import ca.on.mshri.lore.base.XRef;
+import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import de.jweile.yogiutil.pipeline.EndNode;
 import java.util.Map;
@@ -78,6 +80,13 @@ final class TripleStoreWriter extends EndNode<Entry> {
             object.addXRef(auth, syn.getSynonym());
             
         }
+        
+        return null;
+    }
+    
+    private Class<? extends Individual> inferType(XRef xref) {
+        
+        String authorityId = xref.getAuthority().getAuthorityId();
         
         return null;
     }

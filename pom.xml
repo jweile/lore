@@ -19,6 +19,7 @@
         <module>lore-molecules</module>
     <module>lore-cli</module>
     <module>lore-edgotype</module>
+    <module>lore-synergizer</module>
   </modules>
 
     <properties>

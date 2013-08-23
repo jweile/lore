@@ -8,8 +8,14 @@ jobTag <- args[3]
 dir.create("output", showWarnings = FALSE)
 outfile <- paste("output/mutationCounts_",jobTag,".txt",sep="")
 outfile2 <- paste("output/variantCounts_",jobTag,".txt",sep="")
+
 logfile <- file(paste("output/fieldsLab_",jobTag,".log",sep=""), open="wt")
-sink(logfile, type="message")
+options(warn=1)
+sink(logfile, append=TRUE)
+sink(logfile, append=TRUE, type="message")
+
+hostname <- read.table(pipe("uname -n"),stringsAsFactors=FALSE)[1,1]
+message("Running on" ,hostname)
 
 
 source("../bin/libmyseq.R")
