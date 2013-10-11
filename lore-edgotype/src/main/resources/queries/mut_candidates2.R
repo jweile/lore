@@ -71,11 +71,11 @@ names(hasStructure) <- hubs
 struc.hubs <- hubs[sapply(hasStructure,any)]
 
 ads <- lapply(struc.hubs, function(node) {
-	orfeome.plates[orfeome.plates[,"ENTREZ_GENE_ID"]==node,c("ENTREZ_GENE_ID","SRC_PLATE","SRC_POS")]
+	orfeome.plates[orfeome.plates[,"ENTREZ_GENE_ID"]==node,c("ENTREZ_GENE_ID","H8_CONSO_PLA_ID","H8_CONSO_POS_ID")]
 })
 dbs <- lapply(struc.hubs, function(node) {
 	out <- do.call(rbind,lapply(interactors[[node]], function(ia){
-		orfeome.plates[orfeome.plates[,"ENTREZ_GENE_ID"]==ia,c("ENTREZ_GENE_ID","SRC_PLATE","SRC_POS")]
+		orfeome.plates[orfeome.plates[,"ENTREZ_GENE_ID"]==ia,c("ENTREZ_GENE_ID","H8_CONSO_PLA_ID","H8_CONSO_POS_ID")]
 	}))
 	cbind(out, hasStructure[[node]][out[,1]])
 })

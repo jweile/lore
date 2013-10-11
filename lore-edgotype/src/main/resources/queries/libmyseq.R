@@ -40,12 +40,15 @@ print.yogiseq <- function(s) print(paste("<YogiSeq:",s$getID(),">"))
 summary.yogiseq <- function(s) c(id=s$getID(),sequence=s$toString(),phred=paste(s$getQuality(),collapse=","))
 length.yogiseq <- function(s) nchar(s$toString())
 
-reverseComplement <- function(seq) {
-	if (!any(class(seq) == "yogiseq")) stop("First argument must be a YogiSeq object")
+reverseComplement <- function(seq) {		
 	trans <- c(A='T',C='G',G='C',T='A',N='N',R='Y',Y='R',S='S',W='W',K='M',M='K')
-	revSeq <- paste(rev(sapply(to.char.array(seq$toString()), function(nc) trans[nc])),collapse="")
-	revQual <- rev(seq$getQuality())
-	new.sequence(revSeq,qual=revQual,id=seq$getID())
+	if (any(class(seq) == "yogiseq")) {
+		revSeq <- paste(rev(sapply(to.char.array(seq$toString()), function(nc) trans[nc])),collapse="")
+		revQual <- rev(seq$getQuality())
+		new.sequence(revSeq,qual=revQual,id=seq$getID())
+	} else {
+		paste(rev(sapply(to.char.array(seq), function(nc) trans[nc])),collapse="")
+	}
 }
 
 subseq <- function(s,from,to) {
@@ -65,6 +68,33 @@ writeFASTA <- function(con,seqs) {
 			seqs[[i]]
 		),con)
 	}
+}
+
+readFASTA <- function(con) {
+	out <- list()
+	id <- NULL
+	seq <- NULL
+	i <- 0
+	while(length(line <- readLines(con, n=1)) > 0) {
+		if (substr(line,1,1)==">") {
+			#if old sequence exists, add it to the output
+			if (!is.null(id)) {
+				out[[length(out)+1]] <- new.sequence(seq,id=id)
+				cat(paste("\r Read",i <- i+1,"sequences    "))
+			}
+			#new sequence
+			id <- substr(line,2,nchar(line))
+			seq <- ""
+		} else {
+			seq <- paste(seq,line,sep="")
+		}
+	}
+	#add last sequence to output
+	if (!is.null(id)) {
+		out[[length(out)+1]] <- new.sequence(seq,id=id)
+		cat(paste("\r Read",i <- i+1,"sequences    \n"))
+	}
+	out
 }
 
 
@@ -233,11 +263,37 @@ new.alignment <- function(s1, s2) {
 		.mapping
 	}
 
+	printAlignment <- function() {
+
+		if (is.null(.mapping)) run.trace()
+
+		chars <- do.call(cbind,lapply(1:nrow(.mapping), function(k) {
+			i <- .mapping[k,1]
+			j <- .mapping[k,2]
+			char1 <- if (is.na(c1[i+1])) '-' else c1[i+1]
+			char2 <- if (is.na(c2[j+1])) '-' else c2[j+1]
+			matchChar <- if (is.na(c1[i+1]) || is.na(c2[j+1])) " " 
+				else if (c1[i+1] == c2[j+1]) "|" else "."
+			c(char1,matchChar,char2)
+		}))
+
+		cat("\nLevenstein distance:",getDistance(),"\n")
+
+		for (wrap in 0:(ncol(chars)/70)) {
+			startcol <- wrap*70 + 1
+			endcol <- if (startcol+69 > ncol(chars)) ncol(chars) else startcol+69
+			cat("\n",paste(apply(chars[,startcol:endcol],1,paste,collapse=""),collapse="\n"),"\n",sep="")
+
+		}
+
+	}
+
 	structure(list(
 		getMatrix=getMatrix,
 		getDistance=getDistance,
 		getMutations=getMutations,
-		getMappings=getMappings
+		getMappings=getMappings,
+		printAlignment=printAlignment
 	),class="yogialign")
 
 }
@@ -583,18 +639,18 @@ pcr.sim <- function(sequence, translator, cycles=10, init.amount=100, etr=1, mut
 
 
 # processFile <- function(file,f) {
-# 	tryCatch({
-# 		con <- file(file, open="r")
-# 		f(con)
-# 	},
-# 	error = function(ex) {
-# 		traceback(ex)
-# 	},
-# 	finally = {
-# 		if (exists("con") && isOpen(con)) {
-# 			close(con)
-# 		}
-# 	})
+	# tryCatch({
+	# 	con <- file(file, open="r")
+	# 	f(con)
+	# },
+	# error = function(ex) {
+	# 	traceback(ex)
+	# },
+	# finally = {
+	# 	if (exists("con") && isOpen(con)) {
+	# 		close(con)
+	# 	}
+	# })
 # }
 
 # test1 <- NULL
