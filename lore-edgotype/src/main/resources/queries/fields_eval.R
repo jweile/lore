@@ -467,8 +467,13 @@ y2hsim <- function(variantTags, enrichments, noise=.05, cycles=4, seq.reads=1000
 # drawOverlapMap(goldStandard,scores >= -1, nchar(ref.aa))
 
 
-drawROC <- function(real, scores,draw=TRUE) {
+#computes the receiver-operator-characteristic and area-under-curve
+#draws the curve (unless disabled by draw=FALSE) and returns the AUC
+#takes two parameters: a list of real TRUE/FALSE calls and a list of scores that 
+#can be thresholded to compare with the real values.
+drawROC <- function(real, scores,draw=TRUE,add=FALSE,col="red") {
 
+	#function to compute AUC from ROC coordinates
 	auc <- function(x,y) {
 		( 
 			x[1]*y[1] + 
@@ -479,13 +484,17 @@ drawROC <- function(real, scores,draw=TRUE) {
 		) / 2
 	}
 
+	#determine the range of scores
 	srange <- range(na.omit(scores),finite=TRUE)
 	xp <- (srange[2]-srange[1])/30
 	coords <- do.call(rbind,lapply(seq(srange[1]-xp,srange[2]+xp,length.out=30), function(threshold) {
 
+		#all scores greater than the threshold are positive
 		positive <- scores >= threshold
 		
+		#false positives are all all positives that are not real
 		fp <- positive & !real
+		#false negatives are all the negatives that are real
 		fn <- !positive & real
 
 		fpr <- sum(na.omit(fp)) / sum(na.omit(!real))
@@ -493,27 +502,34 @@ drawROC <- function(real, scores,draw=TRUE) {
 
 		c(fpr,tpr)
 	}))
-
+	#reverse the list of coordinates, to get ascending x-values
 	coords <- coords[(nrow(coords):1),]
 
 	# print(coords)
 
+	#discard invalid values
 	coords[coords[,1] < 0,1] <- 0
 	coords[coords[,1] > 1,1] <- 1
 	coords[coords[,2] < 0,2] <- 0
 	coords[coords[,2] > 1,2] <- 1
 
+	#compute area-under-curve
 	.auc <- auc(coords[,1],coords[,2])
+
+	drawFUN <- if (add) points else plot
+
+	#draw plot
 	if (draw) {
-		plot(coords,
+		drawFUN(coords,
 			type='l',
-			lwd=2,col=2,
+			lwd=2,col=col,
 			xlab="1-specificity",ylab="sensitivity",
 			xlim=c(0,1),ylim=c(0,1)
 		)
-		text(.5,.5,paste("AUC =",format(.auc,digits=2)))
+		# text(.5,.5,paste("AUC =",format(.auc,digits=2)))
 	}
 
+	#return auc
 	.auc
 }
 # drawROC(goldStandard,scores)
@@ -585,7 +601,9 @@ singleVjoint <- function(ref.aa, toPick, nmuts) {
 
 	#Identify all mutations
 	allmuts <- unique(unlist(strsplit(variantTags,",")))
+	#compute coverage for joint model
 	joint.coverage <- length(allmuts) / (nchar(ref.aa) * 19)
+	#for each mutation: list the variants that contain them
 	varTagsForMuts <- lapply(allmuts, function(mutation) {
 		matches <- sapply(variants, function(variant) {
 			(length(variant)) > 1 && (mutation %in% variant)
@@ -594,16 +612,53 @@ singleVjoint <- function(ref.aa, toPick, nmuts) {
 	})
 	names(varTagsForMuts) <- allmuts
 
+	#compute scores according to joint model
 	jointScores <- sapply(varTagsForMuts, function(vars) {
 		readsMinusPlus <- apply(y2hresult[unlist(vars),c("reads","reads.his")],2,sum,na.rm=TRUE)
 		as.numeric(log(readsMinusPlus[1]/readsMinusPlus[2]))
 	})
 	jointScores <- supplementPriors(jointScores, names(goldStandard))
-
 	names(jointScores) <- allmuts
 
-
 	joint.auc <- drawROC(goldStandard,jointScores,draw=FALSE)
+
+	#exclude most sensitive positions
+	filteredScoring <- function(scoreCutoff) {
+		minor.muts <- allmuts[abs(jointScores) < scoreCutoff]
+		jointScores2 <- sapply(varTagsForMuts, function(vars) {
+			vars <- unlist(vars)
+			eligible.vars <- vars[sapply(strsplit(vars,","), function(muts) all(muts %in% minor.muts))]
+			if (length(eligible.vars) == 0) {
+				eligible.vars <- vars
+			}
+			reads <- apply(y2hresult[eligible.vars,c("reads","reads.his")],2,sum,na.rm=TRUE)
+			as.numeric(log(reads[1]/reads[2]))
+		})
+		jointScores2 <- supplementPriors(jointScores2, names(goldStandard))
+		names(jointScores2) <- allmuts
+		jointScores2
+	}
+
+	joint.auc <- drawROC(goldStandard, jointScores,col=1)
+	leg <- paste("No cutoff (AUC=",format(joint.auc,digits=3),")",sep="")
+	for (scoreCutoff in c(5,9)) {
+		jointScores2 <- filteredScoring(scoreCutoff)
+		joint2.auc <- drawROC(goldStandard,jointScores2, add=TRUE, col=scoreCutoff+1)
+		leg <- c(leg,paste("Cutoff ",scoreCutoff," (AUC=",format(joint2.auc,digits=3),")",sep=""))
+	}
+	legend("bottomright",leg,lty=1,col=c(1,6,10))
+	
+
+	joint2.auc <- drawROC(goldStandard,jointScores2)
+	drawROC(goldStandard,jointScores, add=TRUE, col="green")
+	legend("bottomright",c(
+			paste("joint (AUC=",format(joint.auc,digits=3),")",sep=""),
+			paste("joint2 (AUC=",format(joint2.auc,digits=3),")",sep="")
+		),
+		lty=1,
+		col=c(3,2)
+	)
+	# joint2.auc <- drawROC(goldStandard,jointScores2,draw=FALSE)
 
 	c(
 		e.mut = nmuts,
@@ -644,6 +699,7 @@ joint.auc.mean <- apply(joint.aucs,1,mean)
 joint.auc.stdev <- sqrt(apply(joint.aucs,1,var))
 
 
+#draw barcharts of ROC AUC values
 op <- par(mfrow=c(2,3),oma=c(0,0,0,10))
 for (picked in toPick) {
 	rows <- results[[1]][,"picked.toPick"]==picked

@@ -80,6 +80,9 @@ public class TabParser extends TabDelimParser {
      * Run
      */
     public void run() {
+        
+        Logger.getLogger(TabParser.class.getName()).log(Level.INFO, "Starting TabParser...");
+        
         iaModel = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
         interactorNS = Authority.createOrGet(iaModel, getParameterValue(interactorAuthP));
         exp = Experiment.createOrGet(iaModel, getParameterValue(experimentP));
@@ -126,7 +129,7 @@ public class TabParser extends TabDelimParser {
 
     @Override
     public boolean requiresReasoner() {
-        return true;
+        return false;
     }
 
     

@@ -56,6 +56,10 @@ public class InteractionsTest extends TestCase {
         assertTrue(interactors.contains(g1));
         assertTrue(interactors.contains(g2));
         
+        List<GeneticInteraction> interactions = Interaction.listInteractions(g1, GeneticInteraction.class);
+        assertEquals(1,interactions.size());
+        assertTrue(interactions.contains(interaction));
+        
     }
     
 }

@@ -19,6 +19,7 @@ package ca.on.mshri.lore.interaction;
 import ca.on.mshri.lore.base.Experiment;
 import ca.on.mshri.lore.base.LoreModel;
 import ca.on.mshri.lore.base.RecordObject;
+import ca.on.mshri.lore.operations.Sparql;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.ConversionException;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -93,6 +96,31 @@ public class Interaction extends IndividualImpl {
         return out;
     }
        
+    
+    public static <I extends Interaction> List<I> listInteractions(RecordObject obj, Class<I> interactionType) {
+        
+        Sparql sparql = Sparql.getInstance(Interaction.class.getProtectionDomain().getCodeSource());
+        
+        String iaType;
+        try {
+            iaType = (String)interactionType.getField("CLASS_URI").get(null);
+        } catch (Exception ex) {
+            throw new RuntimeException("Class without CLASS_URI field!",ex);
+        } 
+        
+        List<I> list = new ArrayList<I>();
+        for (Individual ind : sparql.queryIndividuals(obj.getModel(), "listInteractions", "interaction", obj.getURI(), iaType)) {
+            I interaction;
+            try {
+                interaction = (I)interactionType.getMethod("fromIndividual", Individual.class).invoke(null, ind);
+            } catch (Exception ex) {
+                throw new RuntimeException("Class without \"fromIndividual()\" method!",ex);
+            } 
+            list.add(interaction);
+        }
+        
+        return list;
+    }
     
     
     /**
