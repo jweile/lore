@@ -54,12 +54,13 @@ public class HgmdImporter extends LoreOperation {
         PhenotypeModel model = new PhenotypeModel(OntModelSpec.OWL_DL_MEM, getModel());
         Authority hgmdPhenoAuth = Authority.createOrGet(model, "HGMD-Disease");
         Property association = model.getProperty(PhenotypeModel.URI+"#isAssociatedWith");
+        Property causes = model.getProperty(PhenotypeModel.URI+"#isCausallyAssociatedWith");
                         
         URL inURL = getParameterValue(srcP);
         InputStream in = null;
         
 //        int type = 0;
-//        int variant_class = 1;
+        int variant_class = 1;
         int acc = 2;
 //        int dbsnp = 3;
 //        int genomic_coordinates_hg18 = 4;
@@ -138,8 +139,11 @@ public class HgmdImporter extends LoreOperation {
                     phenoIndex.put(cols[disease],phenoEntity);
                 }
                 
-                alleleEntity.addProperty(association, phenoEntity);
-                geneEntity.addProperty(association, phenoEntity);
+                //choose causal or loose association based on variant class
+                Property prop = cols[variant_class].equals("DM") ? causes : association;
+                
+                alleleEntity.addProperty(prop, phenoEntity);
+                geneEntity.addProperty(prop, phenoEntity);
                 
                 //make and link mutation
                 PointMutation mutEntity = null;

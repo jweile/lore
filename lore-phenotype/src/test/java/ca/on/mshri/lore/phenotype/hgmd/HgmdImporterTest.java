@@ -27,6 +27,8 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import java.io.File;
 import junit.framework.TestCase;
 
@@ -52,8 +54,9 @@ public class HgmdImporterTest extends TestCase {
     
     public void test() throws Exception {
         
-        PhenotypeModel model = new PhenotypeModel(OntModelSpec.OWL_MEM, ModelFactory.createDefaultModel());
+        PhenotypeModel model = new PhenotypeModel(OntModelSpec.OWL_DL_MEM, ModelFactory.createDefaultModel());
         Property association = model.getProperty(PhenotypeModel.URI+"#isAssociatedWith");
+        Property causes = model.getProperty(PhenotypeModel.URI+"#isCausallyAssociatedWith");
         
         HgmdImporter importer = new HgmdImporter();
         
@@ -75,11 +78,31 @@ public class HgmdImporterTest extends TestCase {
                     System.out.println(" ("+pmut.getFromAminoAcid()+pmut.getPosition()+pmut.getToAminoAcid()+")");
                 }
                 
+//                StmtIterator pit = allele.listProperties(association);
+//                while (pit.hasNext()) {
+//                    Statement statement = pit.next();
+//                    
+//                    Phenotype disease = Phenotype.fromIndividual(statement.getObject().as(Individual.class));
+//                    
+//                    if (statement.getPredicate().equals(causes)) {
+//                        System.out.println("   causes: "+disease.getLabel(null));
+//                    } else if (statement.getPredicate().equals(association)) {
+//                        System.out.println("   associated with: "+disease.getLabel(null));
+//                    } else {
+//                        throw new Exception("Wrong property type!");
+//                    }
+//                }
                 
                 NodeIterator it = allele.listPropertyValues(association);
                 while (it.hasNext()) {
                     Phenotype disease = Phenotype.fromIndividual(it.next().as(Individual.class));
                     System.out.println("   --> "+disease.getLabel(null));
+                }
+                
+                it = allele.listPropertyValues(causes);
+                while (it.hasNext()) {
+                    Phenotype disease = Phenotype.fromIndividual(it.next().as(Individual.class));
+                    System.out.println("   --> (c) "+disease.getLabel(null));
                 }
             }
         }

@@ -7,15 +7,15 @@
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
     <!ENTITY lore-base "http://llama.mshri.on.ca/lore-base.owl#" >
     <!ENTITY lore-genome "http://llama.mshri.on.ca/lore-genome.owl#" >
-    <!ENTITY lore-phenotype "http://llama.mshri.on.ca/lore-phenotype.owl#" >
     <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY lore-phenotype "http://llama.mshri.on.ca/lore-phenotype.owl#" >
 ]>
 
 
 <rdf:RDF xmlns="http://llama.mshri.on.ca/lore-phenotype.owl#"
      xml:base="http://llama.mshri.on.ca/lore-phenotype.owl"
-     xmlns:lore-phenotype="http://llama.mshri.on.ca/lore-phenotype.owl#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:lore-phenotype="http://llama.mshri.on.ca/lore-phenotype.owl#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -24,6 +24,17 @@
     <owl:Ontology rdf:about="http://llama.mshri.on.ca/lore-phenotype.owl">
         <rdfs:comment>lore representation of phenotype data</rdfs:comment>
     </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
     
 
 
@@ -44,6 +55,12 @@
     
 
 
+    <!-- http://llama.mshri.on.ca/lore-phenotype.owl#isCausallyAssociatedWith -->
+
+    <owl:ObjectProperty rdf:about="&lore-phenotype;isCausallyAssociatedWith">
+        <rdfs:subPropertyOf rdf:resource="&lore-phenotype;isAssociatedWith"/>
+    </owl:ObjectProperty>
+    
 
 
     <!-- 
@@ -57,15 +74,17 @@
     
 
 
+    <!-- http://llama.mshri.on.ca/lore-base.owl#RecordObject -->
+
+    <owl:Class rdf:about="&lore-base;RecordObject"/>
+    
+
+
     <!-- http://llama.mshri.on.ca/lore-phenotype.owl#Phenotype -->
 
     <owl:Class rdf:about="&lore-phenotype;Phenotype">
         <rdfs:subClassOf rdf:resource="&lore-base;RecordObject"/>
     </owl:Class>
-    
-
-
-
 </rdf:RDF>
 
 
