@@ -127,7 +127,7 @@ public class InteractionParserV2 extends TabDelimParser {
     }
 
     /**
-     * Processes a row from the tab delimted file.
+     * Processes a row from the tab delimited file.
      * @param cols 
      */
     @Override
@@ -138,6 +138,13 @@ public class InteractionParserV2 extends TabDelimParser {
                 || isDuplicate(cols, adEntrezId, adOrfId)) {
             Logger.getLogger(InteractionParserV2.class.getName())
                     .log(Level.WARNING, "Skipping allelic ORF");
+            return;
+        }
+        
+        //if longterm growth failed skip this row too, as it's a technical failure
+        if (Integer.parseInt(cols[ltGrowth]) == 0) {
+            Logger.getLogger(InteractionParserV2.class.getName())
+                    .log(Level.WARNING, "Skipping LT growth failure");
             return;
         }
         
