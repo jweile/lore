@@ -67,14 +67,26 @@ public class TabParser extends TabDelimParser {
     public final RefListParameter<OntClass> interactorTypeP = new RefListParameter("interactorType", OntClass.class);
     
     /**
+     * The index of the bait column (default=0)
+     */
+    public final Parameter<Integer> col0P = Parameter.make("col0", Integer.class, 0);
+    
+    /**
+     * The index of the prey column (default=1)
+     */
+    public final Parameter<Integer> col1P = Parameter.make("col1", Integer.class, 1);
+    
+    /**
      * Whether or not the file contains a header line that needs to be ignored.
      */
     public final Parameter<Boolean> headerP = Parameter.make("header", Boolean.class, false);
+    
     private InteractionModel iaModel;
     private Authority interactorNS;
     private Experiment exp;
     private OntClass interactionType;
     private OntClass interactorType;
+    private int col0, col1;
     
     /**
      * Run
@@ -88,6 +100,8 @@ public class TabParser extends TabDelimParser {
         exp = Experiment.createOrGet(iaModel, getParameterValue(experimentP));
         interactionType = ((List<OntClass>)getParameterValue(interactionTypeP).resolve(iaModel)).get(0);
         interactorType = ((List<OntClass>)getParameterValue(interactorTypeP).resolve(iaModel)).get(0);
+        col0 = getParameterValue(col0P);
+        col1 = getParameterValue(col1P);
         
         boolean header = getParameterValue(headerP);
         
@@ -108,8 +122,8 @@ public class TabParser extends TabDelimParser {
     @Override
     protected void processRow(String[] cols) {
         
-        RecordObject i1 = getOrCreateInteractor(cols[0]);
-        RecordObject i2 = getOrCreateInteractor(cols[1]);
+        RecordObject i1 = getOrCreateInteractor(cols[col0]);
+        RecordObject i2 = getOrCreateInteractor(cols[col1]);
 
         Interaction.createOrGet(iaModel, exp, interactionType, i1, i2);
         
