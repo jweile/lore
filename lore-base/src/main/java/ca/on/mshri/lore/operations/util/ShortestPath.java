@@ -35,6 +35,15 @@ import java.util.Set;
  */
 public class ShortestPath {
     
+    /**
+     * Find the shortest path between the from node to the target node. Edges are
+     * defined by the given path pattern
+     * @param from originating node
+     * @param to target node
+     * @param pathPattern e.g. "^ia:hasParticipant/ia:hasParticipant" for interaction partners
+     * @return the last node in the path. Can be used to trace back the path and to 
+     * find out the length of the path.
+     */
     public PathNode find(Individual from, Individual to, String pathPattern) {
         Collection<Individual> targets = new ArrayList<Individual>();
         targets.add(to);
@@ -42,41 +51,58 @@ public class ShortestPath {
     }
     
     /**
-     * 
+     * Find the shortest path between the from node to any of the target nodes. Edges are
+     * defined by the given path pattern
      * @param from originating node
-     * @param to target node
+     * @param targets target nodes
      * @param pathPattern e.g. "^ia:hasParticipant/ia:hasParticipant" for interaction partners
-     * @return 
+     * @return the last node in the path. Can be used to trace back the path and to 
+     * find out the length of the path.
      */
     public PathNode find(Individual from, Collection<? extends Individual> targets, String pathPattern) {
         
+        //discovered nodes yet to examine
         PrioritySet open = new PrioritySet();
+        //already examined nodes
         Set<PathNode> closed = new HashSet<PathNode>();
         
+        //get a shortcut to the model
         LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, from.getModel());
         
+        //discover the first node
         open.offer(new PathNode(null,from));
         
+        //as long as there are still nodes to examine, we keep going
         while (!open.isEmpty()) {
             
+            //retrive the next node with the shortest distance
             PathNode curr = open.poll();
             
+            //iterate over neighbours of that node
             for (Individual neighbour : findNeighbours(model, curr.getValue(), pathPattern) ) {
+                //wrap neighbour into pathnode object
                 PathNode next = new PathNode(curr,neighbour);
+                //check if neighbour is target node, if so, we're done
                 if (targets.contains(neighbour)) {
                     return next;
+                //otherwise, if the node is not already known, add it to the list to explore
                 } else if (!closed.contains(next)) {
                     open.offer(next);
                 }
             }
             
+            //mark current node as closed
             closed.add(curr);
         }
         
+        //if the target node was not previously found, there is no path
         return null;
         
     }
     
+    /**
+     * Convenience method for retrieving neighbouring nodes according to the edge pattern.
+     */
     private Set<Individual> findNeighbours(LoreModel model, Individual in, String pattern) {
         
         Set<Individual> set = new HashSet<Individual>();
