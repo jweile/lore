@@ -48,11 +48,14 @@ public class EdgotypeCorrespondence extends LoreOperation {
 
         init();
         
+        //iterate over all genes
         List<Gene> genes = phenoModel.listIndividualsOfClass(Gene.class, false);
         geneloop: for (Gene gene : genes) {
             
+            //a map for indexing sets of alleles according to edgotype signatures
             LazyInitMap<String,Set<Allele>> edgotypeIndex = new LazyInitMap<String, Set<Allele>>(HashSet.class);
             
+            //get all alleles of the gene
             List<Allele> alleles = gene.listAlleles();
             //eliminate genes without alleles
             if (alleles.isEmpty()) {
@@ -87,7 +90,7 @@ public class EdgotypeCorrespondence extends LoreOperation {
                 }
             }
             
-            //alleles with differet edgotype should have different diseases
+            //alleles with different edgotype should have different diseases
             Set<Allele> repAlleles = new HashSet<Allele>();
             for (String edgotype : edgotypeIndex.keySet()) {
                 Allele repAllele = edgotypeIndex.get(edgotype).iterator().next();

@@ -65,6 +65,11 @@ public class DiseasePathLength extends LoreOperation {
     @Override
     public void run() {
         
+        Logger logger = Logger.getLogger(DiseasePathLength.class.getName());
+        logger.setLevel(Level.ALL);
+        
+        logger.log(Level.INFO, "Starting Disease Path Length Analysis...");
+        
         String disruptedOutFile = getParameterValue(disruptedOutFileP);
         String maintainedOutFile = getParameterValue(maintainedOutFileP);
         
@@ -89,11 +94,14 @@ public class DiseasePathLength extends LoreOperation {
         affectsPositively = getModel()
                 .getProperty(InteractionModel.URI+"#affectsPositively");
         
+        //prepare some arrays to store the results
         IntArrayList disruptedList = new IntArrayList(),
                 maintainedList = new IntArrayList();
         
         //create shortcut to interaction model interface
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
+        
+        logger.log(Level.FINE, "Retrieving list of all alleles...");
         
         //get all alleles in the model
         List<Allele> alleles = model.listIndividualsOfClass(Allele.class, true);
@@ -104,13 +112,22 @@ public class DiseasePathLength extends LoreOperation {
         for (Allele allele : alleles) {
             
             //get the protein that is encoded by the gene for which this allele exists
-            Protein protein = Protein.listEncodedProteins(allele.getGene()).get(0);
+            List<Protein> proteins = Protein.listEncodedProteins(allele.getGene());
+            if (proteins.isEmpty()) {
+                
+                logger.log(Level.FINE, "Skipping gene without known protein.");
+                pb.next();
+                continue;
+            }
+            Protein protein = proteins.get(0);
             
             //get all the phenotypes of the allele
             List<Phenotype> allelePhenotypes = phenotypeOf(allele);
             
             //prepare a set that will contain all proteins with the same phenotype annotation
             Set<Protein> protsOfSamePheno = new HashSet<Protein>();
+            
+            logger.log(Level.FINEST, "Computing set of proteins with same phenotype...");
             
             //for each phenotype...
             for (Phenotype pheno : allelePhenotypes) {
@@ -130,9 +147,15 @@ public class DiseasePathLength extends LoreOperation {
             }
             /* we will want to make sure that the set of proteins with the same phenotype
              * does not contain our original protein, otherwise all the paths we find
-             * will be of length
+             * will be of length 1
              */
             protsOfSamePheno.remove(protein);
+            
+            if (protsOfSamePheno.isEmpty()) {
+                pb.next();
+                logger.log(Level.FINEST, "Skipping singleton phenotype.");
+                continue;
+            }
             
             
             //for all the interactions of the protein...
@@ -166,18 +189,26 @@ public class DiseasePathLength extends LoreOperation {
                     
                     Protein interactor = Protein.fromIndividual(interactors.get(0));
                     
-                    //calculate shortest path from interactor to 
+                    logger.log(Level.FINEST, "Calculating shortest path...");
+            
+                    //calculate shortest path from interactor to targets
+                    //TODO: Disallow allelic protein in paths
                     PathNode path = shortestPath.find(interactor, protsOfSamePheno, iaPattern);
                     if (path != null) {
                         //add path to result set
                         currentList.add(path.getDistance());
+                        
+                        logger.log(Level.FINEST, String.format("Path length %s",path.getDistance()));
+                        
+                    } else {
+                        //if no path is found add -1 to the list to symbolize Infinity.
+                        currentList.add(-1);
                     }
                     
                 } else {
-//                    Logger.getLogger(DiseasePathLength.class.getName())
-//                            .log(Level.INFO, interactors.isEmpty() ? 
-//                            "Ignoring self-interaction": 
-//                            "Ignoring multi-interaction");
+                    logger.log(Level.FINER, interactors.isEmpty() ? 
+                            "Ignoring self-interaction": 
+                            "Ignoring multi-interaction");
                 }
             }
             
@@ -192,8 +223,7 @@ public class DiseasePathLength extends LoreOperation {
             w = new BufferedWriter(new FileWriter(disruptedOutFile));
             
             for (int d : disruptedList) {
-                w.write(d);
-                w.write('\n');
+                w.write(d+"\n");
             }
             
             w.close();
@@ -201,8 +231,7 @@ public class DiseasePathLength extends LoreOperation {
             w = new BufferedWriter(new FileWriter(maintainedOutFile));
             
             for (int d : maintainedList) {
-                w.write(d);
-                w.write('\n');
+                w.write(d+"\n");
             }
             
         } catch (IOException e) {
@@ -212,8 +241,7 @@ public class DiseasePathLength extends LoreOperation {
                 try {
                     w.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(DiseasePathLength.class.getName())
-                            .log(Level.WARNING, "Unable to close stream!", ex);
+                    logger.log(Level.WARNING, "Unable to close stream!", ex);
                 }
             }
         }
