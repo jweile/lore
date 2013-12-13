@@ -35,7 +35,12 @@ public class EdgotypeCorrespondenceV3 extends LoreOperation {
     private Property affectsPositively, affectsNegatively, isCausallyAssociatedWith, encBy;
     private PhenotypeModel phenoModel;
     
+    private PhenotypeModel model;
+    
     void init() {
+        
+        model = new PhenotypeModel(OntModelSpec.OWL_MEM, getModel());
+        
         phenoModel = new PhenotypeModel(OntModelSpec.OWL_MEM, getModel());
         affectsNegatively = phenoModel.getProperty(InteractionModel.URI+"#affectsNegatively");
         affectsPositively = phenoModel.getProperty(InteractionModel.URI+"#affectsPositively");
@@ -109,6 +114,8 @@ public class EdgotypeCorrespondenceV3 extends LoreOperation {
                 continue;
             }
             
+            System.out.println("\n\nGene: "+gene.getXRefValue(model.ENTREZ)+" ("+gene.getXRefValue(model.HGNC)+")");
+            printDiseases(diseases);
             
             List<Allele> as = new ArrayList<Allele>(alleles);
             for (int i = 1; i < as.size(); i++) {
@@ -122,15 +129,31 @@ public class EdgotypeCorrespondenceV3 extends LoreOperation {
                     if (edgotypes.get(a_j) == null) {
                         continue;
                     }
+                    
                     double diseaseSimilarity = jaccard(diseases(a_i), diseases(a_j));
-//                    double edgotypeSimilarity = 0;
-//                    try {
-//                        edgotypeSimilarity = setSim(edgotypes.get(a_i), edgotypes.get(a_j));
-//                    } catch (Exception e) {
-//                        Logger.getLogger(EdgotypeCorrespondenceV3.class.getName())
-//                                .log(Level.WARNING, "Incomparable edgotypes! "+a_i.toString()+" "+a_j.toString());
-//                        continue geneloop;
-//                    }
+                    
+                    double edgotypeSimilarity = 0;
+                    try {
+                        edgotypeSimilarity = setSim(edgotypes.get(a_i), edgotypes.get(a_j));
+                    } catch (Exception e) {
+                        Logger.getLogger(EdgotypeCorrespondenceV3.class.getName())
+                                .log(Level.WARNING, "Incomparable edgotypes! "+a_i.toString()+" "+a_j.toString());
+                        continue geneloop;
+                    }
+                    
+                    System.out.println("Same disease: "+(diseaseSimilarity > 0));
+                    System.out.println("Same edgotype: "+edgotypeClasses.get(a_i).equals(edgotypeClasses.get(a_j)));
+                    System.out.println("Edgotype profile jaccard: "+edgotypeSimilarity);
+                    
+                    System.out.println(" -> Allele1: "+a_i.getXRefValue(model.HGMD));
+                    printDiseases(diseases(a_i));
+                    System.out.println("  # "+edgotypeClasses.get(a_i)+" "+edgotypes.get(a_i));
+                    
+                    System.out.println(" -> Allele2: "+a_j.getXRefValue(model.HGMD));
+                    printDiseases(diseases(a_j));
+                    System.out.println("  # "+edgotypeClasses.get(a_j)+" "+edgotypes.get(a_j));
+                    System.out.println();
+                    
                     
                     if (diseaseSimilarity > 0) {
                         if (edgotypeClasses.get(a_i).equals(edgotypeClasses.get(a_j))) {
@@ -394,6 +417,12 @@ public class EdgotypeCorrespondenceV3 extends LoreOperation {
             }
         }
         return (double)matches / a.size();
+    }
+
+    private void printDiseases(Set<Phenotype> diseases) {
+        for (Phenotype d : diseases) {
+            System.out.println("  * "+d.getLabel(null));
+        }
     }
 
     
