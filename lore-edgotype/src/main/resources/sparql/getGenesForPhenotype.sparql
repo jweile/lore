@@ -10,6 +10,10 @@ PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
 
 SELECT ?gene
 WHERE {
-    ?gene pheno:isAssociatedWith <%s>.
+
+    {?gene pheno:isAssociatedWith <%s>.}
+    UNION
+    {?gene pheno:isCausallyAssociatedWith <%s>.}
+
     ?gene rdf:type genome:Gene.
 } 

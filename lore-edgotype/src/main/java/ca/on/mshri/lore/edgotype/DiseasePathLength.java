@@ -59,8 +59,10 @@ public class DiseasePathLength extends LoreOperation {
             Parameter.make("disruptedOutFile", String.class, "dist_disrupted.txt");
     public final Parameter<String> maintainedOutFileP = 
             Parameter.make("maintainedOutFile", String.class, "dist_maintained.txt");
+    public final Parameter<String> tableOutFileP = 
+            Parameter.make("maintainedOutFile", String.class, "dist_table.txt");
 
-    private Property isAssociatedWith, affectsNegatively, affectsPositively;
+    private Property isAssociatedWith, causes, affectsNegatively, affectsPositively;
     
     @Override
     public void run() {
@@ -72,6 +74,7 @@ public class DiseasePathLength extends LoreOperation {
         
         String disruptedOutFile = getParameterValue(disruptedOutFileP);
         String maintainedOutFile = getParameterValue(maintainedOutFileP);
+        String tableOutFile = getParameterValue(tableOutFileP);
         
         //initialize sparql engine for pre-defined queries in this module.
         Sparql sparql = Sparql.getInstance(DiseasePathLength.class
@@ -89,6 +92,8 @@ public class DiseasePathLength extends LoreOperation {
         //define some needed properties
         isAssociatedWith = getModel()
                 .getProperty(PhenotypeModel.URI+"#isAssociatedWith");
+        causes = getModel()
+                .getProperty(PhenotypeModel.URI+"#isCausallyAssociatedWith");
         affectsNegatively = getModel()
                 .getProperty(InteractionModel.URI+"#affectsNegatively");
         affectsPositively = getModel()
@@ -97,6 +102,9 @@ public class DiseasePathLength extends LoreOperation {
         //prepare some arrays to store the results
         IntArrayList disruptedList = new IntArrayList(),
                 maintainedList = new IntArrayList();
+        
+        //textual output buffer
+        StringBuilder textB = new StringBuilder();
         
         //create shortcut to interaction model interface
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
@@ -119,6 +127,9 @@ public class DiseasePathLength extends LoreOperation {
                 pb.next();
                 continue;
             }
+            if (proteins.size() > 1) {
+                logger.log(Level.WARNING,"Gene encodes multiple proteins!");
+            }
             Protein protein = proteins.get(0);
             
             //get all the phenotypes of the allele
@@ -134,7 +145,7 @@ public class DiseasePathLength extends LoreOperation {
                 //get all the genes that are associated with the same phenotype
                 List<Individual> geneInds = sparql
                         .queryIndividuals(model, 
-                        "getGenesForPhenotype", "gene", pheno.getURI()
+                        "getGenesForPhenotype", "gene", pheno.getURI(), pheno.getURI()
                 );
                 
                 //for each of these genes...
@@ -176,7 +187,7 @@ public class DiseasePathLength extends LoreOperation {
                 } else {
                     //if disruption has not been tested for, discard this interaction
                     //(because counting them as maintained would be unfair)
-                    pb.next();
+//                    pb.next();
                     continue;
                 }
                 
@@ -189,6 +200,15 @@ public class DiseasePathLength extends LoreOperation {
                     
                     Protein interactor = Protein.fromIndividual(interactors.get(0));
                     
+                    textB.append(protein.getXRefValue(model.ENTREZ)).append('\t');
+                    textB.append(interactor.getXRefValue(model.ENTREZ)).append('\t');
+                    if (allele.hasProperty(affectsNegatively, interaction)) {
+                        textB.append("-\t");
+                    } else {
+                        textB.append("+\t");
+                    }
+                    
+                    
                     logger.log(Level.FINEST, "Calculating shortest path...");
             
                     //calculate shortest path from interactor to targets
@@ -198,12 +218,18 @@ public class DiseasePathLength extends LoreOperation {
                         //add path to result set
                         currentList.add(path.getDistance());
                         
-                        logger.log(Level.FINEST, String.format("Path length %s",path.getDistance()));
+                        Protein target = Protein.fromIndividual(path.getValue());
+                        textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
+                        textB.append(path.getDistance()).append('\n');
+//                        logger.log(Level.FINEST, String.format("Path length %s",path.getDistance()));
                         
                     } else {
                         //if no path is found add -1 to the list to symbolize Infinity.
                         currentList.add(-1);
+                        
+                        textB.append("\tInf\n");
                     }
+                    
                     
                 } else {
                     logger.log(Level.FINER, interactors.isEmpty() ? 
@@ -221,7 +247,6 @@ public class DiseasePathLength extends LoreOperation {
         try {
             
             w = new BufferedWriter(new FileWriter(disruptedOutFile));
-            
             for (int d : disruptedList) {
                 w.write(d+"\n");
             }
@@ -229,10 +254,14 @@ public class DiseasePathLength extends LoreOperation {
             w.close();
             
             w = new BufferedWriter(new FileWriter(maintainedOutFile));
-            
             for (int d : maintainedList) {
                 w.write(d+"\n");
             }
+            
+            w.close();
+            
+            w = new BufferedWriter(new FileWriter(tableOutFile));
+            w.write(textB.toString());
             
         } catch (IOException e) {
             throw new RuntimeException("Unable to write to file",e);
@@ -261,6 +290,11 @@ public class DiseasePathLength extends LoreOperation {
         while (it.hasNext()) {
             list.add(Phenotype.fromIndividual(it.next().as(Individual.class)));
         }
+        it = individual.listPropertyValues(causes);
+        while (it.hasNext()) {
+            list.add(Phenotype.fromIndividual(it.next().as(Individual.class)));
+        }
+        
         
         return list;
     }
