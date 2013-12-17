@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,7 +110,12 @@ public class DiseasePathLength extends LoreOperation {
         //create shortcut to interaction model interface
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
         
-        logger.log(Level.FINE, "Retrieving list of all alleles...");
+        /* Later on we want to compare the results with permuted disease annotations
+         * So I'm introducing a list where i can cache the protein sets.
+         */
+        List<Set<Protein>> allTargets = new ArrayList<Set<Protein>>();
+        List<Protein> allDisruptedOrigins = new ArrayList<Protein>();
+        List<Protein> allMaintainedOrigins = new ArrayList<Protein>();
         
         //get all alleles in the model
         List<Allele> alleles = model.listIndividualsOfClass(Allele.class, true);
@@ -168,6 +174,8 @@ public class DiseasePathLength extends LoreOperation {
                 continue;
             }
             
+            //only if we processed at least one edge, we're going to store the targets for later.
+            boolean used = false;
             
             //for all the interactions of the protein...
             for (PhysicalInteraction interaction : Interaction
@@ -221,13 +229,20 @@ public class DiseasePathLength extends LoreOperation {
                         Protein target = Protein.fromIndividual(path.getValue());
                         textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
                         textB.append(path.getDistance()).append('\n');
-//                        logger.log(Level.FINEST, String.format("Path length %s",path.getDistance()));
                         
                     } else {
                         //if no path is found add -1 to the list to symbolize Infinity.
                         currentList.add(-1);
                         
                         textB.append("\tInf\n");
+                    }
+                    
+                    //mark for storage
+                    used = true;
+                    if (currentList.equals(disruptedList)) {
+                        allDisruptedOrigins.add(interactor);
+                    } else {
+                        allMaintainedOrigins.add(interactor);
                     }
                     
                     
@@ -238,11 +253,59 @@ public class DiseasePathLength extends LoreOperation {
                 }
             }
             
+            //check if the target was used. If so store it for later.
+            allTargets.add(protsOfSamePheno);
+            
             //update progress bar
             pb.next();
         }
         
+        
+        //###COMPUTE PATHS TO RANDOM DISEASES###
+        logger.log(Level.INFO, "Computing permuted controls...");
+        pb = new CliProgressBar(allDisruptedOrigins.size()+allMaintainedOrigins.size());
+        
+        Random random = new Random();
+        IntArrayList disruptedRandomList = new IntArrayList();
+        for (Protein interactor : allDisruptedOrigins) {
+            
+            for (int i=0; i<5; i++) {
+                Set<Protein> randomTarget = allTargets.get(random.nextInt(allTargets.size()));
+
+                PathNode path = shortestPath.find(interactor, randomTarget, iaPattern);
+                if (path != null) {
+                    //add path to result set
+                    disruptedRandomList.add(path.getDistance());
+                } else {
+                    //if no path is found add -1 to the list to symbolize Infinity.
+                    disruptedRandomList.add(-1);
+
+                }
+            }
+            pb.next();
+        }
+        IntArrayList maintainedRandomList = new IntArrayList();
+        for (Protein interactor: allMaintainedOrigins) {
+            
+            for (int i=0; i<5; i++) {
+                Set<Protein> randomTarget = allTargets.get(random.nextInt(allTargets.size()));
+
+                PathNode path = shortestPath.find(interactor, randomTarget, iaPattern);
+                if (path != null) {
+                    //add path to result set
+                    maintainedRandomList.add(path.getDistance());
+                } else {
+                    //if no path is found add -1 to the list to symbolize Infinity.
+                    maintainedRandomList.add(-1);
+
+                }
+            }
+            pb.next();
+        }
+        
         //write results to file
+        logger.log(Level.INFO, "Writing results to file.");
+        
         BufferedWriter w = null;
         try {
             
@@ -255,6 +318,20 @@ public class DiseasePathLength extends LoreOperation {
             
             w = new BufferedWriter(new FileWriter(maintainedOutFile));
             for (int d : maintainedList) {
+                w.write(d+"\n");
+            }
+            
+            w.close();
+            
+            w = new BufferedWriter(new FileWriter("dist_disrupted_random.txt"));
+            for (int d : disruptedRandomList) {
+                w.write(d+"\n");
+            }
+            
+            w.close();
+            
+            w = new BufferedWriter(new FileWriter("dist_maintained_random.txt"));
+            for (int d : maintainedRandomList) {
                 w.write(d+"\n");
             }
             
