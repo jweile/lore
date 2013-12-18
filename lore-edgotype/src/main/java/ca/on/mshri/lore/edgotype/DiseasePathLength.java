@@ -103,9 +103,12 @@ public class DiseasePathLength extends LoreOperation {
         //prepare some arrays to store the results
         IntArrayList disruptedList = new IntArrayList(),
                 maintainedList = new IntArrayList();
+        IntArrayList disruptedDegreeList = new IntArrayList(),
+                maintainedDegreeList = new IntArrayList();
         
         //textual output buffer
         StringBuilder textB = new StringBuilder();
+        textB.append("Entrez_focal\tEntrez_neighbour\tEdge_state\tEntrez_target\tPath_length\tDegree\n");
         
         //create shortcut to interaction model interface
         InteractionModel model = new InteractionModel(OntModelSpec.OWL_MEM, getModel());
@@ -181,7 +184,7 @@ public class DiseasePathLength extends LoreOperation {
             for (PhysicalInteraction interaction : Interaction
                     .listInteractions(protein, PhysicalInteraction.class)) {
                 
-                IntArrayList currentList;
+                IntArrayList currentList, currentDegreeList;
                 
                 /*
                  * If the edge is disrupted, the distance measurement will go
@@ -190,8 +193,10 @@ public class DiseasePathLength extends LoreOperation {
                  */
                 if (allele.hasProperty(affectsNegatively, interaction)) {
                     currentList = disruptedList;
+                    currentDegreeList = disruptedDegreeList;
                 } else if (allele.hasProperty(affectsPositively, interaction)) {
                     currentList = maintainedList;
+                    currentDegreeList = maintainedDegreeList;
                 } else {
                     //if disruption has not been tested for, discard this interaction
                     //(because counting them as maintained would be unfair)
@@ -234,8 +239,12 @@ public class DiseasePathLength extends LoreOperation {
                         //if no path is found add -1 to the list to symbolize Infinity.
                         currentList.add(-1);
                         
-                        textB.append("\tInf\n");
+                        textB.append("\tInf");
                     }
+                    
+                    int degree = Interaction.listInteractions(interactor, PhysicalInteraction.class).size();
+                    currentDegreeList.add(degree);
+                    textB.append("\tdegree\n");
                     
                     //mark for storage
                     used = true;
@@ -332,6 +341,20 @@ public class DiseasePathLength extends LoreOperation {
             
             w = new BufferedWriter(new FileWriter("dist_maintained_random.txt"));
             for (int d : maintainedRandomList) {
+                w.write(d+"\n");
+            }
+            
+            w.close();
+            
+            w = new BufferedWriter(new FileWriter("dist_disrupted_degree.txt"));
+            for (int d : disruptedDegreeList) {
+                w.write(d+"\n");
+            }
+            
+            w.close();
+            
+            w = new BufferedWriter(new FileWriter("dist_maintained_degree.txt"));
+            for (int d : maintainedDegreeList) {
                 w.write(d+"\n");
             }
             
