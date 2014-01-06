@@ -233,7 +233,7 @@ public class DiseasePathLength extends LoreOperation {
                         
                         Protein target = Protein.fromIndividual(path.getValue());
                         textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
-                        textB.append(path.getDistance()).append('\n');
+                        textB.append(path.getDistance());
                         
                     } else {
                         //if no path is found add -1 to the list to symbolize Infinity.
@@ -244,7 +244,7 @@ public class DiseasePathLength extends LoreOperation {
                     
                     int degree = Interaction.listInteractions(interactor, PhysicalInteraction.class).size();
                     currentDegreeList.add(degree);
-                    textB.append("\tdegree\n");
+                    textB.append("\t").append(degree).append("\n");
                     
                     //mark for storage
                     used = true;
