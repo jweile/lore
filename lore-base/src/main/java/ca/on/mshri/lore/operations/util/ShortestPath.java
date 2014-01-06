@@ -69,8 +69,16 @@ public class ShortestPath {
         //get a shortcut to the model
         LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, from.getModel());
         
-        //discover the first node
-        open.offer(new PathNode(null,from));
+        //package start node into pathnode object
+        PathNode fromNode = new PathNode(null,from);
+        
+        //if the start node is already a target, we're done and can just return the node itself.
+        if (targets.contains(from)) {
+            return fromNode;
+        }
+        
+        //otherwise, mark the first node for exploration.
+        open.offer(fromNode);
         
         //as long as there are still nodes to examine, we keep going
         while (!open.isEmpty()) {
