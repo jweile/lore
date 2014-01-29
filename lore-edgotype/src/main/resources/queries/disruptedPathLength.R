@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript
+
 maintained <- read.delim("dist_maintained.txt",header=FALSE)[,1]
 disrupted <- read.delim("dist_disrupted.txt",header=FALSE)[,1]
 maintainedRandom <- read.delim("dist_maintained_random.txt",header=FALSE)[,1]
@@ -77,23 +79,104 @@ colnames(tab.abs) <- labels
 rownames(tab.abs) <- c("maintained","disrupted","maintained_random","disrupted_random")
 
 
-fisher.tables <- lapply(0:3, function(cutoff) {
-	rbind(equal=c(
-			perturbed=sum(tab.abs["disrupted",as.numeric(labels) <= cutoff]),
-			unperturbed=sum(tab.abs["maintained",as.numeric(labels) <= cutoff])
-		),
-		greater=c(
-			perturbed=sum(tab.abs["disrupted",as.numeric(labels) > cutoff]),
-			unperturbed=sum(tab.abs["maintained",as.numeric(labels) > cutoff])
-		)
+cutoff <- 1
+fisher.table <- rbind(equal=c(
+		perturbed=sum(tab.abs["disrupted",as.numeric(labels) <= cutoff]),
+		unperturbed=sum(tab.abs["maintained",as.numeric(labels) <= cutoff])
+	),
+	greater=c(
+		perturbed=sum(tab.abs["disrupted",as.numeric(labels) > cutoff]),
+		unperturbed=sum(tab.abs["maintained",as.numeric(labels) > cutoff])
 	)
-})
-names(fisher.tables) <- 0:3
+)
+fisher.table
+fisher.test(fisher.table,alternative="greater")
 
-fisher.tables
-for (cutoff in as.character(0:3)) {
-	print(fisher.test(fisher.tables[[cutoff]],alternative="greater"))
+fisher.table.random <- rbind(
+	le=c(
+		perturbed=sum(tab.abs["disrupted_random",as.numeric(labels) <= cutoff]),
+		unperturbed=sum(tab.abs["maintained_random",as.numeric(labels) <= cutoff])
+	),
+	gt=c(
+		perturbed=sum(tab.abs["disrupted_random",as.numeric(labels) > cutoff]),
+		unperturbed=sum(tab.abs["maintained_random",as.numeric(labels) > cutoff])
+	)
+)
+fisher.table.random
+fisher.test(fisher.table.random,alternative="greater")
+
+
+#use sub-sampling to determine SE of odds
+extrapolateSE <- function(eq, gr) {
+	values <- c(rep("equal",eq),rep("greater",gr))
+	ns <- round(c(.5,.55,.6,.65,.7,.75,.8,.85,.9,.95)*(eq+gr))
+	stdevs <- sapply(ns, function(n) {
+		odds <- sapply(1:1000, function(dummy) {
+			subsample <- sample(values,n)
+			neq <- sum(subsample=="equal")
+			ngr <- sum(subsample=="greater")
+			odds <- neq/ngr
+			odds
+		})
+		stdev <- sqrt(var(odds))
+		stdev
+	})
+	coeff <- coefficients(lm(stdevs ~ ns))
+	extrapolation <- coeff[1] + (eq+gr) * coeff[2]
+	names(extrapolation) <- NULL
+	return(extrapolation)
+	# plot(c(ns,sum(fisher.table[,1])),c(stdevs,extrapolation),ylim=c(0,max(stdevs)))
+	# abline(coeff[1],coeff[2],col="red")
 }
+
+
+pdf("odds.pdf")
+colors <- c("goldenrod1","steelblue1","goldenrod4","steelblue4")
+to.plot <- rbind(
+	relevant=apply(fisher.table,2,function(col)col[1]/col[2]),
+	random=apply(fisher.table.random,2,function(col)col[1]/col[2])
+)
+to.plot <- t(to.plot)
+se <- cbind(
+	c(
+		extrapolateSE(fisher.table[1,1],fisher.table[2,1]),
+		extrapolateSE(fisher.table[1,2],fisher.table[2,2])
+	),
+	c(
+		extrapolateSE(fisher.table.random[1,1],fisher.table.random[2,1]),
+		extrapolateSE(fisher.table.random[1,2],fisher.table.random[2,2])
+	)
+)
+xs <- barplot(
+	to.plot, 
+	beside=TRUE, 
+	names.arg=c(
+		expression(paths~to~bold(relevant)~disease),
+		expression(paths~to~bold(random)~disease)
+	),
+	ylab="Odds of path length shorter than 3",
+	col=colors,
+	ylim=c(0,.2)
+)
+arrows(xs[1,],y0=to.plot[1,]+se[1,],y1=to.plot[1,]-se[1,],length=.1,angle=90,code=3)
+arrows(xs[2,],y0=to.plot[2,]+se[2,],y1=to.plot[2,]-se[2,],length=.1,angle=90,code=3)
+legend("topright",c("perturbed","unperturbed"),fill=colors[1:2])
+p <- fisher.test(fisher.table,alternative="greater")$p.value
+if (p <= 0.05) {
+	lines(
+		c(xs[1,1],xs[1,1],xs[2,1],xs[2,1]),
+		c(to.plot[1,1]+0.02,0.175,0.175,to.plot[2,1]+0.02)
+	)
+	symbol <- if (p <= .0001) "****" else
+		  if (p <= .001) "***" else
+		  if (p <= .01) "**" else
+		  if (p <= .05) "*" else
+		  ""
+	text(mean(xs[,1]),0.18,symbol,cex=2)
+}
+dev.off()
+
+
 
 
 
@@ -160,6 +243,11 @@ dev.off()
 #ANALYZE DEGREES
 
 
+maintainedDegree <- read.delim("dist_maintained_degree.txt",header=FALSE)[,1]
+disruptedDegree <- read.delim("dist_disrupted_degree.txt",header=FALSE)[,1]
+
+colors <- c("steelblue1","goldenrod1","steelblue4","goldenrod4")
+
 tab.md <- table(maintainedDegree)
 tab.dd <- table(disruptedDegree)
 
@@ -175,14 +263,13 @@ colnames(tab) <- labels
 rownames(tab) <- c("maintainedDegree","disruptedDegree")
 
 
-pdf("dpl_degree.pdf")
+svg("dpl_degree.svg")
 plot(0,type="n",xlab="degree of neighbour", ylab="Cumulative Distribution",xlim=c(1,200), ylim=c(0,1),log="x")
 for (i in 1:2) {
 	points(as.numeric(colnames(tab)),sapply(1:ncol(tab),function(j) sum(tab[i,1:j])),type="p",pch=20,col=colors[i])
 }
 legend("right",c("maintained","disrupted"),pch=20,col=colors)
 dev.off()
-
 
 
 

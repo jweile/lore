@@ -61,7 +61,7 @@ public class DiseasePathLength extends LoreOperation {
     public final Parameter<String> maintainedOutFileP = 
             Parameter.make("maintainedOutFile", String.class, "dist_maintained.txt");
     public final Parameter<String> tableOutFileP = 
-            Parameter.make("maintainedOutFile", String.class, "dist_table.txt");
+            Parameter.make("tableOutFile", String.class, "dist_table.txt");
 
     private Property isAssociatedWith, causes, affectsNegatively, affectsPositively;
     

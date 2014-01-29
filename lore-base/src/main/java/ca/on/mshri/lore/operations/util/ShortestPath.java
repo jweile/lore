@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -47,7 +48,20 @@ public class ShortestPath {
     public PathNode find(Individual from, Individual to, String pathPattern) {
         Collection<Individual> targets = new ArrayList<Individual>();
         targets.add(to);
-        return find(from, targets, pathPattern);
+        return find(from, targets, pathPattern, Collections.EMPTY_LIST);
+    }
+    
+    /**
+     * Find the shortest path between the from node to the target node. Edges are
+     * defined by the given path pattern
+     * @param from originating node
+     * @param to target node
+     * @param pathPattern e.g. "^ia:hasParticipant/ia:hasParticipant" for interaction partners
+     * @return the last node in the path. Can be used to trace back the path and to 
+     * find out the length of the path.
+     */
+    public PathNode find(Individual from, Collection<? extends Individual> targets, String pathPattern) {
+        return find(from, targets, pathPattern, Collections.EMPTY_LIST);
     }
     
     /**
@@ -56,15 +70,19 @@ public class ShortestPath {
      * @param from originating node
      * @param targets target nodes
      * @param pathPattern e.g. "^ia:hasParticipant/ia:hasParticipant" for interaction partners
+     * @param forbidden A collection of nodes that may not be traversed by a path.
      * @return the last node in the path. Can be used to trace back the path and to 
      * find out the length of the path.
      */
-    public PathNode find(Individual from, Collection<? extends Individual> targets, String pathPattern) {
+    public PathNode find(Individual from, Collection<? extends Individual> targets, String pathPattern, Collection<? extends Individual> forbidden) {
         
         //discovered nodes yet to examine
         PrioritySet open = new PrioritySet();
         //already examined nodes
         Set<PathNode> closed = new HashSet<PathNode>();
+        for (Individual f : forbidden) {
+            closed.add(new PathNode(null, f));
+        }
         
         //get a shortcut to the model
         LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, from.getModel());
