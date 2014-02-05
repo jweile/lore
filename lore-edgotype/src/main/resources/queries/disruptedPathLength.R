@@ -80,16 +80,19 @@ rownames(tab.abs) <- c("maintained","disrupted","maintained_random","disrupted_r
 
 
 cutoff <- 1
-fisher.table <- rbind(equal=c(
+fisher.table <- rbind(
+	le=c(
 		perturbed=sum(tab.abs["disrupted",as.numeric(labels) <= cutoff]),
 		unperturbed=sum(tab.abs["maintained",as.numeric(labels) <= cutoff])
 	),
-	greater=c(
+	gt=c(
 		perturbed=sum(tab.abs["disrupted",as.numeric(labels) > cutoff]),
 		unperturbed=sum(tab.abs["maintained",as.numeric(labels) > cutoff])
 	)
 )
 fisher.table
+cat("odds:\n")
+apply(fisher.table, 2, function(x) x[1]/x[2])
 fisher.test(fisher.table,alternative="greater")
 
 fisher.table.random <- rbind(
@@ -103,6 +106,8 @@ fisher.table.random <- rbind(
 	)
 )
 fisher.table.random
+cat("odds:\n")
+apply(fisher.table.random, 2, function(x) x[1]/x[2])
 fisher.test(fisher.table.random,alternative="greater")
 
 
@@ -147,6 +152,8 @@ se <- cbind(
 		extrapolateSE(fisher.table.random[1,2],fisher.table.random[2,2])
 	)
 )
+cat("standard error of odds:\n")
+se
 xs <- barplot(
 	to.plot, 
 	beside=TRUE, 

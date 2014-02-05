@@ -37,13 +37,11 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import de.jweile.yogiutil.CliProgressBar;
-import de.jweile.yogiutil.IntArrayList;
 import de.jweile.yogiutil.LazyInitMap;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,25 +59,25 @@ import java.util.logging.Logger;
  * 
  * @author Jochen Weile <jochenweile@gmail.com>
  */
-public class DiseasePathNetworkGen extends LoreOperation {
+public class DiseaseShells extends LoreOperation {
     
     public final Parameter<String> tableOutFileP = 
-            Parameter.make("tableOutFile", String.class, "diseasePathNetwork.txt");
+            Parameter.make("tableOutFile", String.class, "diseaseShells.txt");
 
     private Property isAssociatedWith, causes, affectsNegatively, affectsPositively;
     
     @Override
     public void run() {
         
-        Logger logger = Logger.getLogger(DiseasePathNetworkGen.class.getName());
+        Logger logger = Logger.getLogger(DiseaseShells.class.getName());
         logger.setLevel(Level.ALL);
         
-        logger.log(Level.INFO, "Starting Disease Path Length Network Generator...");
+        logger.log(Level.INFO, "Starting Disease Shell Analysis...");
         
         String tableOutFile = getParameterValue(tableOutFileP);
         
         //initialize sparql engine for pre-defined queries in this module.
-        Sparql sparql = Sparql.getInstance(DiseasePathNetworkGen.class
+        Sparql sparql = Sparql.getInstance(DiseaseShells.class
                 .getProtectionDomain().getCodeSource()
         );
         
@@ -170,36 +168,16 @@ public class DiseasePathNetworkGen extends LoreOperation {
                 }
 
 
-                //output allele information
-                w.append("\n\nAllele: ");
-                w.append(allele.getGene().getXRefValue(model.ENTREZ));
-                w.append(" (").append(allele.getGene().getXRefValue(model.HGNC)).append(") ");
-                for (Mutation mut : allele.listMutations()) {
-                    PointMutation pmut = PointMutation.fromIndividual(mut);
-                    w.append(pmut.getFromAminoAcid()).append(pmut.getPosition()+"").append(pmut.getToAminoAcid()).append(' ');
-                }
-                w.write("\nDiseases: ");
-                StringBuilder b = new StringBuilder();
-                for (Phenotype pheno : allelePhenotypes) {
-                    b.append(pheno.getLabel(null)).append("; ");
-                }
-                b.delete(b.length()-2, b.length());
-                w.write(b.toString());
-
-                w.write("\nRelated: ");
-                b = new StringBuilder();
-                for (Protein prot : protsOfSamePheno) {
-                    b.append(prot.getXRefValue(model.ENTREZ)).append(", ");
-                }
-                b.delete(b.length()-2, b.length());
-                w.append(b.toString());
+               
                 
-                MiniNetwork net = new MiniNetwork();
+//                MiniNetwork net = new MiniNetwork();
                 int disruptCount = 0, maintainCount = 0;
-                IntArrayList pathLengths = new IntArrayList();
-                
-                addAsTargets(protsOfSamePheno,net);
+//                IntArrayList pathLengths = new IntArrayList();
+//                
+//                addAsTargets(protsOfSamePheno,net);
 
+                StringBuilder b = new StringBuilder();
+                
                 //for all the interactions of the protein...
                 for (PhysicalInteraction interaction : Interaction
                         .listInteractions(protein, PhysicalInteraction.class)) {
@@ -225,29 +203,37 @@ public class DiseasePathNetworkGen extends LoreOperation {
                     if (interactors.size() == 1) {
 
                         Protein interactor = Protein.fromIndividual(interactors.get(0));
+                        
+                        b.append('\n');
+                        b.append(disrupted ? "disrupted: ":"maintained: ");
+                        b.append(interactor.getXRefValue(model.ENTREZ));
+                        b.append(" (").append(interactor.getXRefValue(model.HGNC)).append(")\n");
+                        
+                        String table = traceNeighbourhood(interactor,protein, protsOfSamePheno);
+                        b.append(table).append("\n");
 
 //                        w.append("\nPath through ").append(interactor.getXRefValue(model.ENTREZ));
 //                        w.write(disrupted ? " (perturbed)\n" : " (unperturbed):\n");
 
                         //calculate shortest path from interactor to targets
                         
-                        PathNode path = shortestPath.find(
-                                interactor, protsOfSamePheno, 
-                                iaPattern, Collections.singleton(protein)
-                        );
-                        
-                        if (path != null) {
-
-                            processPath(path, protein, disrupted, net);
-                            pathLengths.add(path.getDistance()+1);
-                            
-                        } else {
-    //                        //if no path is found say so
-                            processNoPath(protein, interactor, disrupted, net);
-//                            w.append("No path!\n");
-                            pathLengths.add(-1);
-
-                        }
+//                        PathNode path = shortestPath.find(
+//                                interactor, protsOfSamePheno, 
+//                                iaPattern, Collections.singleton(protein)
+//                        );
+//                        
+//                        if (path != null) {
+//
+//                            processPath(path, protein, disrupted, net);
+//                            pathLengths.add(path.getDistance()+1);
+//                            
+//                        } else {
+//    //                        //if no path is found say so
+//                            processNoPath(protein, interactor, disrupted, net);
+////                            w.append("No path!\n");
+//                            pathLengths.add(-1);
+//
+//                        }
 
 
                     } else {
@@ -257,33 +243,64 @@ public class DiseasePathNetworkGen extends LoreOperation {
                     }
                 }
                 
-                w.append("\nPath lengths: ").append(pathLengths.toString());
-                String edgotype = disruptCount==0 ? "quasi-wt" : maintainCount==0 ? "quasi-null" : "edgetic";
-                w.append("\nEdgotype: ").append(edgotype).append('\n');
                 
-                for (Edge edge: net.getEdges()) {
-                    String entrez = edge.getProt1().getXRefValue(model.ENTREZ);
-                    String hgnc = edge.getProt1().getXRefValue(model.HGNC);
-                    w.append(entrez).append("\t");
-                    w.append(hgnc == null ? entrez : hgnc).append("\t");
+                if (disruptCount+maintainCount > 0) {
+                    
+                    String tables = b.toString();
+                    //output allele information
+                    w.append("\n\nAllele: ");
+                    w.append(allele.getGene().getXRefValue(model.ENTREZ));
+                    w.append(" (").append(allele.getGene().getXRefValue(model.HGNC)).append(") ");
+                    for (Mutation mut : allele.listMutations()) {
+                        PointMutation pmut = PointMutation.fromIndividual(mut);
+                        w.append(pmut.getFromAminoAcid()).append(pmut.getPosition()+"").append(pmut.getToAminoAcid()).append(' ');
+                    }
+                    w.write("\nDiseases: ");
+                    b = new StringBuilder();
+                    for (Phenotype pheno : allelePhenotypes) {
+                        b.append(pheno.getLabel(null)).append("; ");
+                    }
+                    b.delete(b.length()-2, b.length());
+                    w.write(b.toString());
 
-                    entrez = edge.getProt2().getXRefValue(model.ENTREZ);
-                    hgnc = edge.getProt2().getXRefValue(model.HGNC);
-                    w.append(entrez).append("\t");
-                    w.append(hgnc == null ? entrez : hgnc).append("\t");
+                    w.write("\nCo-annotated: ");
+                    b = new StringBuilder();
+                    for (Protein prot : protsOfSamePheno) {
+                        b.append(prot.getXRefValue(model.ENTREZ)).append(", ");
+                    }
+                    b.delete(b.length()-2, b.length());
+                    w.append(b.toString());
 
-                    w.append(!net.getNodeProps().containsKey(edge.getProt1()) ? 
-                            "-" : 
-                            net.getNodeProps().get(edge.getProt1()).toString()).append("\t");
-                    w.append(!net.getNodeProps().containsKey(edge.getProt2()) ? 
-                            "-" : 
-                            net.getNodeProps().get(edge.getProt2()).toString()).append("\t");
-                    w.append(!net.getEdgeProps().containsKey(edge) ? 
-                            "-" : 
-                            net.getEdgeProps().get(edge).toString()).append("\n");
+//                    w.append("\nPath lengths: ").append(pathLengths.toString());
+                    String edgotype = disruptCount==0 ? "quasi-wt" : maintainCount==0 ? "quasi-null" : "edgetic";
+                    w.append("\nEdgotype: ").append(edgotype).append('\n');
+                    
+                    w.append(tables);
+
+//                    for (Edge edge: net.getEdges()) {
+//                        String entrez = edge.getProt1().getXRefValue(model.ENTREZ);
+//                        String hgnc = edge.getProt1().getXRefValue(model.HGNC);
+//                        w.append(entrez).append("\t");
+//                        w.append(hgnc == null ? entrez : hgnc).append("\t");
+//
+//                        entrez = edge.getProt2().getXRefValue(model.ENTREZ);
+//                        hgnc = edge.getProt2().getXRefValue(model.HGNC);
+//                        w.append(entrez).append("\t");
+//                        w.append(hgnc == null ? entrez : hgnc).append("\t");
+//
+//                        w.append(!net.getNodeProps().containsKey(edge.getProt1()) ? 
+//                                "-" : 
+//                                net.getNodeProps().get(edge.getProt1()).toString()).append("\t");
+//                        w.append(!net.getNodeProps().containsKey(edge.getProt2()) ? 
+//                                "-" : 
+//                                net.getNodeProps().get(edge.getProt2()).toString()).append("\t");
+//                        w.append(!net.getEdgeProps().containsKey(edge) ? 
+//                                "-" : 
+//                                net.getEdgeProps().get(edge).toString()).append("\n");
+//
+//                    }
 
                 }
-
 
                 //update progress bar
                 pb.next();
@@ -330,83 +347,83 @@ public class DiseasePathNetworkGen extends LoreOperation {
     public boolean requiresReasoner() {
         return false;
     }
-
-    private void processPath(PathNode path, Protein focalProtein, boolean disrupted, MiniNetwork net) {
-        
-//        StringBuilder b = new StringBuilder();
-        
-//        LazyInitMap<Edge,Set<String>> edgeProps = new LazyInitMap<Edge, Set<String>>(HashSet.class);
-//        LazyInitMap<Protein,Set<String>> nodeProps = new LazyInitMap<Protein, Set<String>>(HashSet.class);
-//        Set<Edge> edges = new HashSet<Edge>();
-        
-        Set<Protein> pathProteins = new HashSet<Protein>();
-        Set<Protein> neighbourProteins = new HashSet<Protein>();
-        
-        int i = 0;
-        
-        //is path of length 1 (counted from focal node)?
-        boolean l1 = path.getPredecessor() == null;
-        
-        while (path.getPredecessor() != null) {
-            
-            Protein protein = Protein.fromIndividual(path.getValue());
-            Protein predProtein = Protein.fromIndividual(path.getPredecessor().getValue());
-            
-            if (i++ == 0) {
-                //end node node
-                pathProteins.add(protein);
-                pathProteins.add(predProtein);
-                
-                net.addNodeProp(protein,"end");
-                net.addEdge(predProtein, protein, "path");
-            } else {
-                //intermediate node
-                pathProteins.add(predProtein);
-                
-                net.addEdge(predProtein, protein, "path");
-            }
-            
-            //go to predecessor unless we're at the last node already
-            if (path.getPredecessor() != null) {
-                path = path.getPredecessor();
-            }
-            
-        }
-        
-        //add edge from focal protein to neighbour
-        Protein neighbourProt = Protein.fromIndividual(path.getValue());
-        pathProteins.add(focalProtein);
-        net.addEdge(focalProtein, neighbourProt, disrupted ? "disrupted":"maintained");
-        net.addNodeProp(focalProtein, "start");
-        if (l1) {
-            //if path length is 1 (i.e. 0) then nodes haven't been added yet
-            //in the loop above.
-            pathProteins.add(neighbourProt);
-            net.addNodeProp(neighbourProt,"end");
-        }
-        
-        //track down neighbours
-        for (Protein protein : pathProteins) {
-            for (Protein neighbour : getNeighbours(protein)) {
-                if (!pathProteins.contains(neighbour)) {
-                    neighbourProteins.add(neighbour);
-                    net.addEdge(protein, neighbour);
-                }
-            }
-        }
-        
-        //find edges between neighbours
-        for (Protein protein: neighbourProteins) {
-            for (Protein neighbour: getNeighbours(protein)) {
-                if (neighbourProteins.contains(neighbour)) {
-                    net.addEdge(protein,neighbour);
-                }
-            }
-        }
-
-//        return b.toString();
-        
-    }
+//
+//    private void processPath(PathNode path, Protein focalProtein, boolean disrupted, MiniNetwork net) {
+//        
+////        StringBuilder b = new StringBuilder();
+//        
+////        LazyInitMap<Edge,Set<String>> edgeProps = new LazyInitMap<Edge, Set<String>>(HashSet.class);
+////        LazyInitMap<Protein,Set<String>> nodeProps = new LazyInitMap<Protein, Set<String>>(HashSet.class);
+////        Set<Edge> edges = new HashSet<Edge>();
+//        
+//        Set<Protein> pathProteins = new HashSet<Protein>();
+//        Set<Protein> neighbourProteins = new HashSet<Protein>();
+//        
+//        int i = 0;
+//        
+//        //is path of length 1 (counted from focal node)?
+//        boolean l1 = path.getPredecessor() == null;
+//        
+//        while (path.getPredecessor() != null) {
+//            
+//            Protein protein = Protein.fromIndividual(path.getValue());
+//            Protein predProtein = Protein.fromIndividual(path.getPredecessor().getValue());
+//            
+//            if (i++ == 0) {
+//                //end node node
+//                pathProteins.add(protein);
+//                pathProteins.add(predProtein);
+//                
+//                net.addNodeProp(protein,"end");
+//                net.addEdge(predProtein, protein, "path");
+//            } else {
+//                //intermediate node
+//                pathProteins.add(predProtein);
+//                
+//                net.addEdge(predProtein, protein, "path");
+//            }
+//            
+//            //go to predecessor unless we're at the last node already
+//            if (path.getPredecessor() != null) {
+//                path = path.getPredecessor();
+//            }
+//            
+//        }
+//        
+//        //add edge from focal protein to neighbour
+//        Protein neighbourProt = Protein.fromIndividual(path.getValue());
+//        pathProteins.add(focalProtein);
+//        net.addEdge(focalProtein, neighbourProt, disrupted ? "disrupted":"maintained");
+//        net.addNodeProp(focalProtein, "start");
+//        if (l1) {
+//            //if path length is 1 (i.e. 0) then nodes haven't been added yet
+//            //in the loop above.
+//            pathProteins.add(neighbourProt);
+//            net.addNodeProp(neighbourProt,"end");
+//        }
+//        
+//        //track down neighbours
+//        for (Protein protein : pathProteins) {
+//            for (Protein neighbour : getNeighbours(protein)) {
+//                if (!pathProteins.contains(neighbour)) {
+//                    neighbourProteins.add(neighbour);
+//                    net.addEdge(protein, neighbour);
+//                }
+//            }
+//        }
+//        
+//        //find edges between neighbours
+//        for (Protein protein: neighbourProteins) {
+//            for (Protein neighbour: getNeighbours(protein)) {
+//                if (neighbourProteins.contains(neighbour)) {
+//                    net.addEdge(protein,neighbour);
+//                }
+//            }
+//        }
+//
+////        return b.toString();
+//        
+//    }
     
     private Set<Protein> getNeighbours(Protein p) {
         
@@ -423,114 +440,159 @@ public class DiseasePathNetworkGen extends LoreOperation {
         return neighbours;
     }
 
-    private void processNoPath(Protein protein, Protein interactor, boolean disrupted, MiniNetwork net) {
-        net.addEdge(protein, interactor, disrupted ? "disrupted":"maintained");
-        net.addNodeProp(protein, "start");
-        net.addNodeProp(interactor, "end");
-        for (Protein neighbour : getNeighbours(protein)) {
-            net.addEdge(protein, neighbour);
-        }
-        for (Protein neighbour : getNeighbours(interactor)) {
-            net.addEdge(protein, neighbour);
-        }
-    }
+//    private void processNoPath(Protein protein, Protein interactor, boolean disrupted, MiniNetwork net) {
+//        net.addEdge(protein, interactor, disrupted ? "disrupted":"maintained");
+//        net.addNodeProp(protein, "start");
+//        net.addNodeProp(interactor, "end");
+//        for (Protein neighbour : getNeighbours(protein)) {
+//            net.addEdge(protein, neighbour);
+//        }
+//        for (Protein neighbour : getNeighbours(interactor)) {
+//            net.addEdge(protein, neighbour);
+//        }
+//    }
 
-    private void addAsTargets(Set<Protein> proteins, MiniNetwork net) {
-        for (Protein p : proteins) {
-            for (Protein neighbour : getNeighbours(p)) {
-                net.addEdge(p, neighbour);
-            }
-            net.addNodeProp(p, "end");
+//    private void addAsTargets(Set<Protein> proteins, MiniNetwork net) {
+//        for (Protein p : proteins) {
+//            for (Protein neighbour : getNeighbours(p)) {
+//                net.addEdge(p, neighbour);
+//            }
+//            net.addNodeProp(p, "end");
+//        }
+//    }
+
+    private String traceNeighbourhood(Protein interactor, Protein protein, Set<Protein> targets) {
+        
+        StringBuilder b = new StringBuilder("1\t");
+        
+        int maxShell = 4;
+        
+        List<Set<Protein>> shells = new ArrayList<Set<Protein>>();
+        Set<Protein> closed = new HashSet<Protein>();
+        
+        closed.add(protein);
+        closed.add(interactor);
+        
+        //interactor is the first shell
+        Set<Protein> set = new HashSet<Protein>();
+        set.add(interactor);
+        shells.add(set);
+        if (targets.contains(interactor)) {
+            b.append("1\n");
+        } else {
+            b.append("0\n");
         }
+        
+        int currentShell = 0;
+        
+        while (++currentShell < maxShell) {
+            int hits = 0;
+            set = new HashSet<Protein>();
+            for (Protein p : shells.get(currentShell-1)) {
+                for (Protein neighbour : getNeighbours(p)) {
+                    if (!closed.contains(neighbour)) {
+                        set.add(neighbour);
+                        closed.add(neighbour);
+                        if (targets.contains(neighbour)) {
+                            hits++;
+                        }
+                    }
+                }
+            }
+            shells.add(set);
+            b.append(set.size()).append('\t').append(hits).append('\n');
+        }
+        
+        return b.toString();
     }
     
-    private static class MiniNetwork {
-        
-        private LazyInitMap<Edge, Set<String>> edgeProps = new LazyInitMap<Edge, Set<String>>(TreeSet.class);
-        private LazyInitMap<Protein, Set<String>> nodeProps = new LazyInitMap<Protein, Set<String>>(TreeSet.class);
-        private Set<Edge> edges = new HashSet<Edge>();
-        
-        public Edge addEdge(Protein a, Protein b) {
-            Edge e = new Edge(a,b);
-            edges.add(e);
-            return e;
-        }
-        
-        public void addEdge(Protein a, Protein b, String prop) {
-            edgeProps.getOrCreate(addEdge(a,b)).add(prop);
-        }
-        
-        public void addNodeProp(Protein p, String prop) {
-            nodeProps.getOrCreate(p).add(prop);
-        }
-
-        public LazyInitMap<Edge, Set<String>> getEdgeProps() {
-            return edgeProps;
-        }
-
-        public LazyInitMap<Protein, Set<String>> getNodeProps() {
-            return nodeProps;
-        }
-
-        public Set<Edge> getEdges() {
-            return edges;
-        }
-        
-        
-
-    }
-    
-    private static class Edge {
-        
-        private Protein prot1, prot2;
-        
-        Edge(Protein p1, Protein p2) {
-            if (p1.getURI().compareTo(p2.getURI()) > 0) {
-                prot1 = p2;
-                prot2 = p1;
-            } else {
-                prot1 = p1;
-                prot2 = p2;
-            }
-        }
-        
-        public Protein getProt1() {
-            return prot1;
-        }
-
-        public Protein getProt2() {
-            return prot2;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 97 * hash + (this.prot1 != null ? this.prot1.hashCode() : 0);
-            hash = 97 * hash + (this.prot2 != null ? this.prot2.hashCode() : 0);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Edge other = (Edge) obj;
-            if (this.prot1 != other.prot1 && (this.prot1 == null || !this.prot1.equals(other.prot1))) {
-                return false;
-            }
-            if (this.prot2 != other.prot2 && (this.prot2 == null || !this.prot2.equals(other.prot2))) {
-                return false;
-            }
-            return true;
-        }
-        
-        
-        
-    }
+//    private static class MiniNetwork {
+//        
+//        private LazyInitMap<Edge, Set<String>> edgeProps = new LazyInitMap<Edge, Set<String>>(TreeSet.class);
+//        private LazyInitMap<Protein, Set<String>> nodeProps = new LazyInitMap<Protein, Set<String>>(TreeSet.class);
+//        private Set<Edge> edges = new HashSet<Edge>();
+//        
+//        public Edge addEdge(Protein a, Protein b) {
+//            Edge e = new Edge(a,b);
+//            edges.add(e);
+//            return e;
+//        }
+//        
+//        public void addEdge(Protein a, Protein b, String prop) {
+//            edgeProps.getOrCreate(addEdge(a,b)).add(prop);
+//        }
+//        
+//        public void addNodeProp(Protein p, String prop) {
+//            nodeProps.getOrCreate(p).add(prop);
+//        }
+//
+//        public LazyInitMap<Edge, Set<String>> getEdgeProps() {
+//            return edgeProps;
+//        }
+//
+//        public LazyInitMap<Protein, Set<String>> getNodeProps() {
+//            return nodeProps;
+//        }
+//
+//        public Set<Edge> getEdges() {
+//            return edges;
+//        }
+//        
+//        
+//
+//    }
+//    
+//    private static class Edge {
+//        
+//        private Protein prot1, prot2;
+//        
+//        Edge(Protein p1, Protein p2) {
+//            if (p1.getURI().compareTo(p2.getURI()) > 0) {
+//                prot1 = p2;
+//                prot2 = p1;
+//            } else {
+//                prot1 = p1;
+//                prot2 = p2;
+//            }
+//        }
+//        
+//        public Protein getProt1() {
+//            return prot1;
+//        }
+//
+//        public Protein getProt2() {
+//            return prot2;
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            int hash = 7;
+//            hash = 97 * hash + (this.prot1 != null ? this.prot1.hashCode() : 0);
+//            hash = 97 * hash + (this.prot2 != null ? this.prot2.hashCode() : 0);
+//            return hash;
+//        }
+//
+//        @Override
+//        public boolean equals(Object obj) {
+//            if (obj == null) {
+//                return false;
+//            }
+//            if (getClass() != obj.getClass()) {
+//                return false;
+//            }
+//            final Edge other = (Edge) obj;
+//            if (this.prot1 != other.prot1 && (this.prot1 == null || !this.prot1.equals(other.prot1))) {
+//                return false;
+//            }
+//            if (this.prot2 != other.prot2 && (this.prot2 == null || !this.prot2.equals(other.prot2))) {
+//                return false;
+//            }
+//            return true;
+//        }
+//        
+//        
+//        
+//    }
 //    
 //    private static class InteractionItem {
 //        

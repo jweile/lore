@@ -16,6 +16,7 @@
  */
 package ca.on.mshri.lore.edgotype;
 
+import ca.on.mshri.lore.base.Authority;
 import ca.on.mshri.lore.genome.Allele;
 import ca.on.mshri.lore.genome.Gene;
 import ca.on.mshri.lore.interaction.Interaction;
@@ -58,15 +59,26 @@ public class DiseasePathLength extends LoreOperation {
     
     public final Parameter<String> disruptedOutFileP = 
             Parameter.make("disruptedOutFile", String.class, "dist_disrupted.txt");
+    public final Parameter<String> disruptedRandomOutFileP = 
+            Parameter.make("disruptedRandomOutFile", String.class, "dist_disrupted_random.txt");
+    public final Parameter<String> disruptedDegreeOutFileP = 
+            Parameter.make("disruptedDegreeOutFile", String.class, "dist_disrupted_degree.txt");
     public final Parameter<String> maintainedOutFileP = 
             Parameter.make("maintainedOutFile", String.class, "dist_maintained.txt");
+    public final Parameter<String> maintainedRandomOutFileP = 
+            Parameter.make("maintainedRandomOutFile", String.class, "dist_maintained_random.txt");
+    public final Parameter<String> maintainedDegreeOutFileP = 
+            Parameter.make("maintainedDegreeOutFile", String.class, "dist_maintained_degree.txt");
     public final Parameter<String> tableOutFileP = 
             Parameter.make("tableOutFile", String.class, "dist_table.txt");
+    
 
     private Property isAssociatedWith, causes, affectsNegatively, affectsPositively;
     
     @Override
     public void run() {
+        
+        Authority ccsbMut = Authority.createOrGet(getModel(), "CCSB-Mutant");
         
         Logger logger = Logger.getLogger(DiseasePathLength.class.getName());
         logger.setLevel(Level.ALL);
@@ -76,6 +88,10 @@ public class DiseasePathLength extends LoreOperation {
         String disruptedOutFile = getParameterValue(disruptedOutFileP);
         String maintainedOutFile = getParameterValue(maintainedOutFileP);
         String tableOutFile = getParameterValue(tableOutFileP);
+        String disruptedRandomOutFile = getParameterValue(disruptedRandomOutFileP);
+        String maintainedRandomOutFile = getParameterValue(maintainedRandomOutFileP);
+        String disruptedDegreeOutFile = getParameterValue(disruptedDegreeOutFileP);
+        String maintainedDegreeOutFile = getParameterValue(maintainedDegreeOutFileP);
         
         //initialize sparql engine for pre-defined queries in this module.
         Sparql sparql = Sparql.getInstance(DiseasePathLength.class
@@ -214,6 +230,7 @@ public class DiseasePathLength extends LoreOperation {
                     Protein interactor = Protein.fromIndividual(interactors.get(0));
                     
                     textB.append(protein.getXRefValue(model.ENTREZ)).append('\t');
+                    textB.append(allele.getXRefValue(ccsbMut)).append('\t');
                     textB.append(interactor.getXRefValue(model.ENTREZ)).append('\t');
                     if (allele.hasProperty(affectsNegatively, interaction)) {
                         textB.append("-\t");
@@ -332,28 +349,28 @@ public class DiseasePathLength extends LoreOperation {
             
             w.close();
             
-            w = new BufferedWriter(new FileWriter("dist_disrupted_random.txt"));
+            w = new BufferedWriter(new FileWriter(disruptedRandomOutFile));
             for (int d : disruptedRandomList) {
                 w.write(d+"\n");
             }
             
             w.close();
             
-            w = new BufferedWriter(new FileWriter("dist_maintained_random.txt"));
+            w = new BufferedWriter(new FileWriter(maintainedRandomOutFile));
             for (int d : maintainedRandomList) {
                 w.write(d+"\n");
             }
             
             w.close();
             
-            w = new BufferedWriter(new FileWriter("dist_disrupted_degree.txt"));
+            w = new BufferedWriter(new FileWriter(disruptedDegreeOutFile));
             for (int d : disruptedDegreeList) {
                 w.write(d+"\n");
             }
             
             w.close();
             
-            w = new BufferedWriter(new FileWriter("dist_maintained_degree.txt"));
+            w = new BufferedWriter(new FileWriter(maintainedDegreeOutFile));
             for (int d : maintainedDegreeList) {
                 w.write(d+"\n");
             }
