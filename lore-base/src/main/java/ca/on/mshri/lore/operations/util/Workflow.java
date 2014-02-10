@@ -17,6 +17,7 @@
 package ca.on.mshri.lore.operations.util;
 
 import ca.on.mshri.lore.base.LoreModel;
+import ca.on.mshri.lore.operations.Configure;
 import ca.on.mshri.lore.operations.LoreOperation;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import java.util.ArrayList;
@@ -60,7 +61,10 @@ public class Workflow {
             }
             op.run();
             
-            summary.printSummary(model);
+            String summaryProp = System.getProperties().getProperty(Configure.SUMMARIES_KEY);
+            if (summaryProp == null || Boolean.parseBoolean(summaryProp)) {
+                summary.printSummary(model);
+            }
         }
         
     }
