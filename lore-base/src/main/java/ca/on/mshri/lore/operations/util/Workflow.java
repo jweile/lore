@@ -65,8 +65,14 @@ public class Workflow {
             
             String commitProp = System.getProperties().getProperty(Configure.COMMIT_KEY);
             if (commitProp == null || Boolean.parseBoolean(commitProp)) {
-                Logger.getLogger(Workflow.class.getName()).log(Level.INFO, "Committing model to database");
-                model.commit();
+                if (model.supportsTransactions()) {
+                    Logger.getLogger(Workflow.class.getName())
+                            .log(Level.INFO, "Committing model to database");
+                    model.commit();
+                } else {
+                    Logger.getLogger(Workflow.class.getName())
+                            .log(Level.WARNING, "Cannot commit: Model does not support transactions!");
+                }
             }
             
             String summaryProp = System.getProperties().getProperty(Configure.SUMMARIES_KEY);
