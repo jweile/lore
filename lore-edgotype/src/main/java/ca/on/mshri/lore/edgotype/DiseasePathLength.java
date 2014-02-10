@@ -41,6 +41,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -136,19 +137,22 @@ public class DiseasePathLength extends LoreOperation {
         List<Protein> allDisruptedOrigins = new ArrayList<Protein>();
         List<Protein> allMaintainedOrigins = new ArrayList<Protein>();
         
-        //get all alleles in the model
-        List<Allele> alleles = model.listIndividualsOfClass(Allele.class, true);
+        //get all alleles with edgotypes
+        List<Allele> alleles = new ArrayList<Allele>();
+        for (Individual ind : sparql.queryIndividuals(model, "getEdgotypedAlleles", "allele")) {
+            alleles.add(Allele.fromIndividual(ind));
+        }
         //set up progressbar calibrated to allele set
         CliProgressBar pb = new CliProgressBar(alleles.size());
        
         //iterate over all alleles in the model
         for (Allele allele : alleles) {
-            
+                        
             //get the protein that is encoded by the gene for which this allele exists
             List<Protein> proteins = Protein.listEncodedProteins(allele.getGene());
             if (proteins.isEmpty()) {
                 
-                logger.log(Level.FINE, "Skipping gene without known protein.");
+                logger.log(Level.WARNING, "Skipping gene without known protein.");
                 pb.next();
                 continue;
             }
@@ -189,95 +193,205 @@ public class DiseasePathLength extends LoreOperation {
             
             if (protsOfSamePheno.isEmpty()) {
                 pb.next();
-                logger.log(Level.FINEST, "Skipping singleton phenotype.");
+                logger.log(Level.WARNING, "Skipping singleton disease gene: "+
+                        protein.getXRefValue(model.ENTREZ));
                 continue;
             }
             
-            //only if we processed at least one edge, we're going to store the targets for later.
-            boolean used = false;
             
-            //for all the interactions of the protein...
+            //Iterate over interactions and sort into disruptes/maintained
+            List<Protein> disruptedInteractors = new ArrayList<Protein>(), 
+                    maintainedInteractors = new ArrayList<Protein>();
             for (PhysicalInteraction interaction : Interaction
                     .listInteractions(protein, PhysicalInteraction.class)) {
-                
-                IntArrayList currentList, currentDegreeList;
-                
-                /*
-                 * If the edge is disrupted, the distance measurement will go
-                 * in the list for disrupted edges, otherwise into the list for
-                 * maintained edges.
-                 */
-                if (allele.hasProperty(affectsNegatively, interaction)) {
-                    currentList = disruptedList;
-                    currentDegreeList = disruptedDegreeList;
-                } else if (allele.hasProperty(affectsPositively, interaction)) {
-                    currentList = maintainedList;
-                    currentDegreeList = maintainedDegreeList;
-                } else {
-                    //if disruption has not been tested for, discard this interaction
-                    //(because counting them as maintained would be unfair)
-//                    pb.next();
-                    continue;
-                }
-                
-                //get the other proteins involved in the interaction.
                 List<Molecule> interactors = interaction.listParticipants();
                 interactors.remove(protein);
                 
                 //make sure it's a binary interaction
-                if (interactors.size()==1) {
-                    
-                    Protein interactor = Protein.fromIndividual(interactors.get(0));
-                    
-                    textB.append(protein.getXRefValue(model.ENTREZ)).append('\t');
-                    textB.append(allele.getXRefValue(ccsbMut)).append('\t');
-                    textB.append(interactor.getXRefValue(model.ENTREZ)).append('\t');
-                    if (allele.hasProperty(affectsNegatively, interaction)) {
-                        textB.append("-\t");
-                    } else {
-                        textB.append("+\t");
-                    }
-                    
-                    
-                    logger.log(Level.FINEST, "Calculating shortest path...");
-            
-                    //calculate shortest path from interactor to targets
-                    //TODO: Disallow allelic protein in paths
-                    PathNode path = shortestPath.find(interactor, protsOfSamePheno, iaPattern);
-                    if (path != null) {
-                        //add path to result set
-                        currentList.add(path.getDistance());
-                        
-                        Protein target = Protein.fromIndividual(path.getValue());
-                        textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
-                        textB.append(path.getDistance());
-                        
-                    } else {
-                        //if no path is found add -1 to the list to symbolize Infinity.
-                        currentList.add(-1);
-                        
-                        textB.append("\tInf");
-                    }
-                    
-                    int degree = Interaction.listInteractions(interactor, PhysicalInteraction.class).size();
-                    currentDegreeList.add(degree);
-                    textB.append("\t").append(degree).append("\n");
-                    
-                    //mark for storage
-                    used = true;
-                    if (currentList.equals(disruptedList)) {
-                        allDisruptedOrigins.add(interactor);
-                    } else {
-                        allMaintainedOrigins.add(interactor);
-                    }
-                    
-                    
-                } else {
-                    logger.log(Level.FINER, interactors.isEmpty() ? 
-                            "Ignoring self-interaction": 
-                            "Ignoring multi-interaction");
+                if (interactors.isEmpty()) {
+                    logger.log(Level.WARNING, "Ignoring self-interaction");
+                    continue;
+                } else if (interactors.size() > 1) {
+                    logger.log(Level.WARNING, "Ignoring non-binary interaction");
+                    continue;
                 }
+                
+                Protein interactor = Protein.fromIndividual(interactors.get(0));
+                
+                if (allele.hasProperty(affectsNegatively, interaction)) {
+                    disruptedInteractors.add(interactor);
+                } else if (allele.hasProperty(affectsPositively, interaction)) {
+                    maintainedInteractors.add(interactor);
+                } else {
+                    logger.log(Level.WARNING, "Ignoring untested interaction");
+                    continue;
+                }
+                
             }
+            
+            //discard quasi-nulls!
+            if (maintainedInteractors.isEmpty()) {
+                logger.log(Level.WARNING,"Discarding quasi-null");
+            }
+            //discard degree 1
+            if (maintainedInteractors.size()+disruptedInteractors.size() < 2) {
+                logger.log(Level.WARNING,"Discarding degree <2");
+            }
+            
+            //iterate over all disrupted edges to measure paths
+            for (Protein interactor : disruptedInteractors) {
+                textB.append(protein.getXRefValue(model.ENTREZ)).append('\t');
+                textB.append(allele.getXRefValue(ccsbMut)).append('\t');
+                textB.append(interactor.getXRefValue(model.ENTREZ)).append('\t');
+                textB.append("-\t");
+
+                logger.log(Level.FINEST, "Calculating shortest path...");
+
+                //calculate shortest path from interactor to targets
+                PathNode path = shortestPath.find(interactor, protsOfSamePheno, 
+                        iaPattern, Collections.singleton(protein));
+                if (path != null) {
+                    //add path to result set
+                    disruptedList.add(path.getDistance());
+
+                    Protein target = Protein.fromIndividual(path.getValue());
+                    textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
+                    textB.append(path.getDistance());
+
+                } else {
+                    //if no path is found add -1 to the list to symbolize Infinity.
+                    disruptedList.add(-1);
+                    textB.append("\tInf");
+                }
+
+                int degree = Interaction
+                        .listInteractions(interactor, PhysicalInteraction.class).size();
+                disruptedDegreeList.add(degree);
+                textB.append("\t").append(degree).append("\n");
+
+                //store for random permutation
+                allDisruptedOrigins.add(interactor);
+            }
+            
+            //iterate over maintained edges to measure paths
+            for (Protein interactor : maintainedInteractors) {
+                textB.append(protein.getXRefValue(model.ENTREZ)).append('\t');
+                textB.append(allele.getXRefValue(ccsbMut)).append('\t');
+                textB.append(interactor.getXRefValue(model.ENTREZ)).append('\t');
+                textB.append("+\t");
+
+                logger.log(Level.FINEST, "Calculating shortest path...");
+
+                //calculate shortest path from interactor to targets
+                PathNode path = shortestPath.find(interactor, protsOfSamePheno, 
+                        iaPattern, Collections.singleton(protein));
+                if (path != null) {
+                    //add path to result set
+                    maintainedList.add(path.getDistance());
+
+                    Protein target = Protein.fromIndividual(path.getValue());
+                    textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
+                    textB.append(path.getDistance());
+
+                } else {
+                    //if no path is found add -1 to the list to symbolize Infinity.
+                    maintainedList.add(-1);
+                    textB.append("\tInf");
+                }
+
+                int degree = Interaction.listInteractions(interactor, PhysicalInteraction.class).size();
+                maintainedDegreeList.add(degree);
+                textB.append("\t").append(degree).append("\n");
+
+                //store for random permutation
+                allMaintainedOrigins.add(interactor);
+            }
+            
+//            //only if we processed at least one edge, we're going to store the targets for later.
+//            boolean used = false;
+//            
+//            //for all the interactions of the protein...
+//            for (PhysicalInteraction interaction : Interaction
+//                    .listInteractions(protein, PhysicalInteraction.class)) {
+//                
+//                IntArrayList currentList, currentDegreeList;
+//                
+//                /*
+//                 * If the edge is disrupted, the distance measurement will go
+//                 * in the list for disrupted edges, otherwise into the list for
+//                 * maintained edges.
+//                 */
+//                if (allele.hasProperty(affectsNegatively, interaction)) {
+//                    currentList = disruptedList;
+//                    currentDegreeList = disruptedDegreeList;
+//                } else if (allele.hasProperty(affectsPositively, interaction)) {
+//                    currentList = maintainedList;
+//                    currentDegreeList = maintainedDegreeList;
+//                } else {
+//                    //if disruption has not been tested for, discard this interaction
+//                    //(because counting them as maintained would be unfair)
+////                    pb.next();
+//                    continue;
+//                }
+//                
+//                //get the other proteins involved in the interaction.
+//                List<Molecule> interactors = interaction.listParticipants();
+//                interactors.remove(protein);
+//                
+//                //make sure it's a binary interaction
+//                if (interactors.size()==1) {
+//                    
+//                    Protein interactor = Protein.fromIndividual(interactors.get(0));
+//                    
+//                    textB.append(protein.getXRefValue(model.ENTREZ)).append('\t');
+//                    textB.append(allele.getXRefValue(ccsbMut)).append('\t');
+//                    textB.append(interactor.getXRefValue(model.ENTREZ)).append('\t');
+//                    if (allele.hasProperty(affectsNegatively, interaction)) {
+//                        textB.append("-\t");
+//                    } else {
+//                        textB.append("+\t");
+//                    }
+//                    
+//                    
+//                    logger.log(Level.FINEST, "Calculating shortest path...");
+//            
+//                    //calculate shortest path from interactor to targets
+//                    //TODO: Disallow allelic protein in paths
+//                    PathNode path = shortestPath.find(interactor, protsOfSamePheno, iaPattern);
+//                    if (path != null) {
+//                        //add path to result set
+//                        currentList.add(path.getDistance());
+//                        
+//                        Protein target = Protein.fromIndividual(path.getValue());
+//                        textB.append(target.getXRefValue(model.ENTREZ)).append('\t');
+//                        textB.append(path.getDistance());
+//                        
+//                    } else {
+//                        //if no path is found add -1 to the list to symbolize Infinity.
+//                        currentList.add(-1);
+//                        
+//                        textB.append("\tInf");
+//                    }
+//                    
+//                    int degree = Interaction.listInteractions(interactor, PhysicalInteraction.class).size();
+//                    currentDegreeList.add(degree);
+//                    textB.append("\t").append(degree).append("\n");
+//                    
+//                    //mark for storage
+//                    used = true;
+//                    if (currentList.equals(disruptedList)) {
+//                        allDisruptedOrigins.add(interactor);
+//                    } else {
+//                        allMaintainedOrigins.add(interactor);
+//                    }
+//                    
+//                    
+//                } else {
+//                    logger.log(Level.WARNING, interactors.isEmpty() ? 
+//                            "Ignoring self-interaction: "+protein.getXRefValue(model.ENTREZ): 
+//                            "Ignoring multi-interaction: "+protein.getXRefValue(model.ENTREZ));
+//                }
+//            }
             
             //check if the target was used. If so store it for later.
             allTargets.add(protsOfSamePheno);
