@@ -25,18 +25,27 @@ import java.util.Properties;
  */
 public class Configure extends LoreOperation {
 
-    public final Parameter<Boolean> summariesP = Parameter.make("summaries", Boolean.class, true);
+    /**
+     * print summaries after each workflow operation?
+     */
     public static final String SUMMARIES_KEY = "lore.summaries";
+    public final Parameter<Boolean> summariesP = Parameter.make("summaries", Boolean.class, true);
+    /**
+     * commit to database after each operation?
+     */
+    public static final String COMMIT_KEY = "lore.commit";
+    public final Parameter<Boolean> commitP = Parameter.make("commit", Boolean.class, true);
     
     @Override
     public void run() {
         Properties p = System.getProperties();
         p.setProperty(SUMMARIES_KEY, getParameterValue(summariesP)+"");
+        p.setProperty(COMMIT_KEY, getParameterValue(commitP)+"");
     }
 
     @Override
     public boolean requiresReasoner() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
         
 }

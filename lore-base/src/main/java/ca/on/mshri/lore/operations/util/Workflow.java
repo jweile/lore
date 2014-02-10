@@ -22,6 +22,8 @@ import ca.on.mshri.lore.operations.LoreOperation;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -60,6 +62,12 @@ public class Workflow {
                 op.setModel(model);
             }
             op.run();
+            
+            String commitProp = System.getProperties().getProperty(Configure.COMMIT_KEY);
+            if (commitProp == null || Boolean.parseBoolean(commitProp)) {
+                Logger.getLogger(Workflow.class.getName()).log(Level.INFO, "Committing model to database");
+                model.commit();
+            }
             
             String summaryProp = System.getProperties().getProperty(Configure.SUMMARIES_KEY);
             if (summaryProp == null || Boolean.parseBoolean(summaryProp)) {
