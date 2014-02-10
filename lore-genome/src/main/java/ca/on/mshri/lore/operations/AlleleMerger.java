@@ -95,8 +95,8 @@ public class AlleleMerger extends LoreOperation {
             //for each allele of the gene
             for (Allele allele : gene.listAlleles()) {
                 
-                //save allele in the list so they can be passed to the context-based merger later
-                alleles.add(allele);
+                //init counter for number of mutatations
+                int mutCount = 0;
                 
                 //for each mutant of that allele (usually there's only one)
                 for (Mutation mut : allele.listMutations()) {
@@ -111,12 +111,18 @@ public class AlleleMerger extends LoreOperation {
                                     .log(Level.WARNING, pmut.getURI()+" has broken change signature!");
                             continue;
                         }
+                        mutCount++;
                         String signature = pmut.getFromAminoAcid()+pmut.getPosition()+pmut.getToAminoAcid();
                         mutIndex.getOrCreate(signature).add(pmut);
                         
                     } else {
                         //ignore cases of mutations other than point mutations
                     }
+                }
+                
+                //save allele in the list so they can be passed to the context-based merger later
+                if (mutCount > 0) {
+                    alleles.add(allele);
                 }
             }
             
