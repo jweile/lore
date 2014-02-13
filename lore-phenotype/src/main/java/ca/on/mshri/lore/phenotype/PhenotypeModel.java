@@ -30,6 +30,7 @@ public class PhenotypeModel extends GenomeModel {
     public static final String URI = "http://llama.mshri.on.ca/lore-phenotype.owl";
     
     public final Authority HPO;
+    public final Authority DO;
     public final Authority OMIM;
     public final Authority DB_SNP;
     public final Authority HGMD;
@@ -41,6 +42,7 @@ public class PhenotypeModel extends GenomeModel {
         read(GenomeModel.class.getClassLoader().getResourceAsStream("lore-phenotype.owl"), null);
         
         HPO = Authority.createOrGet(this, "HPO");
+        DO = Authority.createOrGet(this, "DO");
         OMIM = Authority.createOrGet(this, "OMIM");
         DB_SNP = Authority.createOrGet(this, "DBSNP");
         HGMD = Authority.createOrGet(this, "HGMD");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Department of Molecular Genetics, University of Toronto
+ * Copyright (C) 2014 Department of Molecular Genetics, University of Toronto
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.on.mshri.lore.phenotype.hpo;
+package ca.on.mshri.lore.generic;
 
-import ca.on.mshri.lore.phenotype.hpo.OboParser;
+import ca.on.mshri.lore.generic.OboParser.Stanza;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
+import java.util.Map;
 import junit.framework.TestCase;
 
 /**
@@ -40,15 +41,17 @@ public class OboParserTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-
-    /**
-     * Test of parse method, of class OboParser.
-     */
-    public void testParse() throws Exception {
-        
-        InputStream oboStream = new FileInputStream("src/test/resources/human-phenotype-ontology.obo");
-        
-        OboParser instance = new OboParser(null);
-        instance.parse(oboStream);
+    
+    public void test() throws Exception {
+        Map<String, Stanza> stanzas = new OboParser().parse(new FileInputStream("src/test/resources/HumanDO.obo"));
+        int i = 0;
+        for (Stanza stanza : stanzas.values()) {
+            if (i++ >= 10) {
+                break;
+            }
+            System.err.println(stanza.getID());
+            System.err.println(stanza.getName());
+            System.err.println();
+        }
     }
 }
