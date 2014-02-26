@@ -61,6 +61,7 @@ public class Main extends MainWrapper {
         File tdbFile = new File(tdbLoc);
 
         Dataset tdbSet = null;
+        LoreModel model = null;
         InputStream in = null;
         try {
             
@@ -69,17 +70,19 @@ public class Main extends MainWrapper {
             Workflow workflow = wp.parse(in);
             
             tdbSet = TDBFactory.createDataset(tdbFile.getAbsolutePath());
-            LoreModel model = new LoreModel(OntModelSpec.OWL_MEM, tdbSet.getDefaultModel());
+            model = new LoreModel(OntModelSpec.OWL_MEM, tdbSet.getDefaultModel());
             
             workflow.setModel(model);
             workflow.run();
             
-            model.commit();
             
         } catch (IOException ex) {
             throw new RuntimeException("Cannot read workflow file: "+
                     workflowFile.getAbsolutePath(), ex);
         } finally {
+            if (model != null) {
+                model.commit();
+            }
             if (tdbSet != null) {
                 tdbSet.close();
             }
