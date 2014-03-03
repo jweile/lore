@@ -51,6 +51,9 @@ public class DiseaseOntologyParser extends LoreOperation {
     @Override
     public void run() {
         
+        Logger.getLogger(DiseaseOntologyParser.class.getName())
+                .log(Level.INFO, "Parsing Disease Ontology.");
+        
         phenoModel = new PhenotypeModel(OntModelSpec.OWL_MEM, getModel());
         isaProp = phenoModel.getProperty(PhenotypeModel.URI+"#is_a");
         
