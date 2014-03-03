@@ -14,6 +14,11 @@ disrupted[disrupted < 0] <- Inf
 maintainedRandom[maintainedRandom < 0] <- Inf
 disruptedRandom[disruptedRandom < 0] <- Inf
 
+maintained <- maintained + 1
+disrupted <- disrupted + 1
+maintainedRandom <- maintainedRandom + 1
+disruptedRandom <- disruptedRandom + 1
+
 # means <- c(mean(maintained),mean(disrupted))
 # stdev <- sqrt(c(var(maintained),var(disrupted)))
 
@@ -79,7 +84,7 @@ colnames(tab.abs) <- labels
 rownames(tab.abs) <- c("maintained","disrupted","maintained_random","disrupted_random")
 
 
-cutoff <- 1
+cutoff <- 4
 fisher.table <- rbind(
 	le=c(
 		perturbed=sum(tab.abs["disrupted",as.numeric(labels) <= cutoff]),
@@ -161,9 +166,9 @@ xs <- barplot(
 		expression(paths~to~bold(relevant)~disease),
 		expression(paths~to~bold(random)~disease)
 	),
-	ylab="Odds of path length shorter than 3",
+	ylab=paste("Odds of path length shorter than",(cutoff+1)),
 	col=colors,
-	ylim=c(0,.2)
+	ylim=c(0,2*max(to.plot))
 )
 arrows(xs[1,],y0=to.plot[1,]+se[1,],y1=to.plot[1,]-se[1,],length=.1,angle=90,code=3)
 arrows(xs[2,],y0=to.plot[2,]+se[2,],y1=to.plot[2,]-se[2,],length=.1,angle=90,code=3)
@@ -193,7 +198,7 @@ op <- par(mfrow=c(1,2))
 
 colors <- c("steelblue1","goldenrod1","steelblue4","goldenrod4")
 xs <- barplot(tab,beside=TRUE,col=colors, xlab="Length of shortest path", ylab="Density",ylim=c(0,.6))
-legend("right",c("maintained","disrupted","maintained random","disrupted random"),fill=colors)
+legend("topright",c("maintained","disrupted","maintained random","disrupted random"),fill=colors)
 
 median.index.m <- which(as.numeric(colnames(tab)) == median(maintained))
 arrows(xs[1,median.index.m], y0=tab[1,median.index.m]+.05,y1=tab[1,median.index.m]+.03,length=.05,lwd=2,col=colors[1])
@@ -220,7 +225,7 @@ for (i in 1:4) {
 	)
 }
 
-plot(0,type="n",xlab="Length of shortest path", ylab="Density",xlim=c(0,8), ylim=c(0,.6))
+plot(0,type="n",xlab="Length of shortest path", ylab="Density",xlim=c(1,9), ylim=c(0,.6))
 for (i in 1:4) {
 	points(as.numeric(colnames(tab)),tab[i,],type="l",col=colors[i])
 	se <- sqrt(tab[i,] * (1-tab[i,]) / n[i])
@@ -234,7 +239,7 @@ for (i in 1:4) {
 		col=colors[i]
 	)
 }
-legend("right",c("maintained","disrupted","maintained random","disrupted random"),lty=1,col=colors)
+legend("topright",c("maintained","disrupted","maintained random","disrupted random"),lty=1,col=colors)
 
 arrows(median(maintained), y0=tab[1,median.index.m]+.05,y1=tab[1,median.index.m]+.03,length=.05,lwd=2,col=colors[1])
 arrows(median(disrupted), y0=tab[2,median.index.d]+.05,y1=tab[2,median.index.d]+.03,length=.05,lwd=2,col=colors[2])

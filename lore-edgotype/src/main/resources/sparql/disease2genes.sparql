@@ -7,10 +7,10 @@ PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
 PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
 PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
 
-
-SELECT ?gene
+SELECT ?disease ?gene
 WHERE {
 
-    ?gene pheno:isAssociatedWith|pheno:isCausallyAssociatedWith <%s>;
-          rdf:type genome:Gene.
+	?disease rdf:type pheno:Phenotype;
+            ^pheno:is_a*/(^pheno:isAssociatedWith|^pheno:isCausallyAssociatedWith) ?gene.
+        ?gene rdf:type genome:Gene.
 } 

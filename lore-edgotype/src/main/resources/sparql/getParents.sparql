@@ -7,10 +7,7 @@ PREFIX genome: <http://llama.mshri.on.ca/lore-genome.owl#>
 PREFIX mol: <http://llama.mshri.on.ca/lore-molecules.owl#>
 PREFIX ia: <http://llama.mshri.on.ca/lore-interaction.owl#>
 
-
-SELECT ?gene
+SELECT DISTINCT ?parent
 WHERE {
-
-    ?gene pheno:isAssociatedWith|pheno:isCausallyAssociatedWith <%s>;
-          rdf:type genome:Gene.
-} 
+    <%s> pheno:is_a+ ?parent.
+}
